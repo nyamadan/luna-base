@@ -1,0 +1,21 @@
+{
+  "name": "main",
+  "version": "1.0.0",
+  "main": "./dist/index.lua",
+  "files": [
+    "dist/**/*.lua",
+    "dist/**/*.d.ts",
+    "types/**/*.d.ts"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "luna-base": "^1.0.0",
+    "lua-types": "^2.11.0",
+    "typescript": "^4.4.4",
+    "typescript-to-lua": "^1.0.1"
+  },
+  "scripts": {
+    "build": "tstl",
+    "dev": "tstl --watch"
+  }
+}

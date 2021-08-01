@@ -1,0 +1,19 @@
+{
+  "cmake.generator": "Ninja",
+  "cmake.debugConfig": {
+    "cwd": "${workspaceFolder}",
+    "args": ["./scripts/main/dist/index.lua"]
+  },
+  "files.associations": {
+    "algorithm": "cpp",
+    "charconv": "cpp",
+    "fstream": "cpp",
+    "type_traits": "cpp",
+    "typeinfo": "cpp",
+    "xiosbase": "cpp",
+    "xstring": "cpp",
+    "cstdint": "cpp"
+  },
+  "cSpell.words": [],
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}

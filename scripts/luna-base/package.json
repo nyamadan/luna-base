@@ -1,0 +1,26 @@
+{
+  "name": "luna-base",
+  "version": "1.0.0",
+  "main": "./dist/index",
+  "types": "./dist/index",
+  "files": [
+    "dist/**/*.lua",
+    "dist/**/*.d.ts"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "eslint": "^8.0.1",
+    "lua-types": "^2.11.0",
+    "main": "1.0.0",
+    "typescript": "^4.4.4",
+    "typescript-to-lua": "^1.0.1"
+  },
+  "scripts": {
+    "build": "tstl -p ./tsconfig.json",
+    "dev": "tstl -p ./tsconfig.json --watch",
+    "watch:test": "cd ./tests && tstl --watch -p ./tsconfig.json",
+    "build:test": "cd ./tests && tstl -p ./tsconfig.json",
+    "test": "cd ./tests && ../../../build/main ./index.lua"
+  }
+}

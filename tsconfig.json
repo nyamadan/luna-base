@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "module": "esnext",
+    "target": "es2020",
+    "allowJs": true,
+    "outDir": "./dist"
+  },
+  "files": ["index.ts"]
+}
