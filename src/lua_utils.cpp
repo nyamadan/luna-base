@@ -183,6 +183,9 @@ int lua_docall(lua_State *L, int narg, int nres) {
 int lua_report(lua_State *L, int status) {
   if (status != LUA_OK) {
     const char *msg = lua_tostring(L, -1);
+    // lua_getglobal(L, "print");
+    // lua_pushstring(L, msg);
+    // lua_call(L, 1, 0);
     lua_writestringerror("%s\n", msg);
     lua_pop(L, 1); /* remove message */
   }

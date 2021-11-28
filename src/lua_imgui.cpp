@@ -25,17 +25,19 @@ int L_render(lua_State *L) {
 
 int L_showDemoWindow(lua_State *L) {
   Buffer *p_open =
-      (Buffer *)luaL_checkudata(L, 1, LUA_USERDATA_TYPE_BUFFER_METATABLE_NAME);
-  luaL_argcheck(L, p_open != NULL, 1,
-                "p_open: LUA_USERDATA_TYPE_BUFFER expected");
-  luaL_argcheck(L, p_open->type != BufferType::UNSAFE_POINTER_TYPE, 1,
-                "LUA_USERDATA_TYPE_BUFFER: UNSAFE_BUFFER_TYPE");
-  luaL_argcheck(L, p_open->len >= sizeof(bool), 1,
-                "p_open: LUA_USERDATA_TYPE_BUFFER: must be greater equal than "
-                "sizeof(bool)?");
-  luaL_argcheck(L, p_open->p != NULL, 1,
-                "p_open: LUA_USERDATA_TYPE_BUFFER: already free?");
-  ImGui::ShowDemoWindow(reinterpret_cast<bool *>(p_open->p));
+      (Buffer *)luaL_testudata(L, 1, LUA_USERDATA_TYPE_BUFFER_METATABLE_NAME);
+  if (p_open != nullptr) {
+    luaL_argcheck(L, p_open->type != BufferType::UNSAFE_POINTER_TYPE, 1,
+                  "LUA_USERDATA_TYPE_BUFFER: UNSAFE_BUFFER_TYPE");
+    luaL_argcheck(
+        L, p_open->len >= sizeof(bool), 1,
+        "p_open: LUA_USERDATA_TYPE_BUFFER: must be greater equal than "
+        "sizeof(bool)?");
+    luaL_argcheck(L, p_open->p != NULL, 1,
+                  "p_open: LUA_USERDATA_TYPE_BUFFER: already free?");
+  }
+  ImGui::ShowDemoWindow(p_open != nullptr ? reinterpret_cast<bool *>(p_open->p)
+                                          : nullptr);
   return 0;
 }
 
@@ -80,6 +82,64 @@ int L_implOpenGL3_RenderDrawData(lua_State *L) {
   return 0;
 }
 
+int L_begin(lua_State *L) {
+  const char *name = luaL_checkstring(L, 1);
+
+  Buffer *p_open =
+      (Buffer *)luaL_testudata(L, 2, LUA_USERDATA_TYPE_BUFFER_METATABLE_NAME);
+
+  if (p_open != nullptr) {
+    luaL_argcheck(L, p_open->type != BufferType::UNSAFE_POINTER_TYPE, 2,
+                  "LUA_USERDATA_TYPE_BUFFER: UNSAFE_BUFFER_TYPE");
+    luaL_argcheck(
+        L, p_open->len >= sizeof(bool), 2,
+        "p_open: LUA_USERDATA_TYPE_BUFFER: must be greater equal than "
+        "sizeof(bool)?");
+    luaL_argcheck(L, p_open->p != NULL, 2,
+                  "p_open: LUA_USERDATA_TYPE_BUFFER: already free?");
+  }
+
+  int isnum = 0;
+  lua_Integer flags = lua_tointegerx(L, 3, &isnum);
+
+  bool result = ImGui::Begin(
+      name, reinterpret_cast<bool *>(p_open != nullptr ? p_open->p : nullptr),
+      isnum ? flags : 0);
+
+  lua_pushboolean(L, result);
+
+  return 1;
+}
+
+int L_end(lua_State *L) {
+  ImGui::End();
+  return 0;
+}
+
+int L_text(lua_State *L) {
+  const char *text = luaL_checkstring(L, 1);
+  ImGui::Text("%s", text);
+  return 0;
+}
+
+int L_button(lua_State *L) {
+  const char *label = luaL_checkstring(L, 1);
+
+  ImVec2 size(0.0f, 0.0f);
+  if (lua_istable(L, 2)) {
+    lua_pushinteger(L, 1);
+    lua_gettable(L, 2);
+    lua_pushinteger(L, 2);
+    lua_gettable(L, 2);
+    size.x = static_cast<float>(luaL_checknumber(L, -2));
+    size.y = static_cast<float>(luaL_checknumber(L, -1));
+  }
+
+  bool result = ImGui::Button(label, size);
+  lua_pushboolean(L, result);
+  return 1;
+}
+
 int L_require(lua_State *L) {
   lua_newtable(L);
 
@@ -118,6 +178,19 @@ int L_require(lua_State *L) {
 
   lua_pushcfunction(L, L_implOpenGL3_RenderDrawData);
   lua_setfield(L, -2, "implOpenGL3_RenderDrawData");
+
+  lua_pushcfunction(L, L_begin);
+  lua_setfield(L, -2, "begin");
+
+  lua_pushcfunction(L, L_end);
+  lua_setfield(L, -2, "end");
+
+  lua_pushcfunction(L, L_text);
+  lua_setfield(L, -2, "text");
+
+  lua_pushcfunction(L, L_button);
+  lua_setfield(L, -2, "button");
+
   return 1;
 }
 } // namespace

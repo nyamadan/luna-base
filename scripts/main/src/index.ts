@@ -1,6 +1,7 @@
 import "luna-base";
 import * as _gl from "gl";
 import * as glfw from "glfw";
+import * as imgui from "imgui";
 import { isEmscripten } from "utils";
 import {
   createGLRenderer,
@@ -16,18 +17,6 @@ import { createTexture } from "luna-base/dist/gl_renderer/texture";
 import { mat4 } from "luna-base/dist/math/mat4";
 import { quat } from "luna-base/dist/math/quat";
 import { vec3 } from "luna-base/dist/math/vec3";
-import {
-  createContext,
-  implGlfw_InitForOpenGL,
-  implGlfw_NewFrame,
-  implOpenGL3_Init,
-  implOpenGL3_NewFrame,
-  implOpenGL3_RenderDrawData,
-  newFrame,
-  render,
-  showDemoWindow,
-  styleColorsDark,
-} from "imgui";
 import { new_buffer, SIZE_OF_BOOL } from "native_buffer";
 
 math.randomseed(math.floor(os.clock() * 1e11));
@@ -62,10 +51,10 @@ glfw.start({
   width,
   height,
   start: function () {
-    createContext();
-    styleColorsDark();
-    implGlfw_InitForOpenGL(true);
-    implOpenGL3_Init();
+    imgui.createContext();
+    imgui.styleColorsDark();
+    imgui.implGlfw_InitForOpenGL(true);
+    imgui.implOpenGL3_Init();
 
     const imageResult = createPngImage(
       "./scripts/luna-base/tests/assets/waterfall-512x512.png"
@@ -110,15 +99,23 @@ glfw.start({
   update: function () {
     glfw.pollEvents();
 
-    implOpenGL3_NewFrame();
-    implGlfw_NewFrame();
-    newFrame();
+    imgui.implOpenGL3_NewFrame();
+    imgui.implGlfw_NewFrame();
+    imgui.newFrame();
 
     if (pOpen.get_bool(0)) {
-      showDemoWindow(pOpen);
+      imgui.showDemoWindow(pOpen);
     }
 
-    render();
+    if (imgui.begin("Hello World")) {
+      imgui.text("Button");
+      if (imgui.button("PUSH ME")) {
+        print("PUSHED!");
+      }
+    }
+    imgui.end();
+
+    imgui.render();
 
     assertIsNotNull(renderer);
     assertIsNotNull(root);
@@ -131,7 +128,7 @@ glfw.start({
     root.update(mat4.create());
     renderer.render(root);
 
-    implOpenGL3_RenderDrawData();
+    imgui.implOpenGL3_RenderDrawData();
     frame += 1;
 
     collectgarbage("collect");
