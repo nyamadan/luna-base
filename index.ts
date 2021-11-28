@@ -89,15 +89,6 @@ function runLuaCoreTests() {
           true,
           false
         );
-
-        FS.mkdir("/scripts/luna-base/tests/lib");
-        FS.createPreloadedFile(
-          "/scripts/luna-base/tests/lib/luaunit",
-          "luaunit.lua",
-          "/luna-base/tests/lib/luaunit/luaunit.lua",
-          true,
-          false
-        );
       },
     ],
   } as EmscriptenModule & {
