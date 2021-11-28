@@ -1,11 +1,10 @@
-import { getLU, test } from "./utils";
+import * as lu from "./lib/luaunit/luaunit";
+import { test } from "./utils";
 
 import * as _gl from "gl";
 import { createGLProgram } from "../src/gl/gl_program";
 import { createGLVertexArray } from "../src/gl/gl_vertex_array";
 import { createGLGeometryBuffer } from "../src/gl/gl_geometry_buffer";
-
-const lu = getLU();
 
 test("Test_GLBuffer", {
   setUp: function (this: void) {},

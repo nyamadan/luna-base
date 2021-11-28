@@ -4,21 +4,6 @@ import { isEmscripten } from "utils";
 import { OS_NAME } from "../src/platform";
 import { assertIsNull } from "../src/type_utils";
 
-let lu: LU | null = null;
-
-function script_path(this: void) {
-  const str: string = (debug.getinfo(2, "S")!.source as any).sub(2);
-  return (str as any).match("(.*/)");
-}
-
-export function getLU(this: void) {
-  if (lu == null) {
-    const path = `${script_path()}./lib/luaunit/luaunit.lua`;
-    lu = dofile(path) as LU;
-  }
-  return lu;
-}
-
 export const test = function <
   T extends {
     setUp: () => void;

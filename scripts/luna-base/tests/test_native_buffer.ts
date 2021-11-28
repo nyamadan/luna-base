@@ -1,3 +1,5 @@
+import * as lu from "./lib/luaunit/luaunit";
+
 import {
   copy_buffer,
   new_buffer,
@@ -5,9 +7,7 @@ import {
   SIZE_OF_BOOL,
   SIZE_OF_POINTER,
 } from "native_buffer";
-import { getLU, test } from "./utils";
-
-const lu = getLU();
+import { test } from "./utils";
 
 test("Test_Buffer", {
   buf: undefined as ReturnType<typeof new_buffer> | undefined,

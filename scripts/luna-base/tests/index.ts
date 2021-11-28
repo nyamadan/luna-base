@@ -1,4 +1,5 @@
-import { getLU, initGlfw } from "./utils";
+import { initGlfw } from "./utils";
+import { LuaUnit } from "./lib/luaunit/luaunit";
 
 import "./test_native_buffer";
 import "./test_u8array";
@@ -16,10 +17,8 @@ initGlfw();
 
 import "./test_gl_program";
 import "./test_gl_vertex_array";
-
 import "./test_node";
 
-const lu = getLU();
-const runner = lu.LuaUnit.new();
+const runner = LuaUnit.new();
 runner.setOutputType("text");
 os.exit(runner.runSuite());

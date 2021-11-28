@@ -1,8 +1,7 @@
+import * as lu from "./lib/luaunit/luaunit";
 import { createI16Array, I16Array } from "../src/buffers/i16array";
 
-import { getLU, test } from "./utils";
-
-const lu = getLU();
+import { test } from "./utils";
 
 test("Test_I16Array", {
   buf: undefined as ReturnType<typeof createI16Array> | undefined,
@@ -26,8 +25,8 @@ test("Test_I16Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(this.buf[0], 10)
-    lu.assertEquals(this.buf[1], 20)
+    lu.assertEquals(this.buf[0], 10);
+    lu.assertEquals(this.buf[1], 20);
   },
   test_index_tostring: function () {
     if (this.buf == null) {
@@ -36,7 +35,7 @@ test("Test_I16Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(tostring(this.buf), "LUA_TYPE_I16ARRAY: [10, 20]")
+    lu.assertEquals(tostring(this.buf), "LUA_TYPE_I16ARRAY: [10, 20]");
   },
   test_release: function () {
     let buf: I16Array | null = createI16Array(2);

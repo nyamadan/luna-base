@@ -1,14 +1,11 @@
+import * as lu from "./lib/luaunit/luaunit";
+
 import { vec3 } from "../src/math/vec3";
-import {
-  Command,
-  createNode,
-} from "../src/gl_renderer/node";
+import { Command, createNode } from "../src/gl_renderer/node";
 import { mat4 } from "../src/math/mat4";
-import { assertIsNotNull, assertIsNull } from "../src/type_utils";
+import { assertIsNotNull } from "../src/type_utils";
 
-import { getLU, test } from "./utils";
-
-const lu = getLU();
+import { test } from "./utils";
 
 test("Test_Node", {
   setUp: function () {},
@@ -44,12 +41,7 @@ test("Test_Node", {
     lu.assertEquals(
       // prettier-ignore
       trChild.local,
-      [
-        2, 0, 0, 0,
-        0, 2, 0, 0,
-        0, 0, 2, 0,
-        1, 1, 1, 1
-      ],
+      [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 1, 1, 1, 1]
     );
 
     // lu.assertEquals(

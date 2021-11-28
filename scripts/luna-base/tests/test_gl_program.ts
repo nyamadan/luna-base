@@ -1,10 +1,9 @@
-import { getLU, test } from "./utils";
+import * as lu from "./lib/luaunit/luaunit";
+import { test } from "./utils";
 
 import "luna-base";
 import * as _gl from "gl";
 import { createGLProgram } from "../src/gl/gl_program";
-
-const lu = getLU();
 
 test("Test_Program", {
   setUp: function (this: void) {},

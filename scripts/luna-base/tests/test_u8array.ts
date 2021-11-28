@@ -1,7 +1,6 @@
+import * as lu from "./lib/luaunit/luaunit";
 import { createU8Array, U8Array } from "../src/buffers/u8array";
-import { getLU, test } from "./utils";
-
-const lu = getLU();
+import { test } from "./utils";
 
 test("Test_U8Array", {
   buf: undefined as ReturnType<typeof createU8Array> | undefined,
@@ -25,8 +24,8 @@ test("Test_U8Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(this.buf[0], 10)
-    lu.assertEquals(this.buf[1], 20)
+    lu.assertEquals(this.buf[0], 10);
+    lu.assertEquals(this.buf[1], 20);
   },
   test_index_tostring: function () {
     if (this.buf == null) {
@@ -35,7 +34,7 @@ test("Test_U8Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(tostring(this.buf), "LUA_TYPE_U8ARRAY: [10, 20]")
+    lu.assertEquals(tostring(this.buf), "LUA_TYPE_U8ARRAY: [10, 20]");
   },
   test_release: function () {
     let buf: U8Array | null = createU8Array(2);

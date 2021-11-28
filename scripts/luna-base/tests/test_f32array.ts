@@ -1,8 +1,6 @@
+import * as lu from "./lib/luaunit/luaunit";
 import { createF32Array, F32Array } from "../src/buffers/f32array";
-
-import { getLU, test } from "./utils";
-
-const lu = getLU();
+import { test } from "./utils";
 
 test("Test_F32Array", {
   buf: undefined as ReturnType<typeof createF32Array> | undefined,

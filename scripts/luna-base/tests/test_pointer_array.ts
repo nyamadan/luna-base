@@ -1,8 +1,8 @@
+import * as lu from "./lib/luaunit/luaunit";
+
 import { createPointerArray, PointerArray } from "../src/buffers/pointer_array";
 import { createU8Array, U8Array } from "../src/buffers/u8array";
-import { getLU, test } from "./utils";
-
-const lu = getLU();
+import { test } from "./utils";
 
 test("test_PointerArray", {
   buf: undefined as ReturnType<typeof createPointerArray> | undefined,
@@ -38,7 +38,7 @@ test("test_PointerArray", {
     b.setPointer(0, a.buffer, 0);
 
     a = null;
-    collectgarbage()
+    collectgarbage();
     lu.assertNotIsNil(tblA.buf);
 
     b = null;
