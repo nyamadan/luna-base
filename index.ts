@@ -90,12 +90,11 @@ function runLuaCoreTests() {
           false
         );
 
-        FS.mkdir("/scripts/lib");
-        FS.mkdir("/scripts/lib/luaunit");
+        FS.mkdir("/scripts/luna-base/tests/lib");
         FS.createPreloadedFile(
-          "/scripts/lib/luaunit",
+          "/scripts/luna-base/tests/lib/luaunit",
           "luaunit.lua",
-          "/lib/luaunit/luaunit.lua",
+          "/luna-base/tests/lib/luaunit/luaunit.lua",
           true,
           false
         );

@@ -13,7 +13,7 @@ function script_path(this: void) {
 
 export function getLU(this: void) {
   if (lu == null) {
-    const path = `${script_path()}../../lib/luaunit/luaunit.lua`;
+    const path = `${script_path()}./lib/luaunit/luaunit.lua`;
     lu = dofile(path) as LU;
   }
   return lu;
