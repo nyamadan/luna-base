@@ -1,8 +1,8 @@
 const xpath = require("xpath"),
-  dom = require("xmldom").DOMParser;
+  dom = require("@xmldom/xmldom").DOMParser;
 
 const { default: axios } = require("axios");
-const xmldom = require("xmldom");
+const xmldom = require("@xmldom/xmldom");
 const { promisify } = require("util");
 const { writeFile } = require("fs");
 
@@ -14,7 +14,7 @@ const main = async function () {
   const doc = new dom().parseFromString(response.data);
 
   /**
-   * @type {ReadonlyArray<xmldom.>}
+   * @type {ReadonlyArray<Element>}
    */
   const features = xpath.select("registry/feature", doc).filter((x) => {
     /**
