@@ -15,7 +15,8 @@
     "buildMode": "default",
     "luaBundle": "index.lua",
     "luaBundleEntry": "index.ts",
-    "luaTarget": "5.3"
+    "luaTarget": "5.4",
+    "noResolvePaths": ["math"]
   },
   "include": ["**/*.ts", "../src/**/*.ts", "../types/*.d.ts"],
   "exclude": ["../dist/**/*"]
