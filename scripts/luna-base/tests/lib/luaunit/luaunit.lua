@@ -8,6 +8,7 @@ Based on initial work of Ryu, Gwang (http://www.gpgstudy.com/gpgiki/LuaUnit)
 License: BSD License, see LICENSE.txt
 ]]--
 
+require("math")
 local M={}
 
 -- private exported functions (for testing)

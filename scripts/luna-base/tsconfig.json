@@ -19,6 +19,7 @@
   "tstl": {
     "luaLibImport": "require",
     "buildMode": "library",
-    "luaTarget": "5.3"
+    "luaTarget": "5.4",
+    "noResolvePaths": ["math"]
   }
 }
