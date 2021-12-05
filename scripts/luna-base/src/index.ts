@@ -1,5 +1,6 @@
 /// <reference path="../types/index.d.ts" />
 import "./tables";
+import "./uuid";
 import "./buffers/pointer_array";
 import "./buffers/native_array";
 import "./buffers/u8array";
@@ -22,7 +23,9 @@ import "./type_utils";
 import "./math/vec3";
 import "./math/mat4";
 
+import "./gl_renderer/application_task";
 import "./gl_renderer/gl_renderer";
+import "./gl_renderer/gl_renderer_task";
 import "./gl_renderer/geometry";
 import "./gl_renderer/material";
 import "./gl_renderer/sub_mesh";

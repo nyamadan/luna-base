@@ -1,9 +1,12 @@
 import { assertIsFalsy } from "./type_utils";
 
 export type TableName =
+  | "LUA_TYPE_APPLICATION_TASK"
+  | "LUA_TYPE_GL_RENDERER_TASK"
   | "LUA_TYPE_TRANSFORM"
   | "LUA_TYPE_TRANSFORM_TASK"
   | "LUA_TYPE_NODE"
+  | "LUA_TYPE_SCRIPT_TASK"
   | "LUA_TYPE_MATERIAL"
   | "LUA_USERDATA_TYPE_BUFFER"
   | "LUA_TYPE_SUB_MESH_TASK"
@@ -20,7 +23,7 @@ export function createTable<T1, T2>(
   this: void,
   tableName: TableName,
   fields: T1,
-  prototype: T2,
+  prototype?: T2,
   __gc?: (this: T1 & T2) => void
 ) {
   const metatable = {

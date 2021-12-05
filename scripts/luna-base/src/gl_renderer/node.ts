@@ -1,21 +1,30 @@
 import * as _gl from "gl";
 import { F32Mat4 } from "../buffers/f32array";
 import { Mat4 } from "../math/mat4";
-import { allocTableName, createTable } from "../tables";
+import { allocTableName, createTable, TableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
-import { Transform } from "./transform";
-import { isTransformTask } from "./transform_task";
+import { createTransform, Transform } from "./transform";
+import { createTransformTask, isTransformTask } from "./transform_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_NODE");
+const SCRIPT_TASK_TABLE_NAME = allocTableName("LUA_TYPE_SCRIPT_TASK");
 
 interface CommandInterface {
   name: string;
   node: Node;
 }
 
+interface StartCommand extends CommandInterface {
+  name: "start";
+}
+
 interface UpdateCommand extends CommandInterface {
   name: "update";
+}
+
+interface PreRenderCommand extends CommandInterface {
+  name: "prerender";
   world: Mat4;
 }
 
@@ -27,7 +36,11 @@ export interface CommandState {
   worlds: Record<NodeId, F32Mat4 | undefined>;
 }
 
-export type Command = UpdateCommand | RenderCommand;
+export type Command =
+  | StartCommand
+  | UpdateCommand
+  | PreRenderCommand
+  | RenderCommand;
 
 export type NodeTaskId = string & { __node_task: never };
 
@@ -41,6 +54,27 @@ export interface NodeTaskPrototype<T extends NodeTask = NodeTask> {
 
 export type NodeTask = NodeTaskField & NodeTaskPrototype;
 
+export function createTask<T extends TableName, U extends NodeTask = NodeTask>(
+  this: void,
+  tableName: T,
+  prototype: NodeTaskPrototype<U>
+) {
+  const fields: NodeTaskField = {
+    id: uuid.v4() as NodeTaskId,
+  };
+  return createTable(tableName, fields, prototype);
+}
+
+export function createScriptTask<T extends NodeTask = NodeTask>(
+  this: void,
+  task: Omit<T, "id"> & { id?: T["id"] }
+) {
+  const fields = {
+    id: uuid.v4() as NodeTaskId,
+  };
+  return createTable(SCRIPT_TASK_TABLE_NAME, { ...fields, ...task });
+}
+
 export type NodeId = string & { __node: never };
 
 interface NodeFields {
@@ -51,7 +85,9 @@ interface NodeFields {
 
 interface NodePrototype {
   runTask(this: Node, command: Command, state: CommandState): CommandState;
-  update(this: Node, state: CommandState, world: Mat4): CommandState;
+  start(this: Node, state: CommandState): CommandState;
+  update(this: Node, state: CommandState): CommandState;
+  render(this: Node, state: CommandState, world: Mat4): CommandState;
   addChild(this: Node, node: Node): void;
   addTask(this: Node, task: NodeTask): void;
   findTasks(
@@ -72,14 +108,31 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  update: function (state, world) {
+  start: function (state) {
     const node = this;
-    state = this.runTask({ name: "update", node, world }, state);
+    state = this.runTask({ name: "start", node }, state);
+    for (const node of this.children) {
+      state = node.start(state);
+    }
+    return state;
+  },
+  update: function (state) {
+    const node = this;
+    state = this.runTask({ name: "update", node }, state);
+    for (const node of this.children) {
+      state = node.update(state);
+    }
+    return state;
+  },
+  render: function (state, world) {
+    const node = this;
+    state = this.runTask({ name: "prerender", node, world }, state);
     const updatedWorld = state.worlds[node.id];
     assertIsNotNull(updatedWorld);
     for (const node of this.children) {
-      state = node.update(state, updatedWorld);
+      state = node.render(state, updatedWorld);
     }
+    state = this.runTask({ name: "render", node }, state);
     return state;
   },
   addChild: function (node) {
@@ -120,11 +173,16 @@ const prototype: NodePrototype = {
   },
 };
 
-export function createNode(this: void) {
+export function createNode(
+  this: void,
+  { tasks, children }: Partial<Omit<NodeFields, "id">> = {}
+) {
   const fields: NodeFields = {
     id: uuid.v4() as NodeId,
-    children: [],
-    tasks: [],
+    children: children ?? [],
+    tasks: tasks ?? [],
   };
-  return createTable(TABLE_NAME, fields, prototype);
+  const node = createTable(TABLE_NAME, fields, prototype);
+  node.addTask(createTransformTask(createTransform()));
+  return node;
 }
