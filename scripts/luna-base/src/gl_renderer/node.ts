@@ -1,41 +1,61 @@
 import * as _gl from "gl";
+import { F32Mat4 } from "../buffers/f32array";
 import { Mat4 } from "../math/mat4";
+import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
-import { SubMesh } from "./sub_mesh";
-import { createSubMeshTask } from "./sub_mesh_task";
-import { createTransform, Transform } from "./transform";
+import { Transform } from "./transform";
+import { isTransformTask, TransformTask } from "./transform_task";
 
 interface CommandInterface {
   name: string;
+  node: Node;
 }
 
 interface UpdateCommand extends CommandInterface {
   name: "update";
+  world: Mat4;
 }
 
 interface RenderCommand extends CommandInterface {
   name: "render";
 }
 
-export type Command = UpdateCommand | RenderCommand;
-
-export interface NodeTask {
-  run: (this: void, command: Command) => void;
+export interface CommandState {
+  worlds: Record<NodeId, F32Mat4 | undefined>;
 }
 
+export type Command = UpdateCommand | RenderCommand;
+
+export type NodeTaskId = string & { __node_task: never };
+
+export interface NodeTaskField {
+  id: NodeTaskId;
+}
+
+export interface NodeTaskPrototype<T extends NodeTask = NodeTask> {
+  run(this: T, command: Command, state: CommandState): CommandState;
+}
+
+export type NodeTask = NodeTaskField & NodeTaskPrototype;
+
+export type NodeId = string & { __node: never };
+
 interface NodeFields {
-  id: string;
+  id: NodeId;
   children: Node[];
-  transform: Transform;
   tasks: NodeTask[];
 }
 
 interface NodePrototype {
-  runTask(this: Node, command: Command): void;
-  update(this: Node, world: Mat4): void;
+  runTask(this: Node, command: Command, state: CommandState): CommandState;
+  update(this: Node, state: CommandState, world: Mat4): CommandState;
   addChild(this: Node, node: Node): void;
   addTask(this: Node, task: NodeTask): void;
-  addSubMesh(this: Node, subMesh: SubMesh): void;
+  findTasks(
+    this: Node,
+    fn: (this: void, task: NodeTask) => boolean
+  ): NodeTask[];
+  findTransform(this: Node): Transform | null;
   forEach(this: Node, fn: (this: void, node: Node) => void): void;
   flat(this: Node): Node[];
 }
@@ -43,17 +63,21 @@ interface NodePrototype {
 export type Node = NodePrototype & NodeFields;
 
 const prototype: NodePrototype = {
-  runTask: function (command) {
+  runTask: function (command, state) {
     for (const task of this.tasks) {
-      task.run(command);
+      state = task.run(command, state);
     }
+    return state;
   },
-  update: function (world) {
-    this.transform.update(world);
+  update: function (state, world) {
+    const node = this;
+    state = this.runTask({ name: "update", node, world }, state);
+    const updatedWorld = state.worlds[node.id];
+    assertIsNotNull(updatedWorld);
     for (const node of this.children) {
-      node.update(this.transform.world);
-      node.runTask({ name: "update" });
+      state = node.update(state, updatedWorld);
     }
+    return state;
   },
   addChild: function (node) {
     this.children.push(node);
@@ -61,8 +85,22 @@ const prototype: NodePrototype = {
   addTask: function (task) {
     this.tasks.push(task);
   },
-  addSubMesh: function (subMesh) {
-    this.addTask(createSubMeshTask(subMesh));
+  findTasks: function (f) {
+    const results: NodeTask[] = [];
+    for (const task of this.tasks) {
+      if (f(task)) {
+        results.push(task);
+      }
+    }
+    return results;
+  },
+  findTransform: function () {
+    for (const task of this.tasks) {
+      if (isTransformTask(task)) {
+        return task.transform;
+      }
+    }
+    return null;
   },
   forEach: function (fn) {
     fn(this);
@@ -87,10 +125,9 @@ const metatable = {
 
 export function createNode(this: void) {
   const fields: NodeFields = {
-    id: uuid.v4(),
+    id: uuid.v4() as NodeId,
     children: [],
     tasks: [],
-    transform: createTransform(),
   };
   const o = setmetatable(fields, metatable) as Node;
   return o;

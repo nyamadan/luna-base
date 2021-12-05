@@ -5,7 +5,7 @@ import { createGLProgram, GLProgram } from "../gl/gl_program";
 import { createGLTexture, GLTexture } from "../gl/gl_texture";
 import { createGLVertexArray, GLVertexArray } from "../gl/gl_vertex_array";
 import { assertIsNotNull } from "../type_utils";
-import { Node } from "./node";
+import { CommandState, Node } from "./node";
 import { isSubMeshTask } from "./sub_mesh_task";
 
 interface GLRendererFields {
@@ -15,7 +15,7 @@ interface GLRendererFields {
 }
 
 interface GLRendererPrototype {
-  render: (this: GLRenderer, node: Node) => void;
+  render: (this: GLRenderer, state: CommandState, node: Node) => void;
   registerProgram: (this: GLRenderer, name: string, program: GLProgram) => void;
   registerProgramFromSource: (
     this: GLRenderer,
@@ -28,7 +28,7 @@ interface GLRendererPrototype {
 export type GLRenderer = GLRendererPrototype & GLRendererFields;
 
 const prototype: GLRendererPrototype = {
-  render: function (node) {
+  render: function (state, node) {
     _gl.clear(_gl.COLOR_BUFFER_BIT | _gl.DEPTH_BUFFER_BIT);
 
     const nodes = node.flat();
@@ -84,12 +84,9 @@ const prototype: GLRendererPrototype = {
 
         const uWorld = program.uniforms.find((x) => x.name === "uWorld");
         if (uWorld != null) {
-          _gl.uniformMatrix4fv(
-            uWorld.location,
-            1,
-            false,
-            node.transform.world.buffer
-          );
+          const world = state.worlds[node.id];
+          assertIsNotNull(world);
+          _gl.uniformMatrix4fv(uWorld.location, 1, false, world.buffer);
         }
 
         const uTex = program.uniforms.find((x) => x.name === "uTex");

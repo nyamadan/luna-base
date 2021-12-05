@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "@types/emscripten": "^1.39.6",
+    "@xmldom/xmldom": "^0.7.5",
     "axios": "^0.24.0",
     "html-webpack-plugin": "^5.5.0",
     "rimraf": "^3.0.2",
@@ -9,7 +10,6 @@
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0",
-    "@xmldom/xmldom": "^0.7.5",
     "xpath": "^0.0.32"
   },
   "name": "main",

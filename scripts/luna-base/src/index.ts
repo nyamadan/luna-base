@@ -27,4 +27,6 @@ import "./gl_renderer/geometry";
 import "./gl_renderer/material";
 import "./gl_renderer/sub_mesh";
 import "./gl_renderer/sub_mesh_task";
+import "./gl_renderer/transform";
+import "./gl_renderer/transform_task";
 import "./gl_renderer/texture";

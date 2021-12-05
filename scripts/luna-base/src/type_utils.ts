@@ -30,6 +30,6 @@ export function assertIsNull(
   assert(x == null, message);
 }
 
-export function getMetatableName(x: unknown) {
+export function getMetatableName(this: void, x: unknown) {
   return (getmetatable(x) as { __name: string } | null)?.__name;
 }

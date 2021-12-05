@@ -1,31 +1,24 @@
 import * as _gl from "gl";
 import { getMetatableName } from "../type_utils";
-import { unreachable } from "../unreachable";
 import { uuid } from "../uuid";
-import { NodeTask } from "./node";
+import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
 import { SubMesh } from "./sub_mesh";
 
-interface SubMeshTaskFields {
-  id: string;
+interface SubMeshTaskField extends NodeTaskField {
+  id: NodeTaskId;
   subMesh: SubMesh;
 }
 
-interface SubMeshTaskPrototype extends NodeTask {}
+interface SubMeshTaskPrototype extends NodeTaskPrototype<SubMeshTask> {}
 
-export type SubMeshTask = SubMeshTaskPrototype & SubMeshTaskFields;
+export type SubMeshTask = SubMeshTaskPrototype & SubMeshTaskField;
 
 const prototype: SubMeshTaskPrototype = {
-  run: function (command) {
+  run: function (command, state) {
     const { name } = command;
     switch (name) {
-      case "update": {
-        return;
-      }
-      case "render": {
-        return;
-      }
       default: {
-        return unreachable();
+        return state;
       }
     }
   },
@@ -38,7 +31,7 @@ const metatable = {
 };
 
 export function createSubMeshTask(this: void, subMesh: SubMesh) {
-  const fields: SubMeshTaskFields = { id: uuid.v4(), subMesh };
+  const fields: SubMeshTaskField = { id: uuid.v4() as NodeTaskId, subMesh };
   const o = setmetatable(fields, metatable) as SubMeshTask;
 
   return o;

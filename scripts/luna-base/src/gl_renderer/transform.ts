@@ -1,15 +1,10 @@
 import * as _gl from "gl";
-import {
-  createF32Mat4,
-  F32Mat4,
-} from "../buffers/f32array";
 import { mat4, Mat4 } from "../math/mat4";
 import { quat, Quat } from "../math/quat";
 import { vec3, Vec3 } from "../math/vec3";
 
 interface TransformFields {
   local: Mat4;
-  world: F32Mat4;
   position: Vec3;
   scale: Vec3;
   origin: Vec3;
@@ -17,13 +12,13 @@ interface TransformFields {
 }
 
 interface TransformPrototype {
-  update: (this: TransformFields, world: Mat4) => void;
+  update: (this: TransformFields) => void;
 }
 
 export type Transform = TransformPrototype & TransformFields;
 
 const prototype: TransformPrototype = {
-  update: function (world) {
+  update: function () {
     mat4.fromRotationTranslationScaleOrigin(
       this.local,
       this.rotation,
@@ -31,7 +26,6 @@ const prototype: TransformPrototype = {
       this.scale,
       this.origin
     );
-    mat4.mul(this.world, world, this.local);
   },
 };
 
@@ -43,7 +37,6 @@ const metatable = {
 
 export function createTransform(this: void) {
   const fields: TransformFields = {
-    world: createF32Mat4(),
     local: mat4.create(),
     origin: vec3.create(),
     position: vec3.create(),

@@ -9,16 +9,25 @@ import { assertIsNotNull, assertIsNull } from "luna-base/dist/type_utils";
 import { createMaterial } from "luna-base/dist/gl_renderer/material";
 import { createGeometry } from "luna-base/dist/gl_renderer/geometry";
 import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
-import { createNode, Node } from "luna-base/dist/gl_renderer/node";
+import {
+  CommandState,
+  createNode,
+  Node,
+} from "luna-base/dist/gl_renderer/node";
 import { createTexture } from "luna-base/dist/gl_renderer/texture";
 import { mat4 } from "luna-base/dist/math/mat4";
 import { quat } from "luna-base/dist/math/quat";
 import { vec3 } from "luna-base/dist/math/vec3";
 import App from "./app";
+import { createSubMeshTask } from "luna-base/dist/gl_renderer/sub_mesh_task";
+import { createTransformTask } from "luna-base/dist/gl_renderer/transform_task";
+import { createTransform } from "luna-base/dist/gl_renderer/transform";
 
 let frame = 0.0;
 let renderer: GLRenderer | null = null;
 let root: Node | null = null;
+
+let state: CommandState = { worlds: {} };
 
 const rotateImageApp: App = {
   start() {
@@ -58,19 +67,22 @@ const rotateImageApp: App = {
 
     const subMesh = createSubMesh(geom, material);
     root = createNode();
-    root.addSubMesh(subMesh);
+    root.addTask(createTransformTask(createTransform()));
+    root.addTask(createSubMeshTask(subMesh));
   },
   update() {
     assertIsNotNull(renderer);
     assertIsNotNull(root);
 
     const rotation = frame * 0.02;
-    quat.rotateZ(root.transform.rotation, quat.create(), rotation);
+    const rootTransform = root.findTransform();
+    assertIsNotNull(rootTransform);
+    quat.rotateZ(rootTransform.rotation, quat.create(), rotation);
     const scale = 0.25 * math.sin(rotation) + 0.75;
-    vec3.set(root.transform.scale, scale, scale, scale);
+    vec3.set(rootTransform.scale, scale, scale, scale);
 
-    root.update(mat4.create());
-    renderer.render(root);
+    state = root.update(state, mat4.create());
+    renderer.render(state, root);
     frame += 1;
 
     collectgarbage("collect");
