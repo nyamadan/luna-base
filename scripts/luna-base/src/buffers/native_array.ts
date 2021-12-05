@@ -1,5 +1,8 @@
 import { NativeBuffer, new_buffer } from "native_buffer";
+import { allocTableName } from "../tables";
 import { getMetatableName, isNumber } from "../type_utils";
+
+const TABLE_NAME = allocTableName("LUA_USERDATA_TYPE_BUFFER");
 
 interface NativeArrayProperties {
   buffer: ReturnType<typeof new_buffer>;
@@ -115,5 +118,5 @@ export function isNativeArray(this: void, x: unknown): x is NativeArray {
 }
 
 export function isNativeBuffer(this: void, x: unknown): x is NativeBuffer {
-  return getMetatableName(x) === "LUA_USERDATA_TYPE_BUFFER";
+  return getMetatableName(x) === TABLE_NAME;
 }

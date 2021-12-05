@@ -5,6 +5,9 @@ import { NativeArray } from "../buffers/native_array";
 import { assertIsNotNull, getMetatableName } from "../type_utils";
 import { U16Array } from "../buffers/u16array";
 import { U8Array } from "../buffers/u8array";
+import { allocTableName } from "../tables";
+
+const TABLE_NAME = allocTableName("LUA_USERDATA_GL_BUFFER");
 
 interface GLBufferFields<T extends NativeArray> {
   array: T | null;
@@ -99,7 +102,7 @@ function createGLArrayBuffer<T extends NativeArray>(
 }
 
 export function isGlBuffer(this: void, x: unknown): x is GLBuffer {
-  return getMetatableName(x) === "LUA_USERDATA_GL_BUFFER";
+  return getMetatableName(x) === TABLE_NAME;
 }
 
 export function createGLF32ArrayBuffer(

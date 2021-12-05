@@ -1,10 +1,13 @@
 import * as _gl from "gl";
 import { F32Mat4 } from "../buffers/f32array";
 import { Mat4 } from "../math/mat4";
+import { allocTableName, createTable } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
 import { Transform } from "./transform";
-import { isTransformTask, TransformTask } from "./transform_task";
+import { isTransformTask } from "./transform_task";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_NODE");
 
 interface CommandInterface {
   name: string;
@@ -117,18 +120,11 @@ const prototype: NodePrototype = {
   },
 };
 
-const metatable = {
-  __index: prototype,
-  __name: "LUA_TYPE_NODE",
-  __gc: function (this: Node) {},
-};
-
 export function createNode(this: void) {
   const fields: NodeFields = {
     id: uuid.v4() as NodeId,
     children: [],
     tasks: [],
   };
-  const o = setmetatable(fields, metatable) as Node;
-  return o;
+  return createTable(TABLE_NAME, fields, prototype);
 }

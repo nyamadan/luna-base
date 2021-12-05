@@ -1,3 +1,5 @@
+import { TableName } from "./tables";
+
 export function isNumber(this: void, x: unknown): x is number {
   return type(x) === "number";
 }
@@ -34,6 +36,6 @@ export function assertIsNull(
   assert(x == null, message);
 }
 
-export function getMetatableName(this: void, x: unknown) {
-  return (getmetatable(x) as { __name: string } | null)?.__name;
+export function getMetatableName(this: void, x: unknown): TableName {
+  return (getmetatable(x) as { __name: string } | null)?.__name as TableName;
 }

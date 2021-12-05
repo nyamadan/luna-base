@@ -1,6 +1,9 @@
 import * as _gl from "gl";
+import { allocTableName, createTable } from "../tables";
 import { uuid } from "../uuid";
 import { Texture } from "./texture";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_MATERIAL");
 
 interface MaterialFields {
   id: string;
@@ -14,13 +17,7 @@ interface MaterialPrototype {}
 
 export type Material = MaterialPrototype & MaterialFields;
 
-const materialPrototype: MaterialPrototype = {};
-
-const imageMetatable = {
-  __index: materialPrototype,
-  __name: "LUA_TYPE_MATERIAL",
-  __gc: function (this: Material) {},
-};
+const prototype: MaterialPrototype = {};
 
 export function createMaterial(
   this: void,
@@ -32,6 +29,5 @@ export function createMaterial(
     program: { name: programName },
     texture: texture ?? null,
   };
-  const o = setmetatable(fields, imageMetatable) as Material;
-  return o;
+  return createTable(TABLE_NAME, fields, prototype);
 }
