@@ -68,8 +68,9 @@ const prototype: ApplicationTaskPrototype = {
           },
           update: () => {
             glfw.pollEvents();
-            state = node.update(state, mat4.create());
-            state = node.render(state);
+            state = node.update(state);
+            state = node.render(state, mat4.create());
+            collectgarbage("collect");
           },
         });
 

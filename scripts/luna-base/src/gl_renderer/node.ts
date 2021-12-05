@@ -21,11 +21,11 @@ interface StartCommand extends CommandInterface {
 
 interface UpdateCommand extends CommandInterface {
   name: "update";
-  world: Mat4;
 }
 
 interface PreRenderCommand extends CommandInterface {
   name: "prerender";
+  world: Mat4;
 }
 
 interface RenderCommand extends CommandInterface {
@@ -86,8 +86,8 @@ interface NodeFields {
 interface NodePrototype {
   runTask(this: Node, command: Command, state: CommandState): CommandState;
   start(this: Node, state: CommandState): CommandState;
-  update(this: Node, state: CommandState, world: Mat4): CommandState;
-  render(this: Node, state: CommandState): CommandState;
+  update(this: Node, state: CommandState): CommandState;
+  render(this: Node, state: CommandState, world: Mat4): CommandState;
   addChild(this: Node, node: Node): void;
   addTask(this: Node, task: NodeTask): void;
   findTasks(
@@ -116,21 +116,21 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  update: function (state, world) {
+  update: function (state) {
     const node = this;
-    state = this.runTask({ name: "update", node, world }, state);
-    const updatedWorld = state.worlds[node.id];
-    assertIsNotNull(updatedWorld);
+    state = this.runTask({ name: "update", node }, state);
     for (const node of this.children) {
-      state = node.update(state, updatedWorld);
+      state = node.update(state);
     }
     return state;
   },
-  render: function (state) {
+  render: function (state, world) {
     const node = this;
-    state = this.runTask({ name: "prerender", node }, state);
+    state = this.runTask({ name: "prerender", node, world }, state);
+    const updatedWorld = state.worlds[node.id];
+    assertIsNotNull(updatedWorld);
     for (const node of this.children) {
-      state = node.render(state);
+      state = node.render(state, updatedWorld);
     }
     state = this.runTask({ name: "render", node }, state);
     return state;

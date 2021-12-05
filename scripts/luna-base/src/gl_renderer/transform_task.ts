@@ -21,7 +21,7 @@ const prototype: TransformTaskPrototype = {
   run: function (command, state) {
     const { name } = command;
     switch (name) {
-      case "update": {
+      case "prerender": {
         this.transform.update();
         const worlds = { ...state.worlds };
         const world = (worlds[command.node.id] ??= createF32Mat4());
