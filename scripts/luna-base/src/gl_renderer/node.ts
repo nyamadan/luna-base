@@ -36,7 +36,11 @@ export interface CommandState {
   worlds: Record<NodeId, F32Mat4 | undefined>;
 }
 
-export type Command = StartCommand | UpdateCommand | PreRenderCommand | RenderCommand;
+export type Command =
+  | StartCommand
+  | UpdateCommand
+  | PreRenderCommand
+  | RenderCommand;
 
 export type NodeTaskId = string & { __node_task: never };
 
@@ -63,15 +67,12 @@ export function createTask<T extends TableName, U extends NodeTask = NodeTask>(
 
 export function createScriptTask<T extends NodeTask = NodeTask>(
   this: void,
-  run: (this: T, command: Command, state: CommandState) => CommandState
+  task: Omit<T, "id"> & { id?: T["id"] }
 ) {
-  const fields: NodeTaskField = {
+  const fields = {
     id: uuid.v4() as NodeTaskId,
   };
-  const prototype: NodeTaskPrototype<T> = {
-    run,
-  };
-  return createTable(SCRIPT_TASK_TABLE_NAME, fields, prototype);
+  return createTable(SCRIPT_TASK_TABLE_NAME, { ...fields, ...task });
 }
 
 export type NodeId = string & { __node: never };

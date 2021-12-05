@@ -23,7 +23,7 @@ export function createTable<T1, T2>(
   this: void,
   tableName: TableName,
   fields: T1,
-  prototype: T2,
+  prototype?: T2,
   __gc?: (this: T1 & T2) => void
 ) {
   const metatable = {
