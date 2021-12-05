@@ -1,6 +1,6 @@
 import { NativeBuffer, new_buffer } from "native_buffer";
-import { allocTableName } from "../tables";
-import { getMetatableName, isNumber } from "../type_utils";
+import { allocTableName, getMetatableName } from "../tables";
+import { isNumber } from "../type_utils";
 
 const TABLE_NAME = allocTableName("LUA_USERDATA_TYPE_BUFFER");
 

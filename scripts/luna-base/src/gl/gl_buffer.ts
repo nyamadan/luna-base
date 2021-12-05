@@ -2,10 +2,10 @@ import * as _gl from "gl";
 import { new_buffer } from "native_buffer";
 import { F32Array } from "../buffers/f32array";
 import { NativeArray } from "../buffers/native_array";
-import { assertIsNotNull, getMetatableName } from "../type_utils";
+import { assertIsNotNull } from "../type_utils";
 import { U16Array } from "../buffers/u16array";
 import { U8Array } from "../buffers/u8array";
-import { allocTableName } from "../tables";
+import { allocTableName, getMetatableName } from "../tables";
 
 const TABLE_NAME = allocTableName("LUA_USERDATA_GL_BUFFER");
 

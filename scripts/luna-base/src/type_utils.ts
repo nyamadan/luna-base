@@ -35,7 +35,3 @@ export function assertIsNull(
 ): asserts x is null | undefined {
   assert(x == null, message);
 }
-
-export function getMetatableName(this: void, x: unknown): TableName {
-  return (getmetatable(x) as { __name: string } | null)?.__name as TableName;
-}

@@ -30,3 +30,7 @@ export function createTable<T1, T2>(
   };
   return setmetatable(fields as any, metatable as any) as T1 & T2;
 }
+
+export function getMetatableName(this: void, x: unknown): TableName {
+  return (getmetatable(x) as { __name: string } | null)?.__name as TableName;
+}

@@ -1,8 +1,7 @@
 import * as _gl from "gl";
 import { createF32Mat4 } from "../buffers/f32array";
 import { mat4 } from "../math/mat4";
-import { allocTableName, createTable, TableName } from "../tables";
-import { getMetatableName } from "../type_utils";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
 import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
 import { Transform } from "./transform";

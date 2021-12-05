@@ -1,6 +1,5 @@
 import * as _gl from "gl";
-import { allocTableName, createTable } from "../tables";
-import { getMetatableName } from "../type_utils";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
 import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
 import { SubMesh } from "./sub_mesh";
