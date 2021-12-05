@@ -1,10 +1,13 @@
 import * as _gl from "gl";
 import { createF32Mat4 } from "../buffers/f32array";
 import { mat4 } from "../math/mat4";
+import { allocTableName, createTable, TableName } from "../tables";
 import { getMetatableName } from "../type_utils";
 import { uuid } from "../uuid";
 import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
 import { Transform } from "./transform";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_TRANSFORM_TASK");
 
 interface TransformTaskField extends NodeTaskField {
   id: NodeTaskId;
@@ -33,19 +36,13 @@ const prototype: TransformTaskPrototype = {
   },
 };
 
-const metatable = {
-  __index: prototype,
-  __name: "LUA_TYPE_TRANSFORM_TASK",
-  __gc: function (this: TransformTask) {},
-};
 
 export function createTransformTask(this: void, transform: Transform) {
   const fields: TransformTaskField = {
     id: uuid.v4() as NodeTaskId,
     transform,
   };
-  const o = setmetatable(fields, metatable) as TransformTask;
-  return o;
+  return createTable(TABLE_NAME, fields, prototype);
 }
 
 export function isTransformTask(this: void, x: unknown): x is TransformTask {

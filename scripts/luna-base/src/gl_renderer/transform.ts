@@ -2,6 +2,9 @@ import * as _gl from "gl";
 import { mat4, Mat4 } from "../math/mat4";
 import { quat, Quat } from "../math/quat";
 import { vec3, Vec3 } from "../math/vec3";
+import { allocTableName, createTable } from "../tables";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_TRANSFORM");
 
 interface TransformFields {
   local: Mat4;
@@ -29,12 +32,6 @@ const prototype: TransformPrototype = {
   },
 };
 
-const metatable = {
-  __index: prototype,
-  __name: "LUA_TYPE_TRANSFORM",
-  __gc: function (this: Transform) {},
-};
-
 export function createTransform(this: void) {
   const fields: TransformFields = {
     local: mat4.create(),
@@ -43,6 +40,5 @@ export function createTransform(this: void) {
     scale: vec3.set(vec3.create(), 1, 1, 1),
     rotation: quat.create(),
   };
-  const o = setmetatable(fields, metatable) as Transform;
-  return o;
+  return createTable(TABLE_NAME, fields, prototype);
 }

@@ -1,5 +1,5 @@
 /// <reference path="../types/index.d.ts" />
-
+import "./tables";
 import "./buffers/pointer_array";
 import "./buffers/native_array";
 import "./buffers/u8array";
