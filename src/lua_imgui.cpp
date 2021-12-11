@@ -122,6 +122,29 @@ int L_text(lua_State *L) {
   return 0;
 }
 
+int L_sameLine(lua_State *L) {
+  ImGui::SameLine();
+  return 0;
+}
+
+int L_radioButton(lua_State *L) {
+  const char *text = luaL_checkstring(L, 1);
+  Buffer *v =
+      (Buffer *)luaL_testudata(L, 2, LUA_USERDATA_TYPE_BUFFER_METATABLE_NAME);
+  luaL_argcheck(L, v->type != BufferType::UNSAFE_POINTER_TYPE, 2,
+                "LUA_USERDATA_TYPE_BUFFER: UNSAFE_BUFFER_TYPE");
+  luaL_argcheck(L, v->len >= sizeof(int), 2,
+                "v: LUA_USERDATA_TYPE_BUFFER: must be greater equal than "
+                "sizeof(bool)?");
+  luaL_argcheck(L, v->p != NULL, 2,
+                "v: LUA_USERDATA_TYPE_BUFFER: already free?");
+  int vButton = static_cast<int>(luaL_checkinteger(L, 3));
+  bool result =
+      ImGui::RadioButton(text, reinterpret_cast<int *>(v->p), vButton);
+  lua_pushboolean(L, result);
+  return 1;
+}
+
 int L_button(lua_State *L) {
   const char *label = luaL_checkstring(L, 1);
 
@@ -190,6 +213,12 @@ int L_require(lua_State *L) {
 
   lua_pushcfunction(L, L_button);
   lua_setfield(L, -2, "button");
+
+  lua_pushcfunction(L, L_sameLine);
+  lua_setfield(L, -2, "sameLine");
+
+  lua_pushcfunction(L, L_radioButton);
+  lua_setfield(L, -2, "radioButton");
 
   return 1;
 }

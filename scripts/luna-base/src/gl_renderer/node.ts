@@ -79,6 +79,7 @@ export type NodeId = string & { __node: never };
 
 export interface NodeFields {
   id: NodeId;
+  enabled: boolean;
   children: Node[];
   tasks: NodeTask[];
 }
@@ -109,6 +110,10 @@ const prototype: NodePrototype = {
     return state;
   },
   start: function (state) {
+    if (!this.enabled) {
+      return state;
+    }
+
     const node = this;
     state = this.runTask({ name: "start", node }, state);
     for (const node of this.children) {
@@ -117,22 +122,28 @@ const prototype: NodePrototype = {
     return state;
   },
   update: function (state) {
-    const node = this;
-    state = this.runTask({ name: "update", node }, state);
+    if (!this.enabled) {
+      return state;
+    }
+
+    state = this.runTask({ name: "update", node: this }, state);
     for (const node of this.children) {
       state = node.update(state);
     }
     return state;
   },
   render: function (state, world) {
-    const node = this;
-    state = this.runTask({ name: "prerender", node, world }, state);
-    const updatedWorld = state.worlds[node.id];
+    if (!this.enabled) {
+      return state;
+    }
+
+    state = this.runTask({ name: "prerender", node: this, world }, state);
+    const updatedWorld = state.worlds[this.id];
     assertIsNotNull(updatedWorld);
     for (const node of this.children) {
       state = node.render(state, updatedWorld);
     }
-    state = this.runTask({ name: "render", node }, state);
+    state = this.runTask({ name: "render", node: this }, state);
     return state;
   },
   addChild: function (node) {
@@ -159,6 +170,10 @@ const prototype: NodePrototype = {
     return null;
   },
   forEach: function (fn) {
+    if(!this.enabled) {
+      return;
+    }
+
     fn(this);
     for (const node of this.children) {
       node.forEach(fn);
@@ -179,6 +194,7 @@ export function createNode(
 ): Node {
   const fields: NodeFields = {
     id: uuid.v4() as NodeId,
+    enabled: true,
     children: children ?? [],
     tasks: tasks ?? [],
   };

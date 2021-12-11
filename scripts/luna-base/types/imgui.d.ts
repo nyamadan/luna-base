@@ -21,4 +21,10 @@ declare module "imgui" {
   export function end(): void;
   export function text(text: string): void;
   export function button(text: string, size?: [number, number]): boolean;
+  export function sameLine(): void;
+  export function radioButton(
+    text: string,
+    v: { __native_buffer: never },
+    v_button: number
+  ): boolean;
 }
