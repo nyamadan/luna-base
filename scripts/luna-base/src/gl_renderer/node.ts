@@ -77,13 +77,13 @@ export function createScriptTask<T extends NodeTask = NodeTask>(
 
 export type NodeId = string & { __node: never };
 
-interface NodeFields {
+export interface NodeFields {
   id: NodeId;
   children: Node[];
   tasks: NodeTask[];
 }
 
-interface NodePrototype {
+export interface NodePrototype {
   runTask(this: Node, command: Command, state: CommandState): CommandState;
   start(this: Node, state: CommandState): CommandState;
   update(this: Node, state: CommandState): CommandState;
@@ -176,7 +176,7 @@ const prototype: NodePrototype = {
 export function createNode(
   this: void,
   { tasks, children }: Partial<Omit<NodeFields, "id">> = {}
-) {
+): Node {
   const fields: NodeFields = {
     id: uuid.v4() as NodeId,
     children: children ?? [],
