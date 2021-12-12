@@ -9,6 +9,7 @@ import { uuid } from "../uuid";
 import { createGLRendererTask } from "./gl_renderer_task";
 import {
   CommandState,
+  initCommandState,
   NodeTaskField,
   NodeTaskId,
   NodeTaskPrototype,
@@ -34,7 +35,7 @@ const prototype: ApplicationTaskPrototype = {
         const width = 1024;
         const height = 768;
 
-        let state: CommandState = { worlds: {} };
+        let state = initCommandState(null);
 
         glfw.init();
 

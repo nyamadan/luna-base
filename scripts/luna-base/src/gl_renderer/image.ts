@@ -2,10 +2,14 @@ import * as _gl from "gl";
 import { NativeBuffer } from "native_buffer";
 import { createPngImage, isPngImage, PngImage } from "../images/png_image";
 import { allocTableName, createTable, getMetatableName } from "../tables";
+import { uuid } from "../uuid";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE");
 
+export type ImageId = string & { __image: never };
+
 interface ImageFieldBase {
+  id: ImageId;
   status: "ready" | "progress" | "complete" | "error";
 }
 
@@ -87,6 +91,7 @@ const prototype: ImagePrototype = {
 
 export function createImage(this: void, path?: string): Image {
   const fields: ImageField = {
+    id: uuid.v4() as ImageId,
     type: "unknown",
     status: "ready",
   };

@@ -1,7 +1,12 @@
 import * as lu from "./lib/luaunit/luaunit";
 
 import { vec3 } from "../src/math/vec3";
-import { Command, createNode, NodeTaskId } from "../src/gl_renderer/node";
+import {
+  Command,
+  createNode,
+  initCommandState,
+  NodeTaskId,
+} from "../src/gl_renderer/node";
 import { test } from "./utils";
 import { uuid } from "../src/uuid";
 import { mat4 } from "../src/math/mat4";
@@ -44,7 +49,7 @@ test("Test_Node", {
     root.addChild(parent);
     parent.addChild(child);
 
-    const state = root.transform({ worlds: {} }, mat4.create());
+    const state = root.transform(initCommandState(null), mat4.create());
 
     lu.assertEquals(
       // prettier-ignore

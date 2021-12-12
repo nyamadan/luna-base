@@ -4,6 +4,7 @@ import { Mat4 } from "../math/mat4";
 import { allocTableName, createTable, TableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
+import { Image, ImageId } from "./image";
 import { createTransform, Transform } from "./transform";
 import { createTransformTask, isTransformTask } from "./transform_task";
 
@@ -40,8 +41,14 @@ interface RenderCommand extends CommandInterface {
   name: "render";
 }
 
-export interface CommandState {
+export interface CommandState<T extends any = null> {
   worlds: Record<NodeId, F32Mat4 | undefined>;
+  images: Record<ImageId, Image | undefined>;
+  userdata: T;
+}
+
+export function initCommandState<U>(userdata: U): CommandState<U> {
+  return { images: {}, worlds: {}, userdata };
 }
 
 export type Command =
@@ -58,16 +65,16 @@ export interface NodeTaskField {
   readonly id: NodeTaskId;
 }
 
-export interface NodeTaskPrototype<T extends NodeTask = NodeTask> {
-  run(this: T, command: Command, state: CommandState): CommandState;
+export interface NodeTaskPrototype<T extends NodeTask = NodeTask, U = any> {
+  run(this: T, command: Command, state: CommandState<U>): CommandState<U>;
 }
 
 export type NodeTask = NodeTaskField & NodeTaskPrototype;
 
-export function createTask<T extends TableName, U extends NodeTask = NodeTask>(
+export function createTask<T extends TableName, N extends NodeTask = NodeTask>(
   this: void,
   tableName: T,
-  prototype: NodeTaskPrototype<U>
+  prototype: N
 ) {
   const fields: NodeTaskField = {
     id: uuid.v4() as NodeTaskId,

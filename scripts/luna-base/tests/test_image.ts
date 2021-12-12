@@ -6,7 +6,7 @@ import * as _gl from "gl";
 import { createPngImage, isPngImage } from "../src/images/png_image";
 import { createImage } from "../src/gl_renderer/image";
 import { createImageTask } from "../src/gl_renderer/image_task";
-import { createNode } from "../src/gl_renderer/node";
+import { createNode, initCommandState } from "../src/gl_renderer/node";
 
 test("Test_Image", {
   setUp: function (this: void) {},
@@ -26,7 +26,7 @@ test("Test_Image", {
     const node = createNode();
     const image = createImageTask("./assets/waterfall-512x512.png");
     node.addTask(image);
-    node.load({ worlds: {} });
+    node.load(initCommandState(null));
 
     const img = image.image;
     lu.assertEquals(img.getWidth(), 512);

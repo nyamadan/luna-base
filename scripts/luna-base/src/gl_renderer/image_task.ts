@@ -24,7 +24,9 @@ const prototype: ImageTaskPrototype = {
         if (this.image.status === "ready") {
           this.image.load(this.path);
         }
-        return state;
+        const images = { ...state.images };
+        images[this.image.id] = this.image;
+        return { ...state, images };
       }
       default: {
         return state;

@@ -1,8 +1,10 @@
 import "luna-base";
 import {
   Command,
+  CommandState,
   createNode,
   createScriptTask,
+  NodeTask,
 } from "luna-base/dist/gl_renderer/node";
 import { assertIsNotNull } from "luna-base/dist/type_utils";
 import { createMaterial } from "luna-base/dist/gl_renderer/material";
@@ -70,8 +72,18 @@ export default function createRotateImageNode(this: void) {
     }
   });
 
-  const scriptTask = createScriptTask({
-    run: function (command, state) {
+  type Runner<U = any> = (
+    this: ScriptTask,
+    command: Command,
+    state: CommandState<U>
+  ) => CommandState<U>;
+
+  interface ScriptTask extends NodeTask {
+    run: Runner<string>;
+  }
+
+  const runner: Omit<ScriptTask, "id"> = {
+    run(command, state) {
       const { name, node } = command;
       switch (name) {
         case "update": {
@@ -86,7 +98,9 @@ export default function createRotateImageNode(this: void) {
         }
       }
     },
-  });
+  };
+
+  const scriptTask = createScriptTask(runner);
 
   root.addChild(
     createNode({

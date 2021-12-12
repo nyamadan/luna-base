@@ -1,7 +1,11 @@
 import "luna-base";
 import * as imgui from "imgui";
 import { createApplicationTask } from "luna-base/dist/gl_renderer/application_task";
-import { createNode, createScriptTask } from "luna-base/dist/gl_renderer/node";
+import {
+  createNode,
+  createScriptTask,
+  initCommandState,
+} from "luna-base/dist/gl_renderer/node";
 
 import createRotateImageNode from "./rotate_image_node";
 import createImguiNode from "./imgui_node";
@@ -10,7 +14,7 @@ import { createI32Array } from "luna-base/dist/buffers/i32array";
 const root = createNode({
   tasks: [createApplicationTask()],
 });
-root.start({ worlds: {} });
+root.start(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
 root.addChild(rotateImage);
