@@ -41,7 +41,7 @@ interface RenderCommand extends CommandInterface {
   name: "render";
 }
 
-export interface CommandState<T extends any = null> {
+export interface CommandState<T extends any = any> {
   worlds: Record<NodeId, F32Mat4 | undefined>;
   images: Record<NodeId, Image | undefined>;
   userdata: T;
@@ -101,14 +101,14 @@ export interface NodeFields {
   tasks: NodeTask[];
 }
 
-export interface NodePrototype {
-  runTask(this: Node, command: Command, state: CommandState): CommandState;
-  start(this: Node, state: CommandState): CommandState;
-  load(this: Node, state: CommandState): CommandState;
-  update(this: Node, state: CommandState): CommandState;
-  transform(this: Node, state: CommandState, world: Mat4): CommandState;
-  render(this: Node, state: CommandState): CommandState;
-  addChild(this: Node, node: Node): void;
+export interface NodePrototype<U = any> {
+  runTask(this: Node, command: Command, state: CommandState<U>): CommandState<U>;
+  start(this: Node, state: CommandState<U>): CommandState<U>;
+  load(this: Node, state: CommandState<U>): CommandState<U>;
+  update(this: Node, state: CommandState<U>): CommandState<U>;
+  transform(this: Node, state: CommandState<U>, world: Mat4): CommandState<U>;
+  render(this: Node, state: CommandState<U>): CommandState<U>;
+  addChild(this: Node, node: Node): Node;
   addTask(this: Node, task: NodeTask): void;
   findTasks(
     this: Node,
@@ -188,6 +188,7 @@ const prototype: NodePrototype = {
   },
   addChild: function (node) {
     this.children.push(node);
+    return node;
   },
   addTask: function (task) {
     this.tasks.push(task);
@@ -234,10 +235,23 @@ export function createNode(
   const fields: NodeFields = {
     id: uuid.v4() as NodeId,
     enabled: true,
-    children: children ?? [],
-    tasks: tasks ?? [],
+    children: [],
+    tasks: [],
   };
   const node = createTable(TABLE_NAME, fields, prototype);
   node.addTask(createTransformTask(createTransform()));
+
+  if (tasks != null) {
+    for (const task of tasks) {
+      node.addTask(task);
+    }
+  }
+
+  if (children != null) {
+    for (const child of children) {
+      node.addChild(child);
+    }
+  }
+
   return node;
 }

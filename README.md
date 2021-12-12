@@ -9,15 +9,15 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * WASMとWindowsネイティブで動作
 
 ## TODO
+ * [x] 画像の読み込みを抽象化
+ * [x] transformの更新コマンドを作る
  * [ ] ジオメトリのプリセットを作る
  * [ ] GLBを読めるようにする
  * [ ] シェーダのタスクを作る
- * [ ] 画像の読み込みを抽象化
  * [ ] generate_gl_bindingsを整理する
  * [ ] testのワークスペースを分離
  * [ ] mainのワークスペースをExampleに
  * [ ] 起動時引数で任意のExampleを起動できるようにする
- * [x] transformの更新コマンドを作る
  * [ ] add/removeのイベントを足す
 
 ## 使用画像

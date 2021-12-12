@@ -4,6 +4,7 @@ import {
   CommandState,
   createNode,
   createScriptTask,
+  Node,
   NodeTask,
 } from "luna-base/dist/gl_renderer/node";
 import { assertIsNotNull } from "luna-base/dist/type_utils";
@@ -11,18 +12,34 @@ import { createMaterial } from "luna-base/dist/gl_renderer/material";
 import { createGeometry } from "luna-base/dist/gl_renderer/geometry";
 import { createTexture } from "luna-base/dist/gl_renderer/texture";
 import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
-import { createImage } from "luna-base/dist/gl_renderer/image";
 import { createSubMeshTask } from "luna-base/dist/gl_renderer/sub_mesh_task";
 import { quat } from "luna-base/dist/math/quat";
 import { vec3 } from "luna-base/dist/math/vec3";
+import { createImageTask } from "luna-base/dist/gl_renderer/image_task";
+
+function loadImageNode(root: Node, path: string) {
+  return root.addChild(
+    createNode({
+      tasks: [createImageTask(path)],
+    })
+  );
+}
 
 export default function createRotateImageNode(this: void) {
   const root = createNode();
 
-  const update = coroutine.create(function (this: void, node: Command["node"]) {
-    const image = createImage(
-      "./scripts/luna-base/tests/assets/waterfall-512x512.png"
-    );
+  const imageNode = loadImageNode(
+    root,
+    "./scripts/luna-base/tests/assets/waterfall-512x512.png"
+  );
+
+  const update = coroutine.create(function (
+    this: void,
+    node: Command["node"],
+    state: CommandState
+  ) {
+    const image = state.images[imageNode.id];
+    assertIsNotNull(image);
     const material = createMaterial("BASIC", createTexture(image));
     const geom = createGeometry({
       // prettier-ignore
@@ -72,23 +89,27 @@ export default function createRotateImageNode(this: void) {
     }
   });
 
-  type Runner<U = any> = (
+  type Runner<U> = (
     this: ScriptTask,
     command: Command,
     state: CommandState<U>
   ) => CommandState<U>;
 
+  interface UserState {}
+
   interface ScriptTask extends NodeTask {
-    run: Runner<string>;
+    run: Runner<UserState>;
   }
 
-  const runner: Omit<ScriptTask, "id"> = {
+  type ScriptTaskNoId = Omit<ScriptTask, "id">;
+
+  const runner: ScriptTaskNoId = {
     run(command, state) {
       const { name, node } = command;
       switch (name) {
         case "update": {
           if (coroutine.status(update) === "suspended") {
-            coroutine.resume(update, node);
+            coroutine.resume(update, node, state);
           }
 
           return state;
@@ -100,11 +121,9 @@ export default function createRotateImageNode(this: void) {
     },
   };
 
-  const scriptTask = createScriptTask(runner);
-
   root.addChild(
     createNode({
-      tasks: [scriptTask],
+      tasks: [createScriptTask(runner)],
     })
   );
 
