@@ -19,13 +19,21 @@ interface StartCommand extends CommandInterface {
   name: "start";
 }
 
+interface LoadCommand extends CommandInterface {
+  name: "load";
+}
+
 interface UpdateCommand extends CommandInterface {
   name: "update";
 }
 
+interface TransformCommand extends CommandInterface {
+  name: "transform";
+  world: Mat4;
+}
+
 interface PreRenderCommand extends CommandInterface {
   name: "prerender";
-  world: Mat4;
 }
 
 interface RenderCommand extends CommandInterface {
@@ -39,13 +47,15 @@ export interface CommandState {
 export type Command =
   | StartCommand
   | UpdateCommand
+  | LoadCommand
+  | TransformCommand
   | PreRenderCommand
   | RenderCommand;
 
 export type NodeTaskId = string & { __node_task: never };
 
 export interface NodeTaskField {
-  id: NodeTaskId;
+  readonly id: NodeTaskId;
 }
 
 export interface NodeTaskPrototype<T extends NodeTask = NodeTask> {
@@ -87,8 +97,10 @@ export interface NodeFields {
 export interface NodePrototype {
   runTask(this: Node, command: Command, state: CommandState): CommandState;
   start(this: Node, state: CommandState): CommandState;
+  load(this: Node, state: CommandState): CommandState;
   update(this: Node, state: CommandState): CommandState;
-  render(this: Node, state: CommandState, world: Mat4): CommandState;
+  transform(this: Node, state: CommandState, world: Mat4): CommandState;
+  render(this: Node, state: CommandState): CommandState;
   addChild(this: Node, node: Node): void;
   addTask(this: Node, task: NodeTask): void;
   findTasks(
@@ -121,6 +133,17 @@ const prototype: NodePrototype = {
     }
     return state;
   },
+  load: function (state) {
+    if (!this.enabled) {
+      return state;
+    }
+
+    state = this.runTask({ name: "load", node: this }, state);
+    for (const node of this.children) {
+      state = node.load(state);
+    }
+    return state;
+  },
   update: function (state) {
     if (!this.enabled) {
       return state;
@@ -132,16 +155,26 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  render: function (state, world) {
+  transform(state, world) {
+    if (!this.enabled) {
+      return state;
+    }
+    state = this.runTask({ name: "transform", node: this, world }, state);
+    const updatedWorld = state.worlds[this.id];
+    assertIsNotNull(updatedWorld);
+    for (const node of this.children) {
+      state = node.transform(state, updatedWorld);
+    }
+    return state;
+  },
+  render: function (state) {
     if (!this.enabled) {
       return state;
     }
 
-    state = this.runTask({ name: "prerender", node: this, world }, state);
-    const updatedWorld = state.worlds[this.id];
-    assertIsNotNull(updatedWorld);
+    state = this.runTask({ name: "prerender", node: this }, state);
     for (const node of this.children) {
-      state = node.render(state, updatedWorld);
+      state = node.render(state);
     }
     state = this.runTask({ name: "render", node: this }, state);
     return state;

@@ -20,6 +20,10 @@ export function assertIsFalsy(this: void, x: unknown, message?: string) {
   assert(!x, message);
 }
 
+export function assertIsTruthy(this: void, x: unknown, message?: string) {
+  assert(!!x, message);
+}
+
 export function assertIsNotNull<T>(
   this: void,
   x: T,

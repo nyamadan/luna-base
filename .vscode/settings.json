@@ -4,6 +4,9 @@
     "cwd": "${workspaceFolder}",
     "args": ["./scripts/main/dist/index.lua"]
   },
+  "[typescript]": {
+    "editor.tabSize": 2
+  },
   "files.associations": {
     "algorithm": "cpp",
     "charconv": "cpp",

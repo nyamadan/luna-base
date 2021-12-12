@@ -33,3 +33,5 @@ import "./gl_renderer/sub_mesh_task";
 import "./gl_renderer/transform";
 import "./gl_renderer/transform_task";
 import "./gl_renderer/texture";
+import "./gl_renderer/image";
+import "./gl_renderer/image_task";

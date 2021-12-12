@@ -26,7 +26,7 @@ const prototype: SubMeshTaskPrototype = {
   },
 };
 
-export function createSubMeshTask(this: void, subMesh: SubMesh) {
+export function createSubMeshTask(this: void, subMesh: SubMesh): SubMeshTask {
   const fields: SubMeshTaskField = { id: uuid.v4() as NodeTaskId, subMesh };
   return createTable(TABLE_NAME, fields, prototype);
 }

@@ -1,7 +1,10 @@
 import * as _gl from "gl";
 import { new_buffer } from "native_buffer";
-import { PngImage } from "../images/png_image";
+import { Image } from "../gl_renderer/image";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_GL_TEXTURE");
 
 interface GLTextureFields {
   target:
@@ -30,7 +33,7 @@ interface GLTexturePrototype {
 
 export type GLTexture = GLTexturePrototype & GLTextureFields;
 
-const GLTexturePrototype: GLTexturePrototype = {
+const prototype: GLTexturePrototype = {
   bind: function () {
     assertIsNotNull(this.tex);
     _gl.bindTexture(this.target, this.tex);
@@ -47,36 +50,35 @@ const GLTexturePrototype: GLTexturePrototype = {
   },
 };
 
-const GLTextureMetatable = {
-  __index: GLTexturePrototype,
-  __name: "LUA_TYPE_GL_TEXTURE",
-  __gc: function (this: GLTexture) {
-    this.free();
-  },
-};
-
 export function createGLTexture(
   this: void,
-  data: PngImage,
+  image: Image,
   options?: Partial<Omit<GLTextureFields, "tex">>
 ): GLTexture | null {
-  const o = setmetatable(
-    {
-      tex: null,
-      target: _gl.TEXTURE_2D,
-      min: _gl.LINEAR,
-      mag: _gl.LINEAR,
-      internalFormat: _gl.RGB,
-      format: _gl.RGB,
-      type: _gl.UNSIGNED_BYTE,
-      wrapS: _gl.CLAMP_TO_EDGE,
-      wrapT: _gl.CLAMP_TO_EDGE,
-      level: 0,
-      width: 0,
-      height: 0,
-    } as GLTextureFields,
-    GLTextureMetatable
-  ) as GLTexture;
+  const fields: GLTextureFields = {
+    tex: null,
+    target: _gl.TEXTURE_2D,
+    min: _gl.LINEAR,
+    mag: _gl.LINEAR,
+    internalFormat: _gl.RGB,
+    format: _gl.RGB,
+    type: _gl.UNSIGNED_BYTE,
+    wrapS: _gl.CLAMP_TO_EDGE,
+    wrapT: _gl.CLAMP_TO_EDGE,
+    level: 0,
+    width: 0,
+    height: 0,
+  };
+
+  const o = createTable(TABLE_NAME, fields, prototype, function () {
+    this.free();
+  });
+
+  if (image.type !== "png") {
+    error("Support only for PNG");
+  }
+
+  const data = image.png;
 
   // 8bit, 3channel, rgb
   if (data.bit_depth !== 8 || data.channels !== 3 || data.color_type !== 2) {
@@ -125,4 +127,8 @@ export function createGLTexture(
   _gl.bindTexture(o.target, 0);
   o.tex = tex;
   return o;
+}
+
+export function isGLTexture(this: void, x: unknown): x is GLTexture {
+  return getMetatableName(x) === TABLE_NAME;
 }

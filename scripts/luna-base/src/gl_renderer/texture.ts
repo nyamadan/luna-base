@@ -1,26 +1,26 @@
 import * as _gl from "gl";
-import { PngImage } from "../images/png_image";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
+import { Image } from "./image";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_TEXTURE");
 
 interface TextureFields {
   id: string;
-  image: PngImage;
+  image: Image;
 }
 
 interface TexturePrototype {}
 
 export type Texture = TexturePrototype & TextureFields;
 
-const materialPrototype: TexturePrototype = {};
+const prototype: TexturePrototype = {};
 
-const imageMetatable = {
-  __index: materialPrototype,
-  __name: "LUA_TYPE_TEXTURE",
-  __gc: function (this: Texture) {},
-};
-
-export function createTexture(this: void, image: PngImage): Texture {
+export function createTexture(this: void, image: Image): Texture {
   const fields: TextureFields = { id: uuid.v4(), image };
-  const o = setmetatable(fields, imageMetatable) as Texture;
-  return o;
+  return createTable(TABLE_NAME, fields, prototype);
+}
+
+export function isTexture(this: void, x: unknown): x is Texture {
+  return getMetatableName(x) === TABLE_NAME;
 }

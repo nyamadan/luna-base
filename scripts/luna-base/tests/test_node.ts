@@ -24,7 +24,7 @@ test("Test_Node", {
       id: uuid.v4() as NodeTaskId,
       run: function (x, state) {
         switch (x.name) {
-          case "prerender": {
+          case "transform": {
             lu.assertIsNil(command);
             command = x;
             return state;
@@ -44,7 +44,7 @@ test("Test_Node", {
     root.addChild(parent);
     parent.addChild(child);
 
-    const state = root.render({ worlds: {} }, mat4.create());
+    const state = root.transform({ worlds: {} }, mat4.create());
 
     lu.assertEquals(
       // prettier-ignore
@@ -68,7 +68,7 @@ test("Test_Node", {
     const x = vec3.set(vec3.create(), 1, 2, 3);
     vec3.transformMat4(x, x, world);
     lu.assertEquals(x, [7, 11, 15]);
-    lu.assertEquals(command?.name, "prerender");
+    lu.assertEquals(command?.name, "transform");
     lu.assertEquals(root.flat(), [root, parent, child]);
   },
 });
