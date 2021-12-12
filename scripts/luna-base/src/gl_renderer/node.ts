@@ -96,7 +96,7 @@ export interface NodePrototype {
     fn: (this: void, task: NodeTask) => boolean
   ): NodeTask[];
   findTransform(this: Node): Transform | null;
-  forEach(this: Node, fn: (this: void, node: Node) => void): void;
+  traverse(this: Node, fn: (this: void, node: Node) => void | boolean): void;
   flat(this: Node): Node[];
 }
 
@@ -169,19 +169,18 @@ const prototype: NodePrototype = {
     }
     return null;
   },
-  forEach: function (fn) {
-    if(!this.enabled) {
+  traverse: function (fn) {
+    if (fn(this) === false) {
       return;
     }
 
-    fn(this);
     for (const node of this.children) {
-      node.forEach(fn);
+      node.traverse(fn);
     }
   },
   flat: function () {
     const tasks: Node[] = [];
-    this.forEach(function (node) {
+    this.traverse(function (node) {
       tasks.push(node);
     });
     return tasks;

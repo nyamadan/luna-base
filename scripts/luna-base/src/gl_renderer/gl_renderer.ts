@@ -31,7 +31,16 @@ const prototype: GLRendererPrototype = {
   render: function (state, node) {
     _gl.clear(_gl.COLOR_BUFFER_BIT | _gl.DEPTH_BUFFER_BIT);
 
-    const nodes = node.flat();
+    const nodes: Node[] = [];
+    node.traverse(function (node) {
+      if (!node.enabled) {
+        return false;
+      }
+
+      nodes.push(node);
+
+      return true;
+    });
 
     for (const node of nodes) {
       node.tasks.forEach((task) => {
