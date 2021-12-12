@@ -43,7 +43,7 @@ interface RenderCommand extends CommandInterface {
 
 export interface CommandState<T extends any = null> {
   worlds: Record<NodeId, F32Mat4 | undefined>;
-  images: Record<ImageId, Image | undefined>;
+  images: Record<NodeId, Image | undefined>;
   userdata: T;
 }
 

@@ -2,9 +2,14 @@ import * as _gl from "gl";
 import { Geometry } from "./geometry";
 import { Material } from "./material";
 import { uuid } from "../uuid";
+import { allocTableName, createTable, getMetatableName } from "../tables";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH");
+
+export type SubMeshId = string & { __subMesh: never };
 
 interface SubMeshFields {
-  id: string;
+  id: SubMeshId;
   material: Material;
   geometry: Geometry;
 }
@@ -15,15 +20,19 @@ export type SubMesh = SubMeshPrototype & SubMeshFields;
 
 const prototype: SubMeshPrototype = {};
 
-const metatable = {
-  __index: prototype,
-  __name: "LUA_TYPE_SUB_MESH",
-  __gc: function (this: SubMesh) {},
-};
+export function createSubMesh(
+  this: void,
+  geometry: Geometry,
+  material: Material
+): SubMesh {
+  const fields: SubMeshFields = {
+    id: uuid.v4() as SubMeshId,
+    geometry,
+    material,
+  };
+  return createTable(TABLE_NAME, fields, prototype);
+}
 
-export function createSubMesh(this: void, geometry: Geometry, material: Material) {
-  const fields: SubMeshFields = { id: uuid.v4(), geometry, material };
-  const o = setmetatable(fields, metatable) as SubMesh;
-
-  return o;
+export function isSubMesh(this: void, x: unknown): x is SubMesh {
+  return getMetatableName(x) === TABLE_NAME;
 }
