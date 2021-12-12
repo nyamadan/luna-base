@@ -1,8 +1,16 @@
 import * as _gl from "gl";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
-import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
-import { createImage } from "./image";
+import {
+  CommandState,
+  createNode,
+  Node,
+  NodeId,
+  NodeTaskField,
+  NodeTaskId,
+  NodeTaskPrototype,
+} from "./node";
+import { createImage, Image } from "./image";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE_TASK");
 
@@ -34,6 +42,32 @@ const prototype: ImageTaskPrototype = {
     }
   },
 };
+
+export function appendImageNode(this: void, parent: Node, path: string) {
+  return parent.addChild(
+    createNode({
+      tasks: [createImageTask(path)],
+    })
+  );
+}
+
+export function loadImageFromState(
+  this: void,
+  state: CommandState,
+  id: NodeId
+): Image | null {
+  const img = state.images[id];
+
+  if (img == null) {
+    return null;
+  }
+
+  if (img.status !== "complete") {
+    return null;
+  }
+
+  return img;
+}
 
 export function createImageTask(this: void, path: string): ImageTask {
   const fields: ImageTaskField = {

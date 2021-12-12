@@ -15,20 +15,15 @@ import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
 import { createSubMeshTask } from "luna-base/dist/gl_renderer/sub_mesh_task";
 import { quat } from "luna-base/dist/math/quat";
 import { vec3 } from "luna-base/dist/math/vec3";
-import { createImageTask } from "luna-base/dist/gl_renderer/image_task";
-
-function loadImageNode(root: Node, path: string) {
-  return root.addChild(
-    createNode({
-      tasks: [createImageTask(path)],
-    })
-  );
-}
+import {
+  appendImageNode,
+  loadImageFromState,
+} from "luna-base/dist/gl_renderer/image_task";
 
 export default function createRotateImageNode(this: void) {
   const root = createNode();
 
-  const imageNode = loadImageNode(
+  const imageNode = appendImageNode(
     root,
     "./scripts/luna-base/tests/assets/waterfall-512x512.png"
   );
@@ -38,7 +33,7 @@ export default function createRotateImageNode(this: void) {
     node: Command["node"],
     state: CommandState
   ) {
-    const image = state.images[imageNode.id];
+    const image = loadImageFromState(state, imageNode.id);
     assertIsNotNull(image);
     const material = createMaterial("BASIC", createTexture(image));
     const geom = createGeometry({
