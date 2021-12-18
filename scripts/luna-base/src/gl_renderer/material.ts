@@ -6,10 +6,17 @@ import { Texture } from "./texture";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MATERIAL");
 
+type MaterialId = string & { __material: never };
+
+type UniformValue = {
+  type: "Texture";
+  texture: Texture;
+};
+
 interface MaterialFields {
-  id: string;
+  id: MaterialId;
   shaderProgram: ShaderProgram;
-  texture: Texture | null;
+  uniformValues: Record<string, UniformValue>;
 }
 
 interface MaterialPrototype {}
@@ -21,12 +28,12 @@ const prototype: MaterialPrototype = {};
 export function createMaterial(
   this: void,
   shaderProgram: ShaderProgram,
-  texture?: Texture
+  uniformValues: Record<string, UniformValue> = {}
 ): Material {
   const fields: MaterialFields = {
-    id: uuid.v4(),
+    id: uuid.v4() as MaterialId,
     shaderProgram,
-    texture: texture ?? null,
+    uniformValues,
   };
   return createTable(TABLE_NAME, fields, prototype);
 }

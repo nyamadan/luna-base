@@ -7,6 +7,7 @@ import { createGLVertexArray, GLVertexArray } from "../gl/gl_vertex_array";
 import { inspect } from "../lib/inspect/inspect";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
+import { unreachable } from "../unreachable";
 import { CommandState, Node } from "./node";
 import { ShaderProgramId } from "./shader_program";
 import { isSubMeshTask } from "./sub_mesh_task";
@@ -82,18 +83,21 @@ const prototype: GLRendererPrototype = {
         const vao = this.vaos[subMesh.geometry.id];
         assertIsNotNull(vao);
 
-        if (subMesh.material.texture != null) {
-          if (this.textures[subMesh.material.texture.id] == null) {
-            const texture = createGLTexture(subMesh.material.texture.image);
-            assertIsNotNull(texture);
-            this.textures[subMesh.material.texture.id] = texture;
+        for (const value of Object.values(subMesh.material.uniformValues)) {
+          switch (value.type) {
+            case "Texture": {
+              if (this.textures[value.texture.id] == null) {
+                const texture = createGLTexture(value.texture.image);
+                assertIsNotNull(texture);
+                this.textures[value.texture.id] = texture;
+              }
+              break;
+            }
+            default: {
+              return unreachable(value.type);
+            }
           }
         }
-
-        const texture =
-          subMesh.material.texture != null
-            ? this.textures[subMesh.material.texture.id]
-            : null;
 
         program.use();
 
@@ -110,12 +114,26 @@ const prototype: GLRendererPrototype = {
           _gl.uniformMatrix4fv(uWorld.location, 1, false, world.buffer);
         }
 
-        const uTex = program.uniforms.find((x) => x.name === "uTex");
-        if (uTex?.texUnit != null && texture?.tex != null) {
-          const unit = uTex.texUnit;
-          _gl.uniform1i(uTex.location, unit);
-          _gl.activeTexture(_gl.TEXTURE0 + unit);
-          _gl.bindTexture(texture.target, texture.tex);
+        for (const [name, value] of Object.entries(
+          subMesh.material.uniformValues
+        )) {
+          switch (value.type) {
+            case "Texture": {
+              const texture =
+                value.texture != null ? this.textures[value.texture.id] : null;
+              const uTex = program.uniforms.find((x) => x.name === name);
+              if (uTex?.texUnit != null && texture?.tex != null) {
+                const unit = uTex.texUnit;
+                _gl.uniform1i(uTex.location, unit);
+                _gl.activeTexture(_gl.TEXTURE0 + unit);
+                _gl.bindTexture(texture.target, texture.tex);
+              }
+              break;
+            }
+            default: {
+              return unreachable(value.type);
+            }
+          }
         }
 
         _gl.drawElements(

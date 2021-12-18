@@ -19,7 +19,10 @@ import {
   appendImageNode,
   loadImageFromState,
 } from "luna-base/dist/gl_renderer/image_task";
-import { createBasicShader } from "luna-base/dist/gl_renderer/basic_shader_program";
+import {
+  createBasicMaterial,
+  createBasicShader,
+} from "luna-base/dist/gl_renderer/basic_shader_program";
 
 export default function createRotateImageNode(this: void) {
   const root = createNode();
@@ -34,10 +37,9 @@ export default function createRotateImageNode(this: void) {
     node: Command["node"],
     state: CommandState
   ) {
-    const shader = createBasicShader();
     const image = loadImageFromState(state, imageNode.id);
     assertIsNotNull(image);
-    const material = createMaterial(shader, createTexture(image));
+    const material = createBasicMaterial(createTexture(image));
     const geom = createGeometry({
       // prettier-ignore
       positions: [

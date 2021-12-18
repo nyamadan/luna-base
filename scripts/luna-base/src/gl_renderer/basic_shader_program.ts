@@ -1,5 +1,7 @@
+import { createMaterial } from "./material";
 import { createShader } from "./shader";
 import { createShaderProgram } from "./shader_program";
+import { Texture } from "./texture";
 
 export function createBasicShader(this: void) {
   const vertexShader = createShader(
@@ -27,7 +29,7 @@ void main() {
     `#version 300 es
 precision highp float;
 
-uniform sampler2D uTex;
+uniform sampler2D uTexColor;
  
 in vec4 vColor;
 in vec2 vUv;
@@ -35,12 +37,20 @@ in vec2 vUv;
 out vec4 outColor;
  
 void main() {
-  outColor = texture(uTex, vUv) * vColor;
+  outColor = texture(uTexColor, vUv) * vColor;
 }
 `
   );
 
-  const shaderProgram = createShaderProgram(vertexShader, fragmentShader);
+  return createShaderProgram(vertexShader, fragmentShader);
+}
 
-  return shaderProgram;
+export function createBasicMaterial(texture: Texture) {
+  const shader = createBasicShader();
+  return createMaterial(shader, {
+    uTexColor: {
+      type: "Texture",
+      texture: texture,
+    },
+  });
 }
