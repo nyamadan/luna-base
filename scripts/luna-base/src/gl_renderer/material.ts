@@ -1,15 +1,14 @@
 import * as _gl from "gl";
 import { allocTableName, createTable } from "../tables";
 import { uuid } from "../uuid";
+import { ShaderProgram } from "./shader_program";
 import { Texture } from "./texture";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MATERIAL");
 
 interface MaterialFields {
   id: string;
-  program: {
-    name: string;
-  };
+  shaderProgram: ShaderProgram;
   texture: Texture | null;
 }
 
@@ -21,12 +20,12 @@ const prototype: MaterialPrototype = {};
 
 export function createMaterial(
   this: void,
-  programName: string,
+  shaderProgram: ShaderProgram,
   texture?: Texture
 ): Material {
   const fields: MaterialFields = {
     id: uuid.v4(),
-    program: { name: programName },
+    shaderProgram,
     texture: texture ?? null,
   };
   return createTable(TABLE_NAME, fields, prototype);
