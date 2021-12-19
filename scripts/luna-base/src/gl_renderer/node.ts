@@ -220,7 +220,7 @@ const prototype: NodePrototype = {
     return null;
   },
   traverse: function (enter, leave) {
-    if (enter(this)) {
+    if (enter(this) !== false) {
       for (const node of this.children) {
         node.traverse(enter);
       }
