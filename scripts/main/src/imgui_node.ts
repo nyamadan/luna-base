@@ -27,6 +27,14 @@ export default function createImguiNode(this: void) {
         if (imgui.button("PUSH ME")) {
           print(`Radio: ${e.getElement(0)}`);
         }
+
+        if (imgui.treeNode("MyTree")) {
+          if (imgui.treeNode("YourTree")) {
+            imgui.text("Hello");
+            imgui.treePop();
+          }
+          imgui.treePop();
+        }
       }
       imgui.end();
 

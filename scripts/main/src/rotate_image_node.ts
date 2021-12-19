@@ -8,7 +8,6 @@ import {
   NodeTask,
 } from "luna-base/dist/gl_renderer/node";
 import { assertIsNotNull } from "luna-base/dist/type_utils";
-import { createMaterial } from "luna-base/dist/gl_renderer/material";
 import { createGeometry } from "luna-base/dist/gl_renderer/geometry";
 import { createTexture } from "luna-base/dist/gl_renderer/texture";
 import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
@@ -57,11 +56,17 @@ export default function createRotateImageNode(this: void) {
       ],
       // prettier-ignore
       colors: [
-        0.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0,
-        0.0, 0.0, 0.0, 1.0,
-        1.0, 0.0, 0.0, 1.0,
+        1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0,
       ],
+      // colors: [
+      //   0.0, 1.0, 0.0, 1.0,
+      //   1.0, 1.0, 0.0, 1.0,
+      //   0.0, 0.0, 0.0, 1.0,
+      //   1.0, 0.0, 0.0, 1.0,
+      // ],
       indices: [0, 2, 1, 1, 2, 3],
     });
     const subMesh = createSubMesh(geom, material);

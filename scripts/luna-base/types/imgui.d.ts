@@ -21,6 +21,9 @@ declare module "imgui" {
   export function end(): void;
   export function text(text: string): void;
   export function button(text: string, size?: [number, number]): boolean;
+  export function treeNode(label: string): boolean;
+  export function treeNode(str_id: string, label: string): boolean;
+  export function treePop(): void;
   export function sameLine(): void;
   export function radioButton(
     text: string,

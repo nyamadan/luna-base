@@ -163,6 +163,26 @@ int L_button(lua_State *L) {
   return 1;
 }
 
+int L_treeNode(lua_State *L) {
+  if (lua_isstring(L, 2)) {
+    const char *str_id = luaL_checkstring(L, 1);
+    const char *label = luaL_checkstring(L, 2);
+    bool result = ImGui::TreeNode(str_id, label);
+    lua_pushboolean(L, result);
+  } else {
+    const char *label = luaL_checkstring(L, 1);
+    bool result = ImGui::TreeNode(label);
+    lua_pushboolean(L, result);
+  }
+
+  return 1;
+}
+
+int L_treePop(lua_State *L) {
+  ImGui::TreePop();
+  return 0;
+}
+
 int L_require(lua_State *L) {
   lua_newtable(L);
 
@@ -213,6 +233,12 @@ int L_require(lua_State *L) {
 
   lua_pushcfunction(L, L_button);
   lua_setfield(L, -2, "button");
+
+  lua_pushcfunction(L, L_treeNode);
+  lua_setfield(L, -2, "treeNode");
+
+  lua_pushcfunction(L, L_treePop);
+  lua_setfield(L, -2, "treePop");
 
   lua_pushcfunction(L, L_sameLine);
   lua_setfield(L, -2, "sameLine");
