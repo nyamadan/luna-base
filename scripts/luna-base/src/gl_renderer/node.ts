@@ -4,7 +4,7 @@ import { Mat4 } from "../math/mat4";
 import { allocTableName, createTable, TableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
-import { Image, ImageId } from "./image";
+import { Image } from "./image";
 import { createTransform, Transform } from "./transform";
 import { createTransformTask, isTransformTask } from "./transform_task";
 
@@ -94,15 +94,20 @@ export function createScriptTask<T extends NodeTask = NodeTask>(
 
 export type NodeId = string & { __node: never };
 
-export interface NodeFields {
-  id: NodeId;
+export interface NodeField {
+  readonly id: NodeId;
+  readonly name: string;
   enabled: boolean;
   children: Node[];
   tasks: NodeTask[];
 }
 
 export interface NodePrototype<U = any> {
-  runTask(this: Node, command: Command, state: CommandState<U>): CommandState<U>;
+  runTask(
+    this: Node,
+    command: Command,
+    state: CommandState<U>
+  ): CommandState<U>;
   start(this: Node, state: CommandState<U>): CommandState<U>;
   load(this: Node, state: CommandState<U>): CommandState<U>;
   update(this: Node, state: CommandState<U>): CommandState<U>;
@@ -115,11 +120,15 @@ export interface NodePrototype<U = any> {
     fn: (this: void, task: NodeTask) => boolean
   ): NodeTask[];
   findTransform(this: Node): Transform | null;
-  traverse(this: Node, fn: (this: void, node: Node) => void | boolean): void;
+  traverse(
+    this: Node,
+    enter: (this: void, node: Node) => void | boolean,
+    leave?: (this: void, node: Node) => void
+  ): void;
   flat(this: Node): Node[];
 }
 
-export type Node = NodePrototype & NodeFields;
+export type Node = NodePrototype & NodeField;
 
 const prototype: NodePrototype = {
   runTask: function (command, state) {
@@ -210,14 +219,13 @@ const prototype: NodePrototype = {
     }
     return null;
   },
-  traverse: function (fn) {
-    if (fn(this) === false) {
-      return;
+  traverse: function (enter, leave) {
+    if (enter(this)) {
+      for (const node of this.children) {
+        node.traverse(enter);
+      }
     }
-
-    for (const node of this.children) {
-      node.traverse(fn);
-    }
+    leave?.(this);
   },
   flat: function () {
     const tasks: Node[] = [];
@@ -230,11 +238,12 @@ const prototype: NodePrototype = {
 
 export function createNode(
   this: void,
-  { tasks, children }: Partial<Omit<NodeFields, "id">> = {}
+  { tasks, children, name, enabled }: Partial<Omit<NodeField, "id">> = {}
 ): Node {
-  const fields: NodeFields = {
+  const fields: NodeField = {
     id: uuid.v4() as NodeId,
-    enabled: true,
+    name: name ?? "Node",
+    enabled: enabled ?? true,
     children: [],
     tasks: [],
   };

@@ -4,7 +4,6 @@ import {
   CommandState,
   createNode,
   createScriptTask,
-  Node,
   NodeTask,
 } from "luna-base/dist/gl_renderer/node";
 import { assertIsNotNull } from "luna-base/dist/type_utils";
@@ -18,17 +17,16 @@ import {
   appendImageNode,
   loadImageFromState,
 } from "luna-base/dist/gl_renderer/image_task";
-import {
-  createBasicMaterial,
-  createBasicShader,
-} from "luna-base/dist/gl_renderer/basic_shader_program";
+import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
+import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 
 export default function createRotateImageNode(this: void) {
-  const root = createNode();
+  const root = createNode({ name: "Root" });
 
   const imageNode = appendImageNode(
     root,
-    "./scripts/luna-base/tests/assets/waterfall-512x512.png"
+    "./scripts/luna-base/tests/assets/waterfall-512x512.png",
+    { name: "Image" }
   );
 
   const update = coroutine.create(function (
@@ -76,6 +74,7 @@ export default function createRotateImageNode(this: void) {
 
     node.addChild(
       createNode({
+        name: "SubMesh",
         tasks: [subMeshTask],
       })
     );
@@ -118,6 +117,10 @@ export default function createRotateImageNode(this: void) {
 
           return state;
         }
+        case "render": {
+          imguiRenderNodes(root);
+          return state;
+        }
         default: {
           return state;
         }
@@ -127,6 +130,7 @@ export default function createRotateImageNode(this: void) {
 
   root.addChild(
     createNode({
+      name: "Script",
       tasks: [createScriptTask(runner)],
     })
   );

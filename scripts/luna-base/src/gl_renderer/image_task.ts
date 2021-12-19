@@ -5,6 +5,7 @@ import {
   CommandState,
   createNode,
   Node,
+  NodeField,
   NodeId,
   NodeTaskField,
   NodeTaskId,
@@ -43,10 +44,16 @@ const prototype: ImageTaskPrototype = {
   },
 };
 
-export function appendImageNode(this: void, parent: Node, path: string) {
+export function appendImageNode(
+  this: void,
+  parent: Node,
+  path: string,
+  option: Partial<Omit<NodeField, "id">> = {}
+) {
   return parent.addChild(
     createNode({
-      tasks: [createImageTask(path)],
+      ...option,
+      tasks: [createImageTask(path), ...(option.tasks ?? [])],
     })
   );
 }
