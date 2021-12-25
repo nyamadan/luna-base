@@ -1,23 +1,25 @@
-import * as logging from "./lib/lualogging/logging";
-import type { Logger, Level } from "./lib/lualogging/logging";
 import { inspect } from "./lib/inspect/inspect";
 
-export const logger = (
-  (logging as any)["new"] as (
-    this: void,
-    f: (this: Logger, level: Level, message: string) => boolean
-  ) => Logger
-)(function (level, message) {
-  switch (type(message)) {
-    case "table":
-    case "function": {
-      print(`[${level}] ${inspect(message)}`);
-      break;
-    }
-    default: {
-      print(`[${level}] ${message}`);
-      break;
-    }
-  }
+type Level = "OFF" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
+type LogMsg = (this: Logger, level: Level, message: string) => boolean;
+
+interface Logger {
+  setLevel(level: Level): void;
+  log(level: Level, fmt: string, ...args: any[]): void;
+  debug(fmt: string, ...args: any[]): void;
+  info(fmt: string, ...args: any[]): void;
+  warn(fmt: string, ...args: any[]): void;
+  error(fmt: string, ...args: any[]): void;
+  fatal(fmt: string, ...args: any[]): void;
+}
+
+interface Logging {
+  new: (this: void, logMsg: LogMsg) => Logger;
+}
+
+const logging: Logging = require("./lib/lualogging/logging");
+
+export const logger = logging["new"](function (level, message) {
+  print(`[${level}] ${message}`);
   return true;
 });

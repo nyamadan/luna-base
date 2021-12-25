@@ -1,6 +1,7 @@
 import * as _gl from "gl";
 import { F32Mat4 } from "../buffers/f32array";
 import { inspect } from "../lib/inspect/inspect";
+import { logger } from "../logger";
 import { Mat4 } from "../math/mat4";
 import { allocTableName, createTable, TableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
@@ -103,24 +104,18 @@ export interface NodeField {
   tasks: NodeTask[];
 }
 
-type Errors = any[];
-type RunTaskResult<T> = [CommandState<T>, Errors];
+type RunTaskResult<T> = CommandState<T>;
 export interface NodePrototype<U = any> {
   runTask(
     this: Node,
     command: Command,
     state: CommandState<U>
   ): CommandState<U>;
-  start(this: Node, state: CommandState<U>, errors?: Errors): RunTaskResult<U>;
-  load(this: Node, state: CommandState<U>, errors?: Errors): RunTaskResult<U>;
-  update(this: Node, state: CommandState<U>, errors?: Errors): RunTaskResult<U>;
-  transform(
-    this: Node,
-    state: CommandState<U>,
-    world: Mat4,
-    errors?: Errors
-  ): RunTaskResult<U>;
-  render(this: Node, state: CommandState<U>, errors?: Errors): RunTaskResult<U>;
+  start(this: Node, state: CommandState<U>): RunTaskResult<U>;
+  load(this: Node, state: CommandState<U>): RunTaskResult<U>;
+  update(this: Node, state: CommandState<U>): RunTaskResult<U>;
+  transform(this: Node, state: CommandState<U>, world: Mat4): RunTaskResult<U>;
+  render(this: Node, state: CommandState<U>): RunTaskResult<U>;
   addChild(this: Node, node: Node): Node;
   addTask(this: Node, task: NodeTask): void;
   findTasks(
@@ -145,94 +140,94 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  start: function (state, errors = []) {
+  start: function (state) {
     if (!this.enabled) {
-      return [state, errors];
+      return state;
     }
 
     const node = this;
     try {
       state = this.runTask({ name: "start", node }, state);
     } catch (e) {
-      errors.push(e);
+      logger.error("%s", inspect(e));
     }
 
     for (const node of this.children) {
-      [state, errors] = node.start(state, errors);
+      state = node.start(state);
     }
-    return [state, errors];
+    return state;
   },
-  load: function (state, errors = []) {
+  load: function (state) {
     if (!this.enabled) {
-      return [state, errors];
+      return state;
     }
 
     try {
       state = this.runTask({ name: "load", node: this }, state);
     } catch (e) {
-      errors.push(e);
+      logger.error("%s", inspect(e));
     }
 
     for (const node of this.children) {
-      [state, errors] = node.load(state, errors);
+      state = node.load(state);
     }
 
-    return [state, errors];
+    return state;
   },
-  update: function (state, errors = []) {
+  update: function (state) {
     if (!this.enabled) {
-      return [state, errors];
+      return state;
     }
 
     try {
       state = this.runTask({ name: "update", node: this }, state);
     } catch (e) {
-      errors.push(e);
+      logger.error("%s", inspect(e));
     }
 
     for (const node of this.children) {
-      [state, errors] = node.update(state, errors);
+      state = node.update(state);
     }
 
-    return [state, errors];
+    return state;
   },
-  transform(state, world, errors = []) {
+  transform(state, world) {
     if (!this.enabled) {
-      return [state, errors];
+      return state;
     }
     try {
       state = this.runTask({ name: "transform", node: this, world }, state);
     } catch (e) {
-      errors.push(e);
+      logger.error("%s", inspect(e));
     }
     const updatedWorld = state.worlds[this.id];
     assertIsNotNull(updatedWorld);
     for (const node of this.children) {
-      [state, errors] = node.transform(state, updatedWorld);
+      state = node.transform(state, updatedWorld);
     }
-    return [state, errors];
+    return state;
   },
-  render: function (state, errors = []) {
+  render: function (state) {
     if (!this.enabled) {
-      return [state, errors];
+      return state;
     }
 
     try {
       state = this.runTask({ name: "prerender", node: this }, state);
     } catch (e) {
-      errors.push(e);
+      logger.error("%s", inspect(e));
     }
 
     for (const node of this.children) {
-      [state, errors] = node.render(state);
+      state = node.render(state);
     }
 
     try {
       state = this.runTask({ name: "render", node: this }, state);
     } catch (e) {
-      errors.push(e);
+      logger.error("%s", inspect(e));
     }
-    return [state, errors];
+    return state;
   },
   addChild: function (node) {
     this.children.push(node);

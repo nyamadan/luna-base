@@ -68,29 +68,11 @@ const prototype: ApplicationTaskPrototype = {
             imgui.implOpenGL3_Init();
           },
           update: () => {
-            let errors: any[];
             glfw.pollEvents();
-
-            [state, errors] = node.load(state);
-            if (errors.length > 0) {
-              tprint(errors);
-            }
-
-            [state, errors] = node.update(state);
-            if (errors.length > 0) {
-              tprint(errors);
-            }
-
-            [state, errors] = node.transform(state, mat4.create());
-            if (errors.length > 0) {
-              tprint(errors);
-            }
-
-            [state, errors] = node.render(state);
-            if (errors.length > 0) {
-              tprint(errors);
-            }
-
+            state = node.load(state);
+            state = node.update(state);
+            state = node.transform(state, mat4.create());
+            state = node.render(state);
             collectgarbage("collect");
           },
         });

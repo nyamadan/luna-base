@@ -26,7 +26,7 @@ test("Test_Node", {
         },
       })
     );
-    const [state, errors] = root.update(initCommandState(null));
+    const state = root.update(initCommandState(null));
     lu.success();
   },
   test_transform: function () {
@@ -64,7 +64,7 @@ test("Test_Node", {
     root.addChild(parent);
     parent.addChild(child);
 
-    const [state] = root.transform(initCommandState(null), mat4.create());
+    const state = root.transform(initCommandState(null), mat4.create());
 
     lu.assertEquals(
       // prettier-ignore
