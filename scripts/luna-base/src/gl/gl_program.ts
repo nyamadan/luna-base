@@ -1,6 +1,9 @@
 import * as _gl from "gl";
 import { new_buffer, SIZE_OF_POINTER } from "native_buffer";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_GL_PROGRAM");
 
 function loadShader(
   this: void,
@@ -86,7 +89,7 @@ const programMethods: ProgramMethods = {
   },
 };
 
-function loadAttributes(program: number) {
+function loadAttributes(this: void, program: number) {
   const pCount = new_buffer(4);
   _gl.getProgramiv(program, _gl.ACTIVE_ATTRIBUTES, pCount);
 
@@ -155,32 +158,31 @@ function loadUniforms(program: number) {
   return uniforms;
 }
 
+interface GLProgramError {
+  linkError: string | null;
+  vsError: string | null;
+  fsError: string | null;
+}
+
 export function createGLProgram(
   this: void,
   vsSource: string,
   fsSource: string
-):
-  | [null, GLProgram]
-  | [
-      {
-        linkError: string | null;
-        vsError: string | null;
-        fsError: string | null;
-      },
-      null
-    ] {
-  const init: ProgramFields = {
+): GLProgram | GLProgramError {
+  const fields: ProgramFields = {
     program: null,
     attributes: [],
     uniforms: [],
   };
 
-  const o = setmetatable(init, {
-    __index: programMethods,
-    __gc: function (this: GLProgram) {
+  const o = createTable(
+    TABLE_NAME,
+    fields,
+    programMethods,
+    function (this: GLProgram) {
       this.free();
-    },
-  } as any) as GLProgram;
+    }
+  );
 
   const vs = loadShader(vsSource, _gl.VERTEX_SHADER);
   const fs = loadShader(fsSource, _gl.FRAGMENT_SHADER);
@@ -192,14 +194,11 @@ export function createGLProgram(
     if (fs.shader != null) {
       _gl.deleteShader(fs.shader);
     }
-    return [
-      {
-        vsError: vs.error,
-        fsError: fs.error,
-        linkError: null,
-      },
-      null,
-    ];
+    return {
+      vsError: vs.error,
+      fsError: fs.error,
+      linkError: null,
+    };
   }
 
   const program = _gl.createProgram();
@@ -225,19 +224,20 @@ export function createGLProgram(
     );
     const linkError = infoBuffer.get_string();
     _gl.deleteProgram(program);
-    return [
-      {
-        linkError,
-        vsError: vs.error,
-        fsError: fs.error,
-      },
-      null,
-    ];
+    return {
+      linkError,
+      vsError: vs.error,
+      fsError: fs.error,
+    };
   } else {
     o.attributes = loadAttributes(program);
     o.uniforms = loadUniforms(program);
     o.program = program;
   }
 
-  return [null, o];
+  return o;
+}
+
+export function isGLProgram(this: void, x: unknown): x is GLProgram {
+  return getMetatableName(x) === TABLE_NAME;
 }

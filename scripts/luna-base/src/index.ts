@@ -1,6 +1,7 @@
 /// <reference path="../types/index.d.ts" />
 import "./tables";
 import "./uuid";
+import "./lib/inspect/inspect";
 import "./buffers/pointer_array";
 import "./buffers/native_array";
 import "./buffers/u8array";

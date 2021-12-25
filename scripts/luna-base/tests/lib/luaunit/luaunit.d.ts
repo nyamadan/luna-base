@@ -44,7 +44,7 @@ export function assertIsUserdata(
 export function assertErrorMsgContentEquals(this: void): void;
 export function success(this: void): void;
 export function successIf(this: void, cond: boolean): void;
-export function fail(this: void, message: string): void;
+export function fail(this: void, message: string): never;
 export function failIf(this: void, cond: boolean, message: string): void;
 export function assertIs(this: void, actual: unknown, expected: unknown): void;
 export function assertIsPlusInf(this: void, actual: number): void;

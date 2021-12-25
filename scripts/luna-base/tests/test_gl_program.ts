@@ -3,7 +3,8 @@ import { test } from "./utils";
 
 import "luna-base";
 import * as _gl from "gl";
-import { createGLProgram } from "../src/gl/gl_program";
+import { createGLProgram, isGLProgram } from "../src/gl/gl_program";
+import { inspect } from "../src/lib/inspect/inspect";
 
 test("Test_Program", {
   setUp: function (this: void) {},
@@ -35,8 +36,10 @@ void main() {
     outColor = vColor;
 }
 `;
-    const programResult = createGLProgram(vs, fs);
-    const program = programResult[1]!;
+    const program = createGLProgram(vs, fs);
+    if (!isGLProgram(program)) {
+      lu.fail(inspect(program));
+    }
     lu.assertIsNumber(program.program);
     lu.assertEquals(program.attributes.length, 2);
 

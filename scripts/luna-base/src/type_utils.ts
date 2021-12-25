@@ -1,5 +1,3 @@
-import { TableName } from "./tables";
-
 export function isNumber(this: void, x: unknown): x is number {
   return type(x) === "number";
 }

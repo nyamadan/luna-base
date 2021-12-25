@@ -1,7 +1,7 @@
 import * as _gl from "gl";
 import { NULL } from "native_buffer";
 import { createGLGeometryBuffer } from "../gl/gl_geometry_buffer";
-import { createGLProgram, GLProgram } from "../gl/gl_program";
+import { createGLProgram, GLProgram, isGLProgram } from "../gl/gl_program";
 import { createGLTexture, GLTexture } from "../gl/gl_texture";
 import { createGLVertexArray, GLVertexArray } from "../gl/gl_vertex_array";
 import { inspect } from "../lib/inspect/inspect";
@@ -10,7 +10,7 @@ import { assertIsNotNull } from "../type_utils";
 import { unreachable } from "../unreachable";
 import { CommandState, Node } from "./node";
 import { ShaderProgramId } from "./shader_program";
-import { isSubMeshTask } from "./sub_mesh_task";
+import { isSubMeshTask, SubMeshTask } from "./sub_mesh_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_RENDERER");
 
@@ -25,6 +25,103 @@ interface GLRendererPrototype {
 }
 
 export type GLRenderer = GLRendererPrototype & GLRendererFields;
+
+function renderSubMesh(
+  this: void,
+  renderer: GLRenderer,
+  state: CommandState,
+  node: Node,
+  task: SubMeshTask
+) {
+  const subMesh = task.subMesh;
+
+  if (renderer.programs[subMesh.material.shaderProgram.id] == null) {
+    const program = createGLProgram(
+      subMesh.material.shaderProgram.vertexShader.source,
+      subMesh.material.shaderProgram.fragmentShader.source
+    );
+    if (isGLProgram(program)) {
+      renderer.programs[subMesh.material.shaderProgram.id] = program;
+    } else {
+      error(inspect(program));
+    }
+  }
+
+  const program = renderer.programs[subMesh.material.shaderProgram.id];
+
+  assertIsNotNull(program);
+
+  if (renderer.vaos[subMesh.geometry.id] == null) {
+    renderer.vaos[subMesh.geometry.id] = createGLVertexArray(
+      program,
+      createGLGeometryBuffer(
+        {
+          aPosition: subMesh.geometry.positions ?? [],
+          aUv: subMesh.geometry.uv0s ?? [],
+          aColor: subMesh.geometry.colors ?? [],
+          indices: subMesh.geometry.indices ?? [],
+        },
+        { usage: _gl.STATIC_DRAW }
+      )
+    );
+  }
+
+  const vao = renderer.vaos[subMesh.geometry.id];
+  assertIsNotNull(vao);
+
+  for (const value of Object.values(subMesh.material.uniformValues)) {
+    switch (value.type) {
+      case "Texture": {
+        if (renderer.textures[value.texture.id] == null) {
+          const texture = createGLTexture(value.texture.image);
+          assertIsNotNull(texture);
+          renderer.textures[value.texture.id] = texture;
+        }
+        break;
+      }
+      default: {
+        return unreachable(value.type);
+      }
+    }
+  }
+
+  program.use();
+
+  const numComponents = vao.getNumComponents();
+  const indicesType = vao.getIndicesType();
+  assertIsNotNull(numComponents);
+  assertIsNotNull(indicesType);
+  vao.bind();
+
+  const uWorld = program.uniforms.find((x) => x.name === "uWorld");
+  if (uWorld != null) {
+    const world = state.worlds[node.id];
+    assertIsNotNull(world);
+    _gl.uniformMatrix4fv(uWorld.location, 1, false, world.buffer);
+  }
+
+  for (const [name, value] of Object.entries(subMesh.material.uniformValues)) {
+    switch (value.type) {
+      case "Texture": {
+        const texture =
+          value.texture != null ? renderer.textures[value.texture.id] : null;
+        const uTex = program.uniforms.find((x) => x.name === name);
+        if (uTex?.texUnit != null && texture?.tex != null) {
+          const unit = uTex.texUnit;
+          _gl.uniform1i(uTex.location, unit);
+          _gl.activeTexture(_gl.TEXTURE0 + unit);
+          _gl.bindTexture(texture.target, texture.tex);
+        }
+        break;
+      }
+      default: {
+        return unreachable(value.type);
+      }
+    }
+  }
+
+  _gl.drawElements(vao.getGeometryMode(), numComponents, indicesType, NULL);
+}
 
 const prototype: GLRendererPrototype = {
   render: function (state, node) {
@@ -43,105 +140,10 @@ const prototype: GLRendererPrototype = {
 
     for (const node of nodes) {
       node.tasks.forEach((task) => {
-        if (!isSubMeshTask(task)) {
+        if (isSubMeshTask(task)) {
+          renderSubMesh(this, state, node, task);
           return;
         }
-
-        const subMesh = task.subMesh;
-
-        if (this.programs[subMesh.material.shaderProgram.id] == null) {
-          const programResult = createGLProgram(
-            subMesh.material.shaderProgram.vertexShader.source,
-            subMesh.material.shaderProgram.fragmentShader.source
-          );
-          if (programResult[0] == null) {
-            this.programs[subMesh.material.shaderProgram.id] = programResult[1];
-          } else {
-            error(inspect(programResult[0]));
-          }
-        }
-
-        const program = this.programs[subMesh.material.shaderProgram.id];
-
-        assertIsNotNull(program);
-
-        if (this.vaos[subMesh.geometry.id] == null) {
-          this.vaos[subMesh.geometry.id] = createGLVertexArray(
-            program,
-            createGLGeometryBuffer(
-              {
-                aPosition: subMesh.geometry.positions ?? [],
-                aUv: subMesh.geometry.uv0s ?? [],
-                aColor: subMesh.geometry.colors ?? [],
-                indices: subMesh.geometry.indices ?? [],
-              },
-              { usage: _gl.STATIC_DRAW }
-            )
-          );
-        }
-
-        const vao = this.vaos[subMesh.geometry.id];
-        assertIsNotNull(vao);
-
-        for (const value of Object.values(subMesh.material.uniformValues)) {
-          switch (value.type) {
-            case "Texture": {
-              if (this.textures[value.texture.id] == null) {
-                const texture = createGLTexture(value.texture.image);
-                assertIsNotNull(texture);
-                this.textures[value.texture.id] = texture;
-              }
-              break;
-            }
-            default: {
-              return unreachable(value.type);
-            }
-          }
-        }
-
-        program.use();
-
-        const numComponents = vao.getNumComponents();
-        const indicesType = vao.getIndicesType();
-        assertIsNotNull(numComponents);
-        assertIsNotNull(indicesType);
-        vao.bind();
-
-        const uWorld = program.uniforms.find((x) => x.name === "uWorld");
-        if (uWorld != null) {
-          const world = state.worlds[node.id];
-          assertIsNotNull(world);
-          _gl.uniformMatrix4fv(uWorld.location, 1, false, world.buffer);
-        }
-
-        for (const [name, value] of Object.entries(
-          subMesh.material.uniformValues
-        )) {
-          switch (value.type) {
-            case "Texture": {
-              const texture =
-                value.texture != null ? this.textures[value.texture.id] : null;
-              const uTex = program.uniforms.find((x) => x.name === name);
-              if (uTex?.texUnit != null && texture?.tex != null) {
-                const unit = uTex.texUnit;
-                _gl.uniform1i(uTex.location, unit);
-                _gl.activeTexture(_gl.TEXTURE0 + unit);
-                _gl.bindTexture(texture.target, texture.tex);
-              }
-              break;
-            }
-            default: {
-              return unreachable(value.type);
-            }
-          }
-        }
-
-        _gl.drawElements(
-          vao.getGeometryMode(),
-          numComponents,
-          indicesType,
-          NULL
-        );
       });
     }
   },
