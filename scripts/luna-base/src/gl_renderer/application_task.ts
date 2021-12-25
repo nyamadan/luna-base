@@ -5,10 +5,10 @@ import { isEmscripten } from "utils";
 import { mat4 } from "../math/mat4";
 
 import { allocTableName, createTable, getMetatableName } from "../tables";
+import { tprint } from "../tprint";
 import { uuid } from "../uuid";
 import { createGLRendererTask } from "./gl_renderer_task";
 import {
-  CommandState,
   initCommandState,
   NodeTaskField,
   NodeTaskId,
@@ -68,11 +68,29 @@ const prototype: ApplicationTaskPrototype = {
             imgui.implOpenGL3_Init();
           },
           update: () => {
+            let errors: any[];
             glfw.pollEvents();
-            state = node.load(state);
-            state = node.update(state);
-            state = node.transform(state, mat4.create());
-            state = node.render(state);
+
+            [state, errors] = node.load(state);
+            if (errors.length > 0) {
+              tprint(errors);
+            }
+
+            [state, errors] = node.update(state);
+            if (errors.length > 0) {
+              tprint(errors);
+            }
+
+            [state, errors] = node.transform(state, mat4.create());
+            if (errors.length > 0) {
+              tprint(errors);
+            }
+
+            [state, errors] = node.render(state);
+            if (errors.length > 0) {
+              tprint(errors);
+            }
+
             collectgarbage("collect");
           },
         });

@@ -4,6 +4,7 @@ import { vec3 } from "../src/math/vec3";
 import {
   Command,
   createNode,
+  createScriptTask,
   initCommandState,
   NodeTaskId,
 } from "../src/gl_renderer/node";
@@ -14,6 +15,20 @@ import { mat4 } from "../src/math/mat4";
 test("Test_Node", {
   setUp: function () {},
   tearDown: function () {},
+  test_error: function () {
+    type StateType = typeof state;
+    const root = createNode<null>();
+    root.addTask(
+      createScriptTask({
+        run: function (command: Command, state: StateType) {
+          error("error");
+          return state;
+        },
+      })
+    );
+    const [state, errors] = root.update(initCommandState(null));
+    lu.success();
+  },
   test_transform: function () {
     const root = createNode();
 
@@ -49,7 +64,7 @@ test("Test_Node", {
     root.addChild(parent);
     parent.addChild(child);
 
-    const state = root.transform(initCommandState(null), mat4.create());
+    const [state] = root.transform(initCommandState(null), mat4.create());
 
     lu.assertEquals(
       // prettier-ignore
