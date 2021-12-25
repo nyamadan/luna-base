@@ -3,6 +3,7 @@ import * as imgui from "imgui";
 import { createNode, createScriptTask } from "luna-base/dist/gl_renderer/node";
 import { showDemoWindow } from "imgui";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
+import { logger } from "luna-base/dist/logger";
 
 export default function createImguiNode(this: void) {
   const root = createNode();
@@ -25,7 +26,7 @@ export default function createImguiNode(this: void) {
         imgui.radioButton("Radio2", e.buffer, 2);
 
         if (imgui.button("PUSH ME")) {
-          print(`Radio: ${e.getElement(0)}`);
+          logger.debug(`Radio: ${e.getElement(0)}`);
         }
 
         if (imgui.treeNode("MyTree")) {
