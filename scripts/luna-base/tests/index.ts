@@ -1,6 +1,7 @@
 import { initGlfw } from "./utils";
 import { LuaUnit } from "./lib/luaunit/luaunit";
 
+import "./test_logger";
 import "./test_native_buffer";
 import "./test_u8array";
 import "./test_u16array";
