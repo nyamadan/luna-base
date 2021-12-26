@@ -69,6 +69,7 @@ export function createGLVertexArray(
   _gl.genVertexArrays(1, pVAO);
   const vao = pVAO.get_int32(0);
   _gl.bindVertexArray(vao);
+
   for (const [key, buffer] of Object.entries(geometry.buffers)) {
     assertIsNumber(buffer.buffer);
 
@@ -94,6 +95,8 @@ export function createGLVertexArray(
   }
 
   _gl.bindVertexArray(0);
+  _gl.bindBuffer(_gl.ARRAY_BUFFER, 0);
+  _gl.bindBuffer(_gl.ELEMENT_ARRAY_BUFFER, 0);
 
   o.vao = vao;
   o.geometry = geometry;

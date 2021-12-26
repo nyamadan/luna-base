@@ -1,6 +1,11 @@
 /// <reference path="../types/index.d.ts" />
 
-import "./logger";
+import { setErrorLogger } from "utils";
+import { logger } from "./logger";
+setErrorLogger(function (this: void, msg: string) {
+  logger.error("%s", msg);
+});
+
 import "./lib/inspect/inspect";
 import "./uuid";
 import "./tables";

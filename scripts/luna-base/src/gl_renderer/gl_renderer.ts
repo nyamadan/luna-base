@@ -88,12 +88,6 @@ function renderSubMesh(
 
   program.use();
 
-  const numComponents = vao.getNumComponents();
-  const indicesType = vao.getIndicesType();
-  assertIsNotNull(numComponents);
-  assertIsNotNull(indicesType);
-  vao.bind();
-
   const uWorld = program.getWorld();
   if (uWorld != null) {
     const world = state.worlds[node.id];
@@ -121,7 +115,14 @@ function renderSubMesh(
     }
   }
 
-  _gl.drawElements(vao.getGeometryMode(), numComponents, indicesType, NULL);
+  const numComponents = vao.getNumComponents();
+  const indicesType = vao.getIndicesType();
+  const mode = vao.getGeometryMode();
+  assertIsNotNull(numComponents);
+  assertIsNotNull(indicesType);
+  vao.bind();
+  _gl.drawElements(mode, numComponents, indicesType, NULL);
+  vao.unbind();
 }
 
 const prototype: GLRendererPrototype = {

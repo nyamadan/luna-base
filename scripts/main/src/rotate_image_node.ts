@@ -42,6 +42,19 @@ export default function createRotateImageNode(this: void) {
     let m = mat4.create();
     mat4.rotateX(m, m, -0.5 * Math.PI);
 
+    const node0 = createNode({
+      name: "SubMesh",
+      tasks: [
+        createSubMeshTask(
+          createSubMesh(
+            createGeometry(createPlaneVertices(2, 2, 1, 1, m)),
+            createBasicMaterial(createTexture(image))
+          )
+        ),
+      ],
+    });
+    node.addChild(node0);
+
     const node1 = createNode({
       name: "SubMesh",
       tasks: [
@@ -54,20 +67,6 @@ export default function createRotateImageNode(this: void) {
       ],
     });
     node.addChild(node1);
-
-    const node2 = createNode({
-      name: "SubMesh",
-      tasks: [
-        createSubMeshTask(
-          createSubMesh(
-            createGeometry(createPlaneVertices(2, 2, 1, 1, m)),
-            createBasicMaterial(createTexture(image))
-          )
-        ),
-      ],
-    });
-    // bug?
-    // node.addChild(node2);
 
     let frame = 0;
     let running = true;
