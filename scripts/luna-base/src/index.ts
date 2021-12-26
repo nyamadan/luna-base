@@ -1,4 +1,11 @@
 /// <reference path="../types/index.d.ts" />
+
+import { logger } from "./logger";
+import { setErrorLogger } from "utils";
+setErrorLogger(function (this: void, msg: string) {
+  logger.error("%s", msg);
+});
+
 import "./lib/inspect/inspect";
 import "./lib/lualogging/logging";
 import "./logger";
@@ -42,4 +49,3 @@ import "./gl_renderer/texture";
 import "./gl_renderer/image";
 import "./gl_renderer/image_task";
 import "./gl_renderer/imgui_render_nodes";
-import { tprint } from "./tprint";

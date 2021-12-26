@@ -5,6 +5,7 @@
 #include <string>
 
 namespace {
+lua_Integer g_error_logger = LUA_REFNIL;
 void print_table_impl(lua_State *L, int idx, int level) {
   int type = lua_type(L, idx);
   switch (type) {
@@ -134,6 +135,19 @@ int L_isLinux(lua_State *L) {
   return 1;
 }
 
+int L_setErrorLogger(lua_State *L) {
+  lua_pushvalue(L, 1);
+
+  if (g_error_logger == LUA_REFNIL) {
+    luaL_unref(L, LUA_REGISTRYINDEX, g_error_logger);
+    g_error_logger = LUA_REFNIL;
+  }
+
+  g_error_logger = luaL_ref(L, LUA_REGISTRYINDEX);
+
+  return 0;
+}
+
 int L_require(lua_State *L) {
   lua_newtable(L);
 
@@ -149,8 +163,8 @@ int L_require(lua_State *L) {
   lua_pushcfunction(L, L_isLinux);
   lua_setfield(L, -2, "isLinux");
 
-  lua_pushcfunction(L, print_table);
-  lua_setfield(L, -2, "print_table");
+  lua_pushcfunction(L, L_setErrorLogger);
+  lua_setfield(L, -2, "setErrorLogger");
 
   return 1;
 }
@@ -182,12 +196,24 @@ int lua_docall(lua_State *L, int narg, int nres) {
 
 int lua_report(lua_State *L, int status) {
   if (status != LUA_OK) {
-    const char *msg = lua_tostring(L, -1);
-    lua_getglobal(L, "print");
-    lua_pushstring(L, msg);
-    lua_call(L, 1, 0);
-    // lua_writestringerror("%s\n", msg);
-    lua_pop(L, 1); /* remove message */
+    auto msg = lua_tostring(L, -1);
+
+    auto top = lua_gettop(L);
+
+    if (g_error_logger != LUA_REFNIL) {
+      lua_rawgeti(L, LUA_REGISTRYINDEX, g_error_logger);
+      lua_pushstring(L, msg);
+      int logger_status = lua_docall(L, 1, 0);
+      if (logger_status != LUA_OK) {
+        auto logger_msg = lua_tostring(L, -1);
+        lua_writestringerror("Logger Error: %s\n", logger_msg);
+        lua_writestringerror("Script Error: %s\n", msg);
+      }
+    } else {
+      lua_writestringerror("%s\n", msg);
+    }
+
+    lua_settop(L, top - 1); /* remove message */
   }
   return status;
 }
