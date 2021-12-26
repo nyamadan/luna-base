@@ -47,7 +47,7 @@ export default function createRotateImageNode(this: void) {
       tasks: [
         createSubMeshTask(
           createSubMesh(
-            createGeometry(createPlaneVertices(2, 2, 10, 10, m)),
+            createGeometry(createPlaneVertices(2, 2, 1, 1, m)),
             createBasicMaterial(createTexture(image))
           )
         ),
@@ -55,17 +55,18 @@ export default function createRotateImageNode(this: void) {
     });
     node.addChild(node1);
 
-    // const node2 = createNode({
-    //   name: "SubMesh",
-    //   tasks: [
-    //     createSubMeshTask(
-    //       createSubMesh(
-    //         createGeometry(createPlaneVertices(2, 2, 10, 10, m)),
-    //         createBasicMaterial(createTexture(image))
-    //       )
-    //     ),
-    //   ],
-    // });
+    const node2 = createNode({
+      name: "SubMesh",
+      tasks: [
+        createSubMeshTask(
+          createSubMesh(
+            createGeometry(createPlaneVertices(2, 2, 1, 1, m)),
+            createBasicMaterial(createTexture(image))
+          )
+        ),
+      ],
+    });
+    // bug?
     // node.addChild(node2);
 
     let frame = 0;
