@@ -67,25 +67,30 @@ interface ProgramFields {
   program: number | null;
   attributes: Array<ProgramAttributeOrUniform>;
   uniforms: Array<ProgramUniform>;
+  worldUniformName: string;
 }
 
 interface ProgramMethods {
-  use: (this: GLProgram) => void;
-  free: (this: GLProgram) => void;
+  use(this: GLProgram): void;
+  free(this: GLProgram): void;
+  getWorld(this: GLProgram): ProgramUniform | null;
 }
 
 export type GLProgram = ProgramMethods & ProgramFields;
 
-const programMethods: ProgramMethods = {
-  use: function () {
+const prototype: ProgramMethods = {
+  use() {
     assertIsNotNull(this.program, "program must not be nil");
     _gl.useProgram(this.program);
   },
-  free: function () {
+  free() {
     if (this.program != null) {
       _gl.deleteProgram(this.program);
       this.program = null;
     }
+  },
+  getWorld() {
+    return this.uniforms.find((x) => x.name === this.worldUniformName) ?? null;
   },
 };
 
@@ -167,18 +172,20 @@ interface GLProgramError {
 export function createGLProgram(
   this: void,
   vsSource: string,
-  fsSource: string
+  fsSource: string,
+  option: Partial<Pick<GLProgram, "worldUniformName">> = {}
 ): GLProgram | GLProgramError {
   const fields: ProgramFields = {
     program: null,
     attributes: [],
     uniforms: [],
+    worldUniformName: option.worldUniformName ?? "uWorld",
   };
 
   const o = createTable(
     TABLE_NAME,
     fields,
-    programMethods,
+    prototype,
     function (this: GLProgram) {
       this.free();
     }

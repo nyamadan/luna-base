@@ -69,6 +69,7 @@ function renderSubMesh(
   const vao = renderer.vaos[subMesh.geometry.id];
   assertIsNotNull(vao);
 
+  // Setup Uniform Values
   for (const value of Object.values(subMesh.material.uniformValues)) {
     switch (value.type) {
       case "Texture": {
@@ -80,7 +81,7 @@ function renderSubMesh(
         break;
       }
       default: {
-        return safeUnreachable(value.type);
+        safeUnreachable(value.type);
       }
     }
   }
@@ -93,7 +94,7 @@ function renderSubMesh(
   assertIsNotNull(indicesType);
   vao.bind();
 
-  const uWorld = program.uniforms.find((x) => x.name === "uWorld");
+  const uWorld = program.getWorld();
   if (uWorld != null) {
     const world = state.worlds[node.id];
     assertIsNotNull(world);

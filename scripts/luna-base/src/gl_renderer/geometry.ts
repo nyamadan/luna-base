@@ -1,6 +1,9 @@
 import { F32Array } from "../buffers/f32array";
 import { U16Array } from "../buffers/u16array";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY");
 
 interface GeometryFields {
   id: string;
@@ -14,13 +17,7 @@ interface GeometryPrototype {}
 
 export type Geometry = GeometryPrototype & GeometryFields;
 
-const geometryPrototype: GeometryPrototype = {};
-
-const imageMetatable = {
-  __index: geometryPrototype,
-  __name: "LUA_TYPE_GEOMETRY",
-  __gc: function (this: Geometry) {},
-};
+const prototype: GeometryPrototype = {};
 
 export function createGeometry(
   this: void,
@@ -34,7 +31,10 @@ export function createGeometry(
     uv0s: null,
     ...params,
   };
-  const o = setmetatable(fields, imageMetatable) as Geometry;
 
-  return o;
+  return createTable(TABLE_NAME, fields, prototype);
+}
+
+export function isGeometry(this: void, x: unknown): x is Geometry {
+  return getMetatableName(x) === TABLE_NAME;
 }
