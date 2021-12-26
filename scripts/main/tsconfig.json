@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "types": ["lua-types/5.4", "typescript-to-lua/language-extensions"],
     "strict": true,
-    "declaration": true,
+    "declaration": false,
     "outDir": "./dist"
   },
   "tstl": {

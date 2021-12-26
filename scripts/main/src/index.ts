@@ -17,9 +17,11 @@ const root = createNode({
 root.start(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
+rotateImage.enabled = false;
 root.addChild(rotateImage);
 
 const imguiNode = createImguiNode();
+imguiNode.enabled = false;
 root.addChild(imguiNode);
 
 const nodes = [
