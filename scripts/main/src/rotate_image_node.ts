@@ -19,6 +19,8 @@ import {
 } from "luna-base/dist/gl_renderer/image_task";
 import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
+import { createPlaneVertices } from "luna-base/dist/gl_renderer/primitives";
+import { mat4 } from "luna-base/dist/math/mat4";
 
 export default function createRotateImageNode(this: void) {
   const root = createNode({ name: "Root" });
@@ -37,31 +39,12 @@ export default function createRotateImageNode(this: void) {
     const image = loadImageFromState(state, imageNode.id);
     assertIsNotNull(image);
     const material = createBasicMaterial(createTexture(image));
-    const geom = createGeometry({
-      // prettier-ignore
-      positions: [
-        -1.0,  1.0, 0.0,
-         1.0,  1.0, 0.0,
-        -1.0, -1.0, 0.0,
-         1.0, -1.0, 0.0,
-      ],
-      // prettier-ignore
-      uv0s: [
-        0.0, 1.0,
-        1.0, 1.0,
-        0.0, 0.0,
-        1.0, 0.0
-      ],
-      // prettier-ignore
-      colors: [
-        1.0, 1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0, 1.0,
-      ],
-      indices: [0, 2, 1, 1, 2, 3],
-    });
-    const subMesh = createSubMesh(geom, material);
+
+    const m = mat4.create();
+    mat4.rotateX(m, m, -0.5 * Math.PI);
+
+    const geom2 = createGeometry(createPlaneVertices(2, 2, 1, 1, m));
+    const subMesh = createSubMesh(geom2, material);
     const subMeshTask = createSubMeshTask(subMesh);
 
     let frame = 0;

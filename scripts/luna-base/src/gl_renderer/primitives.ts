@@ -83,22 +83,6 @@ function reorientVertices<T extends Record<string, number[]>>(
   return arrays;
 }
 
-function augmentTypedArray(this: void, length: number): number[] {
-  const a = [] as unknown as number[];
-  for (let idx = 0; idx < length; idx++) {
-    a[idx] = 0;
-  }
-  return a;
-}
-
-function createAugmentedTypedArray(
-  this: void,
-  numComponents: number,
-  numElements: number
-) {
-  return augmentTypedArray(numComponents * numElements);
-}
-
 export function createPlaneVertices(
   this: void,
   width?: number,
@@ -113,11 +97,10 @@ export function createPlaneVertices(
   subdivisionsDepth = subdivisionsDepth ?? 1;
   matrix = matrix ?? mat4.identity(mat4.create());
 
-  const numVertices = (subdivisionsWidth + 1) * (subdivisionsDepth + 1);
-  const positions = createAugmentedTypedArray(3, numVertices);
-  const normals = createAugmentedTypedArray(3, numVertices);
-  const texcoords = createAugmentedTypedArray(2, numVertices);
-  const colors = createAugmentedTypedArray(4, numVertices);
+  const positions: number[] = [];
+  const normals: number[] = [];
+  const texcoords: number[] = [];
+  const colors: number[] = [];
 
   for (let z = 0; z <= subdivisionsDepth; z++) {
     for (let x = 0; x <= subdivisionsWidth; x++) {
@@ -131,10 +114,7 @@ export function createPlaneVertices(
   }
 
   const numVertsAcross = subdivisionsWidth + 1;
-  const indices = createAugmentedTypedArray(
-    3,
-    subdivisionsWidth * subdivisionsDepth * 2
-  );
+  const indices: number[] = [];
 
   for (let z = 0; z < subdivisionsDepth; z++) {
     // eslint-disable-line
