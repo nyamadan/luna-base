@@ -7,7 +7,7 @@ import { createGLVertexArray, GLVertexArray } from "../gl/gl_vertex_array";
 import { inspect } from "../lib/inspect/inspect";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
-import { unreachable } from "../unreachable";
+import { safeUnreachable } from "../unreachable";
 import { CommandState, Node } from "./node";
 import { ShaderProgramId } from "./shader_program";
 import { isSubMeshTask, SubMeshTask } from "./sub_mesh_task";
@@ -80,7 +80,7 @@ function renderSubMesh(
         break;
       }
       default: {
-        return unreachable(value.type);
+        return safeUnreachable(value.type);
       }
     }
   }
@@ -115,7 +115,7 @@ function renderSubMesh(
         break;
       }
       default: {
-        return unreachable(value.type);
+        return safeUnreachable(value.type);
       }
     }
   }

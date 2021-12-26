@@ -9,7 +9,7 @@ import { ReadonlyVec3, vec3, Vec3 } from "./vec3";
 import { vec4 } from "./vec4";
 import { mat3, ReadonlyMat3 } from "./mat3";
 import { EPSILON } from "./math_common";
-import { unreachable } from "../unreachable";
+import { safeUnreachable } from "../unreachable";
 
 export type Quat = [number, number, number, number];
 export type ReadonlyQuat = readonly [number, number, number, number];
@@ -545,7 +545,7 @@ export namespace quat {
         break;
 
       default:
-        return unreachable("Unknown angle order " + order);
+        safeUnreachable(order);
     }
 
     return out;
