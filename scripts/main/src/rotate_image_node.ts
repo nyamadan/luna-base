@@ -38,33 +38,47 @@ export default function createRotateImageNode(this: void) {
   ) {
     const image = loadImageFromState(state, imageNode.id);
     assertIsNotNull(image);
-    const material = createBasicMaterial(createTexture(image));
 
-    const m = mat4.create();
+    let m = mat4.create();
     mat4.rotateX(m, m, -0.5 * Math.PI);
 
-    const geom2 = createGeometry(createPlaneVertices(2, 2, 1, 1, m));
-    const subMesh = createSubMesh(geom2, material);
-    const subMeshTask = createSubMeshTask(subMesh);
+    const node1 = createNode({
+      name: "SubMesh",
+      tasks: [
+        createSubMeshTask(
+          createSubMesh(
+            createGeometry(createPlaneVertices(2, 2, 10, 10, m)),
+            createBasicMaterial(createTexture(image))
+          )
+        ),
+      ],
+    });
+    node.addChild(node1);
+
+    // const node2 = createNode({
+    //   name: "SubMesh",
+    //   tasks: [
+    //     createSubMeshTask(
+    //       createSubMesh(
+    //         createGeometry(createPlaneVertices(2, 2, 10, 10, m)),
+    //         createBasicMaterial(createTexture(image))
+    //       )
+    //     ),
+    //   ],
+    // });
+    // node.addChild(node2);
 
     let frame = 0;
-
-    node.addChild(
-      createNode({
-        name: "SubMesh",
-        tasks: [subMeshTask],
-      })
-    );
-
     let running = true;
     while (running) {
-      const [node] = coroutine.yield() as LuaMultiReturn<[Command["node"]]>;
       const rotation = frame * 0.02;
-      const rootTransform = node.findTransform();
-      assertIsNotNull(rootTransform);
-      quat.rotateZ(rootTransform.rotation, quat.create(), rotation);
+      const node1Transform = node1.findTransform();
+      assertIsNotNull(node1Transform);
+      quat.rotateZ(node1Transform.rotation, quat.create(), rotation);
       const scale = 0.25 * math.sin(rotation) + 0.75;
-      vec3.set(rootTransform.scale, scale, scale, scale);
+      vec3.set(node1Transform.scale, scale, scale, scale);
+
+      coroutine.yield() as LuaMultiReturn<[Command["node"]]>;
       frame += 1;
     }
   });
