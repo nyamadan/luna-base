@@ -12,9 +12,16 @@ import { test } from "./utils";
 import { uuid } from "../src/uuid";
 import { mat4 } from "../src/math/mat4";
 
+let origPrint: (...args: any[]) => void;
+
 test("Test_Node", {
-  setUp: function () {},
-  tearDown: function () {},
+  setUp: function () {
+    origPrint = _G["print"];
+    _G["print"] = () => {};
+  },
+  tearDown: function () {
+    _G["print"] = origPrint;
+  },
   test_error: function () {
     type StateType = typeof state;
     const root = createNode<null>();
