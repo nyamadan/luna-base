@@ -302,7 +302,7 @@ if(NOT EMSCRIPTEN)
   ExternalProject_Add(
     GL3W
     URL https://github.com/skaslev/gl3w/archive/refs/heads/master.zip
-    URL_MD5 fe17c6e0d841b5c168ebf448e724e3cb
+    URL_MD5 4196b40c76e0f8ce0bc59905c3f828e9
     PREFIX ${EXTERNALS_ROOT}
     BUILD_BYPRODUCTS ${GL3W_SRC}
     CMAKE_ARGS
