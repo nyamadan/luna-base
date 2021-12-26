@@ -5,11 +5,12 @@ import { uuid } from "../uuid";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY");
 
-interface GeometryFields {
+export interface GeometryFields {
   id: string;
   positions: F32Array | number[] | null;
   colors: F32Array | number[] | null;
   uv0s: F32Array | number[] | null;
+  normals: F32Array | number[] | null;
   indices: U16Array | number[] | null;
 }
 
@@ -29,6 +30,7 @@ export function createGeometry(
     indices: null,
     positions: null,
     uv0s: null,
+    normals: null,
     ...params,
   };
 

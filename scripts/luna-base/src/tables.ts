@@ -32,7 +32,7 @@ export function allocTableName<T extends TableName>(this: void, tableName: T) {
 
 export function createTable<T1, T2>(
   this: void,
-  tableName: TableName,
+  tableName: TableName | null,
   fields: T1,
   prototype?: T2,
   __gc?: (this: T1 & T2) => void

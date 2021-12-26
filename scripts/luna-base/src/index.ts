@@ -42,3 +42,4 @@ import "./gl_renderer/texture";
 import "./gl_renderer/image";
 import "./gl_renderer/image_task";
 import "./gl_renderer/imgui_render_nodes";
+import "./gl_renderer/primitives";

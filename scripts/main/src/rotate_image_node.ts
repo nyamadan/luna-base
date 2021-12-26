@@ -59,12 +59,6 @@ export default function createRotateImageNode(this: void) {
         1.0, 1.0, 1.0, 1.0,
         1.0, 1.0, 1.0, 1.0,
       ],
-      // colors: [
-      //   0.0, 1.0, 0.0, 1.0,
-      //   1.0, 1.0, 0.0, 1.0,
-      //   0.0, 0.0, 0.0, 1.0,
-      //   1.0, 0.0, 0.0, 1.0,
-      // ],
       indices: [0, 2, 1, 1, 2, 3],
     });
     const subMesh = createSubMesh(geom, material);
