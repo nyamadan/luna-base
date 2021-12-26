@@ -1,14 +1,7 @@
 /// <reference path="../types/index.d.ts" />
 
-import { logger } from "./logger";
-import { setErrorLogger } from "utils";
-setErrorLogger(function (this: void, msg: string) {
-  logger.error("%s", msg);
-});
-
-import "./lib/inspect/inspect";
-import "./lib/lualogging/logging";
 import "./logger";
+import "./lib/inspect/inspect";
 import "./uuid";
 import "./tables";
 import "./buffers/pointer_array";

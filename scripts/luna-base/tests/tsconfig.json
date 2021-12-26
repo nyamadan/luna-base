@@ -12,6 +12,6 @@
     "luaTarget": "5.4",
     "noResolvePaths": ["math"]
   },
-  "exclude": [],
+  "exclude": ["../dist/**/*"],
   "include": ["./index.ts"]
 }

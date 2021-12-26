@@ -1,4 +1,4 @@
-import { inspect } from "./lib/inspect/inspect";
+import { setErrorLogger } from "utils";
 
 type Level = "OFF" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
 type LogMsg = (this: Logger, level: Level, message: string) => boolean;
@@ -22,4 +22,8 @@ const logging: Logging = require("./lib/lualogging/logging");
 export const logger = logging["new"](function (level, message) {
   print(`[${level}] ${message}`);
   return true;
+});
+
+setErrorLogger(function (this: void, msg: string) {
+  logger.error("%s", msg);
 });
