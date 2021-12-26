@@ -84,8 +84,8 @@ else()
 endif()
 ExternalProject_Add(
   imgui
-  URL https://github.com/ocornut/imgui/archive/refs/tags/v1.85.zip
-  URL_MD5 fb8d42cd32a7369d926b0894b3f83ca6
+  URL https://github.com/ocornut/imgui/archive/refs/tags/v1.86.zip
+  URL_MD5 bccb1c173296979e6a61b4f9da572429
   PREFIX ${EXTERNALS_ROOT}
   BUILD_BYPRODUCTS ${IMGUI}
   CMAKE_ARGS
