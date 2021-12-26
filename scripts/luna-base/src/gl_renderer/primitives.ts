@@ -2,7 +2,7 @@ import { mat4, Mat4, ReadonlyMat4 } from "../math/mat4";
 import { quat } from "../math/quat";
 import { ReadonlyVec3, vec3, Vec3 } from "../math/vec3";
 import { assertIsNotNull } from "../type_utils";
-import { GeometryFields } from "./geometry";
+import { createGeometry, GeometryFields } from "./geometry";
 
 // copied from https://github.com/greggman/twgl.js/blob/master/src/primitives.js
 
@@ -83,13 +83,13 @@ function reorientVertices<T extends Record<string, number[]>>(
   return arrays;
 }
 
-export function createPlaneVertices(
+function createPlaneVertices(
   this: void,
   width?: number,
   depth?: number,
   subdivisionsWidth?: number,
   subdivisionsDepth?: number,
-  matrix?: Mat4
+  matrix?: ReadonlyMat4
 ) {
   width = width ?? 1;
   depth = depth ?? 1;
@@ -145,4 +145,45 @@ export function createPlaneVertices(
   };
 
   return reorientVertices(arrays, matrix);
+}
+
+export function createPlaneGeometry(
+  this: void,
+  width?: number,
+  depth?: number,
+  subdivisionsWidth?: number,
+  subdivisionsDepth?: number,
+  matrix?: ReadonlyMat4
+) {
+  return createGeometry(
+    createPlaneVertices(
+      width,
+      depth,
+      subdivisionsWidth,
+      subdivisionsDepth,
+      matrix
+    )
+  );
+}
+
+export function createPlaneGeometryXY(
+  this: void,
+  width?: number,
+  depth?: number,
+  subdivisionsWidth?: number,
+  subdivisionsDepth?: number,
+  matrix?: ReadonlyMat4
+) {
+  const m = mat4.create();
+  mat4.rotateX(m, m, -0.5 * Math.PI);
+  if (matrix != null) {
+    mat4.multiply(m, m, matrix);
+  }
+  return createPlaneGeometry(
+    width,
+    depth,
+    subdivisionsWidth,
+    subdivisionsDepth,
+    m
+  );
 }

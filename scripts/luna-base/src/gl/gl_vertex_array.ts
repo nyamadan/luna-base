@@ -3,6 +3,9 @@ import { new_buffer, NULL } from "native_buffer";
 import { GLGeometryBuffer } from "./gl_geometry_buffer";
 import { GLProgram } from "./gl_program";
 import { assertIsNotNull, assertIsNumber } from "../type_utils";
+import { allocTableName, createTable, getMetatableName } from "../tables";
+
+const TABLE_NAME = allocTableName("LUA_TYPE_GL_VERTEX_ARRAY");
 
 interface GLVertexArrayFields {
   vao: number | null;
@@ -20,7 +23,7 @@ interface GLVertexArrayMethods {
 
 export type GLVertexArray = GLVertexArrayMethods & GLVertexArrayFields;
 
-const glVertexArrayMethods: GLVertexArrayMethods = {
+const prototype: GLVertexArrayMethods = {
   getGeometryMode: function () {
     return this.geometry.mode;
   },
@@ -49,21 +52,16 @@ const glVertexArrayMethods: GLVertexArrayMethods = {
   },
 };
 
-const glVertexArrayMetatable = {
-  __index: glVertexArrayMethods,
-  __gc: function (this: GLVertexArray) {
-    this.free();
-  },
-};
-
 export function createGLVertexArray(
   this: void,
   program: GLProgram,
   geometry: GLGeometryBuffer
 ): GLVertexArray {
-  const init: Partial<GLVertexArrayFields> = {};
+  const fields = {} as GLVertexArrayFields;
 
-  const o = setmetatable(init, glVertexArrayMetatable) as GLVertexArray;
+  const o = createTable(TABLE_NAME, fields, prototype, function () {
+    this.free();
+  });
 
   const pVAO = new_buffer(4);
   _gl.genVertexArrays(1, pVAO);
@@ -101,5 +99,9 @@ export function createGLVertexArray(
   o.vao = vao;
   o.geometry = geometry;
 
-  return o as GLVertexArray;
+  return o;
+}
+
+export function isGLVertexArray(this: void, x: unknown): x is GLVertexArray {
+  return getMetatableName(x) === TABLE_NAME;
 }

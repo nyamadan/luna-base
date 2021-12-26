@@ -14,7 +14,7 @@ export interface GeometryFields {
   indices: U16Array | number[] | null;
 }
 
-interface GeometryPrototype {}
+export interface GeometryPrototype {}
 
 export type Geometry = GeometryPrototype & GeometryFields;
 
