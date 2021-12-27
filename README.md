@@ -15,8 +15,11 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] Nodeのビジュアライザ
  * [x] イベントのエラーハンドリングする
  * [x] Loggerをいれる
+ * [x] ジオメトリのプリセットを作る
+ * [ ] TaskにEnabledを足す
+ * [ ] Taskの重複登録防止
  * [ ] JSX対応
- * [ ] ジオメトリのプリセットを作る
+ * [ ] キーボード入力を実装する
  * [ ] GLBを読めるようにする
  * [ ] MessagePackをいったん消す
  * [ ] generate_gl_bindingsを整理する
