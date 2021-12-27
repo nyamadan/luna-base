@@ -12,7 +12,7 @@ import { test } from "./utils";
 import { uuid } from "../src/uuid";
 import { mat4 } from "../src/math/mat4";
 
-let origPrint: (...args: any[]) => void;
+let origPrint: (this: void, ...args: any[]) => void;
 
 test("Test_Node", {
   setUp: function () {
