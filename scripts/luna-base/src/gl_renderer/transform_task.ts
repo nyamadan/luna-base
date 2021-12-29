@@ -35,10 +35,10 @@ const prototype: TransformTaskPrototype = {
   },
 };
 
-
 export function createTransformTask(this: void, transform: Transform) {
   const fields: TransformTaskField = {
     id: uuid.v4() as NodeTaskId,
+    enabled: true,
     transform,
   };
   return createTable(TABLE_NAME, fields, prototype);

@@ -65,6 +65,7 @@ export type NodeTaskId = string & { __node_task: never };
 
 export interface NodeTaskField {
   readonly id: NodeTaskId;
+  enabled: boolean;
 }
 
 export interface NodeTaskPrototype<T extends NodeTask = NodeTask, U = any> {
@@ -80,16 +81,18 @@ export function createTask<T extends TableName, N extends NodeTask = NodeTask>(
 ) {
   const fields: NodeTaskField = {
     id: uuid.v4() as NodeTaskId,
+    enabled: true,
   };
   return createTable(tableName, fields, prototype);
 }
 
 export function createScriptTask<T extends NodeTask = NodeTask>(
   this: void,
-  task: Omit<T, "id">
+  task: Omit<T, "id" | "enabled"> & { enabled?: boolean }
 ) {
-  const fields = {
+  const fields: Pick<T, "id" | "enabled"> = {
     id: uuid.v4() as NodeTaskId,
+    enabled: true,
   };
   return createTable(SCRIPT_TASK_TABLE_NAME, { ...fields, ...task });
 }
@@ -136,7 +139,9 @@ export type Node = NodePrototype & NodeField;
 const prototype: NodePrototype = {
   runTask: function (command, state) {
     for (const task of this.tasks) {
-      state = task.run(command, state);
+      if (task.enabled) {
+        state = task.run(command, state);
+      }
     }
     return state;
   },

@@ -43,6 +43,7 @@ const prototype: GLRendererTaskPrototype = {
 export function createGLRendererTask(this: void) {
   const fields: GLRendererTaskField = {
     id: uuid.v4() as NodeTaskId,
+    enabled: true,
     renderer: createGLRenderer(),
   };
   return createTable(TABLE_NAME, fields, prototype);

@@ -22,6 +22,22 @@ test("Test_Node", {
   tearDown: function () {
     _G["print"] = origPrint;
   },
+  test_task_enabled: function () {
+    type StateType = typeof state;
+
+    let called = 0;
+    const root = createNode<null>();
+    const task = createScriptTask({
+      run: function (_: Command, state: StateType) {
+        called++;
+        return state;
+      },
+    });
+    root.addTask(task);
+    task.enabled = false;
+    const state = root.update(initCommandState(null));
+    lu.assertIs(called, 0);
+  },
   test_error: function () {
     type StateType = typeof state;
     const root = createNode<null>();
@@ -49,6 +65,7 @@ test("Test_Node", {
     const child = createNode();
     child.addTask({
       id: uuid.v4() as NodeTaskId,
+      enabled: true,
       run: function (x, state) {
         switch (x.name) {
           case "transform": {

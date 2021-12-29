@@ -89,6 +89,7 @@ const prototype: ApplicationTaskPrototype = {
 export function createApplicationTask(this: void) {
   const fields: ApplicationTaskField = {
     id: uuid.v4() as NodeTaskId,
+    enabled: true,
   };
   return createTable(TABLE_NAME, fields, prototype);
 }

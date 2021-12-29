@@ -79,6 +79,7 @@ export function loadImageFromState(
 export function createImageTask(this: void, path: string): ImageTask {
   const fields: ImageTaskField = {
     id: uuid.v4() as NodeTaskId,
+    enabled: true,
     path,
   };
   return createTable(TABLE_NAME, fields, prototype);

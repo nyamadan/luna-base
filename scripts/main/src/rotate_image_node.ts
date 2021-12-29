@@ -90,7 +90,7 @@ export default function createRotateImageNode(this: void) {
     run: Runner<UserState>;
   }
 
-  type ScriptTaskNoId = Omit<ScriptTask, "id">;
+  type ScriptTaskNoId = Omit<ScriptTask, "id" | "enabled">;
 
   const runner: ScriptTaskNoId = {
     run(command, state) {
