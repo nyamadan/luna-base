@@ -1,7 +1,7 @@
 import * as _gl from "gl";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
-import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
+import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node_task";
 import { SubMesh } from "./sub_mesh";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH_TASK");

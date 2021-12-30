@@ -5,15 +5,12 @@ import { isEmscripten } from "utils";
 import { mat4 } from "../math/mat4";
 
 import { allocTableName, createTable, getMetatableName } from "../tables";
-import { tprint } from "../tprint";
 import { uuid } from "../uuid";
 import { createGLRendererTask } from "./gl_renderer_task";
 import {
   initCommandState,
-  NodeTaskField,
-  NodeTaskId,
-  NodeTaskPrototype,
 } from "./node";
+import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_APPLICATION_TASK");
 

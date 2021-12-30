@@ -31,6 +31,8 @@ import "./type_utils";
 import "./math/vec3";
 import "./math/mat4";
 
+import "./gl_renderer/node";
+import "./gl_renderer/node_task";
 import "./gl_renderer/application_task";
 import "./gl_renderer/gl_renderer";
 import "./gl_renderer/gl_renderer_task";

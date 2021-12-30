@@ -3,13 +3,13 @@ import * as imgui from "imgui";
 import { createApplicationTask } from "luna-base/dist/gl_renderer/application_task";
 import {
   createNode,
-  createScriptTask,
   initCommandState,
 } from "luna-base/dist/gl_renderer/node";
 
 import createRotateImageNode from "./rotate_image_node";
 import createImguiNode from "./imgui_node";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
+import { createScriptTask } from "luna-base/dist/gl_renderer/node_task";
 
 const root = createNode({
   tasks: [createApplicationTask()],

@@ -7,11 +7,11 @@ import { allocTableName, createTable, TableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
 import { Image } from "./image";
+import { NodeTask } from "./node_task";
 import { createTransform, Transform } from "./transform";
 import { createTransformTask, isTransformTask } from "./transform_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_NODE");
-const SCRIPT_TASK_TABLE_NAME = allocTableName("LUA_TYPE_SCRIPT_TASK");
 
 interface CommandInterface {
   name: string;
@@ -43,16 +43,6 @@ interface RenderCommand extends CommandInterface {
   name: "render";
 }
 
-export interface CommandState<T extends any = any> {
-  worlds: Record<NodeId, F32Mat4 | undefined>;
-  images: Record<NodeId, Image | undefined>;
-  userdata: T;
-}
-
-export function initCommandState<U>(userdata: U): CommandState<U> {
-  return { images: {}, worlds: {}, userdata };
-}
-
 export type Command =
   | StartCommand
   | UpdateCommand
@@ -61,40 +51,14 @@ export type Command =
   | PreRenderCommand
   | RenderCommand;
 
-export type NodeTaskId = string & { __node_task: never };
-
-export interface NodeTaskField {
-  readonly id: NodeTaskId;
-  enabled: boolean;
+export interface CommandState<T extends any = any> {
+  worlds: Record<NodeId, F32Mat4 | undefined>;
+  images: Record<NodeId, Image | undefined>;
+  userdata: T;
 }
 
-export interface NodeTaskPrototype<T extends NodeTask = NodeTask, U = any> {
-  run(this: T, command: Command, state: CommandState<U>): CommandState<U>;
-}
-
-export type NodeTask = NodeTaskField & NodeTaskPrototype;
-
-export function createTask<T extends TableName, N extends NodeTask = NodeTask>(
-  this: void,
-  tableName: T,
-  prototype: N
-) {
-  const fields: NodeTaskField = {
-    id: uuid.v4() as NodeTaskId,
-    enabled: true,
-  };
-  return createTable(tableName, fields, prototype);
-}
-
-export function createScriptTask<T extends NodeTask = NodeTask>(
-  this: void,
-  task: Omit<T, "id" | "enabled"> & { enabled?: boolean }
-) {
-  const fields: Pick<T, "id" | "enabled"> = {
-    id: uuid.v4() as NodeTaskId,
-    enabled: true,
-  };
-  return createTable(SCRIPT_TASK_TABLE_NAME, { ...fields, ...task });
+export function initCommandState<U>(userdata: U): CommandState<U> {
+  return { images: {}, worlds: {}, userdata };
 }
 
 export type NodeId = string & { __node: never };

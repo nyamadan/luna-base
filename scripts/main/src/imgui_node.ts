@@ -1,9 +1,10 @@
 import "luna-base";
 import * as imgui from "imgui";
-import { createNode, createScriptTask } from "luna-base/dist/gl_renderer/node";
+import { createNode } from "luna-base/dist/gl_renderer/node";
 import { showDemoWindow } from "imgui";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
 import { logger } from "luna-base/dist/logger";
+import { createScriptTask } from "luna-base/dist/gl_renderer/node_task";
 
 export default function createImguiNode(this: void) {
   const root = createNode();

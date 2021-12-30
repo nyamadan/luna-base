@@ -3,7 +3,7 @@ import { createF32Mat4 } from "../buffers/f32array";
 import { mat4 } from "../math/mat4";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
-import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
+import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node_task";
 import { Transform } from "./transform";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_TRANSFORM_TASK");

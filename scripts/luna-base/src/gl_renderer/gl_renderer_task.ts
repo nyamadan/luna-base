@@ -3,7 +3,7 @@ import * as imgui from "imgui";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
 import { createGLRenderer, GLRenderer } from "./gl_renderer";
-import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node";
+import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_RENDERER_TASK");
 

@@ -4,13 +4,12 @@ import { vec3 } from "../src/math/vec3";
 import {
   Command,
   createNode,
-  createScriptTask,
   initCommandState,
-  NodeTaskId,
 } from "../src/gl_renderer/node";
 import { test } from "./utils";
 import { uuid } from "../src/uuid";
 import { mat4 } from "../src/math/mat4";
+import { createScriptTask, NodeTaskId } from "../src/gl_renderer/node_task";
 
 let origPrint: (this: void, ...args: any[]) => void;
 
