@@ -17,11 +17,11 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] Loggerをいれる
  * [x] ジオメトリのプリセットを作る
  * [x] TaskにEnabledを足す
- * [ ] Task作成のユーティリティ
+ * [x] Task作成のユーティリティ
+ * [ ] JSX対応
  * [ ] キーボード入力を実装する
  * [ ] GLBを読めるようにする
  * [ ] Taskの重複登録防止
- * [ ] JSX対応
  * [ ] MessagePackをいったん消す
  * [ ] generate_gl_bindingsを整理する
  * [ ] testのワークスペースを分離

@@ -17,16 +17,21 @@ export interface NodeTaskPrototype<T extends NodeTask = NodeTask, U = any> {
 
 export type NodeTask = NodeTaskField & NodeTaskPrototype;
 
-export function createTask<T extends TableName, N extends NodeTask = NodeTask>(
-  this: void,
-  tableName: T,
-  prototype: N
-) {
-  const fields: NodeTaskField = {
+export function createTask<
+  T extends TableName,
+  T1 extends Omit<NodeTaskField, "id" | "enabled">,
+  T2 extends NodeTaskPrototype
+>(this: void, tableName: T, fields: T1, prototype: T2) {
+  const initial: Pick<NodeTaskField, "id" | "enabled"> = {
     id: uuid.v4() as NodeTaskId,
     enabled: true,
   };
-  return createTable(tableName, fields, prototype);
+
+  return createTable(
+    tableName,
+    { ...initial, ...fields } as T1 & Pick<NodeTaskField, "id" | "enabled">,
+    prototype as T2
+  );
 }
 
 export function createScriptTask<T extends NodeTask = NodeTask>(

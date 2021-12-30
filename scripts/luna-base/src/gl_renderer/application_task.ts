@@ -4,13 +4,15 @@ import * as imgui from "imgui";
 import { isEmscripten } from "utils";
 import { mat4 } from "../math/mat4";
 
-import { allocTableName, createTable, getMetatableName } from "../tables";
-import { uuid } from "../uuid";
+import { allocTableName, getMetatableName } from "../tables";
 import { createGLRendererTask } from "./gl_renderer_task";
+import { initCommandState } from "./node";
 import {
-  initCommandState,
-} from "./node";
-import { NodeTaskField, NodeTaskId, NodeTaskPrototype } from "./node_task";
+  createTask,
+  NodeTaskField,
+  NodeTaskId,
+  NodeTaskPrototype,
+} from "./node_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_APPLICATION_TASK");
 
@@ -83,12 +85,8 @@ const prototype: ApplicationTaskPrototype = {
   },
 };
 
-export function createApplicationTask(this: void) {
-  const fields: ApplicationTaskField = {
-    id: uuid.v4() as NodeTaskId,
-    enabled: true,
-  };
-  return createTable(TABLE_NAME, fields, prototype);
+export function createApplicationTask(this: void): ApplicationTask {
+  return createTask(TABLE_NAME, {}, prototype);
 }
 
 export function isApplicationTask(
