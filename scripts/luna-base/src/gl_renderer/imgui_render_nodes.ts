@@ -1,7 +1,7 @@
 import * as imgui from "imgui";
-import { Node } from "./node";
+import { NodeType } from "./node";
 
-function _imguiRenderNodes(this: void, node: Node) {
+function _imguiRenderNodes(this: void, node: NodeType) {
   if (!node.enabled) {
     return;
   }
@@ -14,7 +14,7 @@ function _imguiRenderNodes(this: void, node: Node) {
   }
 }
 
-export function imguiRenderNodes(node: Node) {
+export function imguiRenderNodes(node: NodeType) {
   if (imgui.begin("Tree Nodes")) {
     _imguiRenderNodes(node);
   }

@@ -4,7 +4,7 @@ import { createNode } from "luna-base/dist/gl_renderer/node";
 import { showDemoWindow } from "imgui";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
 import { logger } from "luna-base/dist/logger";
-import { createScriptTask } from "luna-base/dist/gl_renderer/node_task";
+import { createTask } from "luna-base/dist/gl_renderer/node_task";
 
 export default function createImguiNode(this: void) {
   const root = createNode();
@@ -44,20 +44,24 @@ export default function createImguiNode(this: void) {
     }
   });
 
-  const scriptTask = createScriptTask({
-    run: function (command, state) {
-      const { name, node } = command;
-      switch (name) {
-        case "render": {
-          coroutine.resume(render, node);
-          return state;
+  const scriptTask = createTask(
+    null,
+    {},
+    {
+      run: function (command, state) {
+        const { name, node } = command;
+        switch (name) {
+          case "render": {
+            coroutine.resume(render, node);
+            return state;
+          }
+          default: {
+            return state;
+          }
         }
-        default: {
-          return state;
-        }
-      }
-    },
-  });
+      },
+    }
+  );
 
   root.addChild(
     createNode({

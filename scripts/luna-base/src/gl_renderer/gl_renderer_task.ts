@@ -16,9 +16,10 @@ interface GLRendererTaskField extends NodeTaskField {
   renderer: GLRenderer;
 }
 
-interface GLRendererTaskPrototype extends NodeTaskPrototype<GLRendererTask> {}
+interface GLRendererTaskPrototype
+  extends NodeTaskPrototype<GLRendererTaskType> {}
 
-export type GLRendererTask = GLRendererTaskPrototype & GLRendererTaskField;
+export type GLRendererTaskType = GLRendererTaskPrototype & GLRendererTaskField;
 
 const prototype: GLRendererTaskPrototype = {
   run: function (command, state) {
@@ -44,10 +45,29 @@ const prototype: GLRendererTaskPrototype = {
   },
 };
 
-export function createGLRendererTask(this: void): GLRendererTask {
+export function createGLRendererTask(this: void): GLRendererTaskType {
   return createTask(TABLE_NAME, { renderer: createGLRenderer() }, prototype);
 }
 
-export function isGLRendererTask(this: void, x: unknown): x is GLRendererTask {
+export function isGLRendererTask(
+  this: void,
+  x: unknown
+): x is GLRendererTaskType {
   return getMetatableName(x) === TABLE_NAME;
+}
+
+export default function GLRendererTask(
+  this: void,
+  {
+    enabled,
+    onCreate,
+  }: Partial<{
+    enabled: boolean;
+    onCreate: (this: void, fn: ReturnType<typeof createGLRendererTask>) => void;
+  }>
+) {
+  const o = createGLRendererTask();
+  o.enabled = enabled !== false;
+  onCreate?.(o);
+  return o;
 }

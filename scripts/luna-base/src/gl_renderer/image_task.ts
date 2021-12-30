@@ -1,6 +1,6 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
-import { CommandState, createNode, Node, NodeField, NodeId } from "./node";
+import { CommandState, createNode, NodeType, NodeField, NodeId } from "./node";
 import { createImage, Image } from "./image";
 import {
   createTask,
@@ -42,7 +42,7 @@ const prototype: ImageTaskPrototype = {
 
 export function appendImageNode(
   this: void,
-  parent: Node,
+  parent: NodeType,
   path: string,
   option: Partial<Omit<NodeField, "id">> = {}
 ) {

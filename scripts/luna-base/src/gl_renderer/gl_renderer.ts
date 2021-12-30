@@ -8,7 +8,7 @@ import { inspect } from "../lib/inspect/inspect";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { safeUnreachable } from "../unreachable";
-import { CommandState, Node } from "./node";
+import { CommandState, NodeType } from "./node";
 import { ShaderProgramId } from "./shader_program";
 import { isSubMeshTask, SubMeshTask } from "./sub_mesh_task";
 
@@ -21,7 +21,7 @@ interface GLRendererFields {
 }
 
 interface GLRendererPrototype {
-  render: (this: GLRenderer, state: CommandState, node: Node) => void;
+  render: (this: GLRenderer, state: CommandState, node: NodeType) => void;
 }
 
 export type GLRenderer = GLRendererPrototype & GLRendererFields;
@@ -30,7 +30,7 @@ function renderSubMesh(
   this: void,
   renderer: GLRenderer,
   state: CommandState,
-  node: Node,
+  node: NodeType,
   task: SubMeshTask
 ) {
   const subMesh = task.subMesh;
@@ -129,7 +129,7 @@ const prototype: GLRendererPrototype = {
   render: function (state, node) {
     _gl.clear(_gl.COLOR_BUFFER_BIT | _gl.DEPTH_BUFFER_BIT);
 
-    const nodes: Node[] = [];
+    const nodes: NodeType[] = [];
     node.traverse(function (node) {
       if (!node.enabled) {
         return false;

@@ -3,7 +3,7 @@ import { F32Mat4 } from "../buffers/f32array";
 import { inspect } from "../lib/inspect/inspect";
 import { logger } from "../logger";
 import { Mat4 } from "../math/mat4";
-import { allocTableName, createTable, TableName } from "../tables";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
 import { Image } from "./image";
@@ -15,7 +15,7 @@ const TABLE_NAME = allocTableName("LUA_TYPE_NODE");
 
 interface CommandInterface {
   name: string;
-  node: Node;
+  node: NodeType;
 }
 
 interface StartCommand extends CommandInterface {
@@ -67,38 +67,42 @@ export interface NodeField {
   readonly id: NodeId;
   readonly name: string;
   enabled: boolean;
-  children: Node[];
+  children: NodeType[];
   tasks: NodeTask[];
 }
 
 type RunTaskResult<T> = CommandState<T>;
 export interface NodePrototype<U = any> {
   runTask(
-    this: Node,
+    this: NodeType,
     command: Command,
     state: CommandState<U>
   ): CommandState<U>;
-  start(this: Node, state: CommandState<U>): RunTaskResult<U>;
-  load(this: Node, state: CommandState<U>): RunTaskResult<U>;
-  update(this: Node, state: CommandState<U>): RunTaskResult<U>;
-  transform(this: Node, state: CommandState<U>, world: Mat4): RunTaskResult<U>;
-  render(this: Node, state: CommandState<U>): RunTaskResult<U>;
-  addChild(this: Node, node: Node): Node;
-  addTask(this: Node, task: NodeTask): void;
+  start(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
+  load(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
+  update(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
+  transform(
+    this: NodeType,
+    state: CommandState<U>,
+    world: Mat4
+  ): RunTaskResult<U>;
+  render(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
+  addChild(this: NodeType, node: NodeType): NodeType;
+  addTask(this: NodeType, task: NodeTask): void;
   findTasks(
-    this: Node,
+    this: NodeType,
     fn: (this: void, task: NodeTask) => boolean
   ): NodeTask[];
-  findTransform(this: Node): Transform | null;
+  findTransform(this: NodeType): Transform | null;
   traverse(
-    this: Node,
-    enter: (this: void, node: Node) => void | boolean,
-    leave?: (this: void, node: Node) => void
+    this: NodeType,
+    enter: (this: void, node: NodeType) => void | boolean,
+    leave?: (this: void, node: NodeType) => void
   ): void;
-  flat(this: Node): Node[];
+  flat(this: NodeType): NodeType[];
 }
 
-export type Node = NodePrototype & NodeField;
+export type NodeType = NodePrototype & NodeField;
 
 const prototype: NodePrototype = {
   runTask: function (command, state) {
@@ -231,7 +235,7 @@ const prototype: NodePrototype = {
     leave?.(this);
   },
   flat: function () {
-    const tasks: Node[] = [];
+    const tasks: NodeType[] = [];
     this.traverse(function (node) {
       tasks.push(node);
     });
@@ -265,5 +269,26 @@ export function createNode<T = any>(
     }
   }
 
+  return node;
+}
+
+export function isNode(this: void, x: unknown): x is NodeType {
+  return getMetatableName(x) === TABLE_NAME;
+}
+
+export default function Node(
+  this: void,
+  {
+    name,
+    enabled,
+    onCreate,
+  }: Partial<{
+    name: string;
+    enabled: boolean;
+    onCreate: (this: void, o: ReturnType<typeof createNode>) => void;
+  }>
+) {
+  const node = createNode({ name, enabled });
+  onCreate?.(node);
   return node;
 }

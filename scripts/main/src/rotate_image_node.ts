@@ -17,7 +17,7 @@ import {
 import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
-import { createScriptTask, NodeTask } from "luna-base/dist/gl_renderer/node_task";
+import { createTask, NodeTask } from "luna-base/dist/gl_renderer/node_task";
 
 export default function createRotateImageNode(this: void) {
   const root = createNode({ name: "Root" });
@@ -116,7 +116,7 @@ export default function createRotateImageNode(this: void) {
   root.addChild(
     createNode({
       name: "Script",
-      tasks: [createScriptTask(runner)],
+      tasks: [createTask(null, {}, runner)],
     })
   );
 

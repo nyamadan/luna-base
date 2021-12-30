@@ -1,8 +1,6 @@
 import { allocTableName, createTable, TableName } from "../tables";
 import { uuid } from "../uuid";
-import { Command, CommandState } from "./node";
-
-const SCRIPT_TASK_TABLE_NAME = allocTableName("LUA_TYPE_SCRIPT_TASK");
+import { Command, CommandState, isNode } from "./node";
 
 export type NodeTaskId = string & { __node_task: never };
 
@@ -21,7 +19,7 @@ export function createTask<
   T extends TableName,
   T1 extends Omit<NodeTaskField, "id" | "enabled">,
   T2 extends NodeTaskPrototype
->(this: void, tableName: T, fields: T1, prototype: T2) {
+>(this: void, tableName: T | null, fields: T1, prototype: T2) {
   const initial: Pick<NodeTaskField, "id" | "enabled"> = {
     id: uuid.v4() as NodeTaskId,
     enabled: true,
@@ -34,13 +32,6 @@ export function createTask<
   );
 }
 
-export function createScriptTask<T extends NodeTask = NodeTask>(
-  this: void,
-  task: Omit<T, "id" | "enabled"> & { enabled?: boolean }
-) {
-  const fields: Pick<T, "id" | "enabled"> = {
-    id: uuid.v4() as NodeTaskId,
-    enabled: true,
-  };
-  return createTable(SCRIPT_TASK_TABLE_NAME, { ...fields, ...task });
+export function isNodeTask(this: void, x: unknown): x is NodeTask {
+  return (x as any)?.run != null;
 }
