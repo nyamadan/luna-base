@@ -7,7 +7,7 @@ import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
 import { Image } from "./image";
-import { NodeTask } from "./node_task";
+import { NodeTaskType } from "./node_task";
 import { createTransform, Transform } from "./transform";
 import { createTransformTask, isTransformTask } from "./transform_task";
 
@@ -68,7 +68,7 @@ export interface NodeField {
   readonly name: string;
   enabled: boolean;
   children: NodeType[];
-  tasks: NodeTask[];
+  tasks: NodeTaskType[];
 }
 
 type RunTaskResult<T> = CommandState<T>;
@@ -88,11 +88,11 @@ export interface NodePrototype<U = any> {
   ): RunTaskResult<U>;
   render(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   addChild(this: NodeType, node: NodeType): NodeType;
-  addTask(this: NodeType, task: NodeTask): void;
+  addTask(this: NodeType, task: NodeTaskType): void;
   findTasks(
     this: NodeType,
-    fn: (this: void, task: NodeTask) => boolean
-  ): NodeTask[];
+    fn: (this: void, task: NodeTaskType) => boolean
+  ): NodeTaskType[];
   findTransform(this: NodeType): Transform | null;
   traverse(
     this: NodeType,
@@ -210,7 +210,7 @@ const prototype: NodePrototype = {
     this.tasks.push(task);
   },
   findTasks: function (f) {
-    const results: NodeTask[] = [];
+    const results: NodeTaskType[] = [];
     for (const task of this.tasks) {
       if (f(task)) {
         results.push(task);
@@ -286,7 +286,7 @@ export default function Node(
     name: string;
     enabled: boolean;
     onCreate: (this: void, o: ReturnType<typeof createNode>) => void;
-  }>
+  }> = {}
 ) {
   const node = createNode({ name, enabled });
   onCreate?.(node);

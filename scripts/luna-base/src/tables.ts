@@ -33,8 +33,8 @@ export function allocTableName<T extends TableName>(this: void, tableName: T) {
 export function createTable<T1, T2>(
   this: void,
   tableName: TableName | null,
-  fields: T1,
-  prototype?: T2,
+  fields: T1 | null,
+  prototype?: T2 | null,
   __gc?: (this: T1 & T2) => void
 ) {
   const metatable = {

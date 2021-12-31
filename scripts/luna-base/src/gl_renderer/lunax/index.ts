@@ -1,15 +1,17 @@
 import { safeUnreachable } from "../../unreachable";
 import { isNode, NodeType } from "../node";
-import { isNodeTask, NodeTask } from "../node_task";
+import { isNodeTask, NodeTaskType } from "../node_task";
+
+type NodeOrTask = NodeTaskType | NodeType;
+type Component = (this: void, props: any) => NodeOrTask;
 
 namespace LunaX {
-  /** @noSelf */
   export function createElement(
-    type: Function,
-    props?: object,
-    ...children: Array<NodeTask | NodeType>
-  ): NodeTask | NodeType {
-    const nodeOrTask: NodeTask | NodeType = type(props);
+    component: Component,
+    props?: Parameters<Component>[0],
+    ...children: ReadonlyArray<NodeOrTask>
+  ): NodeOrTask {
+    const nodeOrTask = component(props);
     if (isNode(nodeOrTask)) {
       const node = nodeOrTask;
       for (const child of children) {

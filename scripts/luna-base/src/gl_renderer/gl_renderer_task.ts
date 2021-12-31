@@ -64,7 +64,7 @@ export default function GLRendererTask(
   }: Partial<{
     enabled: boolean;
     onCreate: (this: void, fn: ReturnType<typeof createGLRendererTask>) => void;
-  }>
+  }> = {}
 ) {
   const o = createGLRendererTask();
   o.enabled = enabled !== false;
