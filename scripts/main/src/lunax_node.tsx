@@ -5,6 +5,7 @@ import { NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
 import LunaX from "luna-base/dist/gl_renderer/lunax";
 import Node from "luna-base/dist/gl_renderer/components/node_component";
 import NodeTask from "luna-base/dist/gl_renderer/components/task_component";
+import ImageTask from "luna-base/dist/gl_renderer/components/image_task";
 
 const update = coroutine.create(function (
   this: void,
@@ -56,6 +57,7 @@ export default function createLunaXNode(this: void) {
 
   return (
     <Node name="Root">
+      <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
       <NodeTask prototype={runner} />
     </Node>
   );

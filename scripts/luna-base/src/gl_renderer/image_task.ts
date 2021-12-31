@@ -1,6 +1,6 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
-import { CommandState, createNode, NodeType, NodeField, NodeId } from "./node";
+import { CommandState, NodeId } from "./node";
 import { createImage, Image } from "./image";
 import {
   createTask,
@@ -8,6 +8,7 @@ import {
   NodeTaskId,
   NodeTaskPrototype,
 } from "./node_task";
+import { logger } from "../logger";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE_TASK");
 
@@ -16,9 +17,9 @@ interface ImageTaskField extends NodeTaskField {
   path: string;
 }
 
-interface ImageTaskPrototype extends NodeTaskPrototype<ImageTask> {}
+interface ImageTaskPrototype extends NodeTaskPrototype<ImageTaskType> {}
 
-export type ImageTask = ImageTaskPrototype & ImageTaskField;
+export type ImageTaskType = ImageTaskPrototype & ImageTaskField;
 
 const prototype: ImageTaskPrototype = {
   run: function (command, state) {
@@ -28,6 +29,7 @@ const prototype: ImageTaskPrototype = {
         const images = { ...state.images };
 
         if (images[node.id] == null) {
+          logger.debug(`ImageTask.load: ${this.path}`);
           images[node.id] = createImage(this.path);
         }
 
@@ -39,20 +41,6 @@ const prototype: ImageTaskPrototype = {
     }
   },
 };
-
-export function appendImageNode(
-  this: void,
-  parent: NodeType,
-  path: string,
-  option: Partial<Omit<NodeField, "id">> = {}
-) {
-  return parent.addChild(
-    createNode({
-      ...option,
-      tasks: [createImageTask(path), ...(option.tasks ?? [])],
-    })
-  );
-}
 
 export function loadImageFromState(
   this: void,
@@ -72,10 +60,10 @@ export function loadImageFromState(
   return img;
 }
 
-export function createImageTask(this: void, path: string): ImageTask {
+export function createImageTask(this: void, path: string): ImageTaskType {
   return createTask(TABLE_NAME, { path }, prototype);
 }
 
-export function isImageTask(this: void, x: unknown): x is ImageTask {
+export function isImageTask(this: void, x: unknown): x is ImageTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }

@@ -3,6 +3,8 @@ import {
   Command,
   CommandState,
   createNode,
+  NodeField,
+  NodeType,
 } from "luna-base/dist/gl_renderer/node";
 import { assertIsNotNull } from "luna-base/dist/type_utils";
 import { createTexture } from "luna-base/dist/gl_renderer/texture";
@@ -11,13 +13,27 @@ import { createSubMeshTask } from "luna-base/dist/gl_renderer/sub_mesh_task";
 import { quat } from "luna-base/dist/math/quat";
 import { vec3 } from "luna-base/dist/math/vec3";
 import {
-  appendImageNode,
+  createImageTask,
   loadImageFromState,
 } from "luna-base/dist/gl_renderer/image_task";
 import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import { createTask, NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
+
+function appendImageNode(
+  this: void,
+  parent: NodeType,
+  path: string,
+  option: Partial<Omit<NodeField, "id">> = {}
+) {
+  return parent.addChild(
+    createNode({
+      ...option,
+      tasks: [createImageTask(path), ...(option.tasks ?? [])],
+    })
+  );
+}
 
 export default function createRotateImageNode(this: void) {
   const root = createNode({ name: "Root" });
