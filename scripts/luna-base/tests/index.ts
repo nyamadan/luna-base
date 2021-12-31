@@ -13,6 +13,7 @@ import "./test_pointer_array";
 import "./test_msgpack";
 import "./test_image";
 import "./test_uuid";
+import "./test_lunax";
 
 initGlfw();
 

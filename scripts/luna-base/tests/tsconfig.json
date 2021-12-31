@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/vscode-typescript-to-lua/master/tsconfig-schema.json",
   "compilerOptions": {
     "jsx": "react",
+    "jsxFactory": "LunaX.createElement",
     "forceConsistentCasingInFileNames": true,
     "removeComments": true,
     "importHelpers": true,
@@ -19,5 +20,6 @@
     "luaTarget": "5.4",
     "noResolvePaths": ["math"]
   },
+  "exclude": ["../dist/**"],
   "include": ["./index.ts"]
 }

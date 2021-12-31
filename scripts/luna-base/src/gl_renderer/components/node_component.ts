@@ -1,4 +1,4 @@
-import { createNode } from "../node";
+import { createNode, NodeType } from "../node";
 
 export default function Node(
   this: void,
@@ -11,7 +11,7 @@ export default function Node(
     enabled: boolean;
     onCreate: (this: void, o: ReturnType<typeof createNode>) => void;
   }> = {}
-) {
+): NodeType {
   const node = createNode({ name, enabled });
   onCreate?.(node);
   return node;
