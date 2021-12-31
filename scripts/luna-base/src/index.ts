@@ -50,3 +50,7 @@ import "./gl_renderer/image";
 import "./gl_renderer/image_task";
 import "./gl_renderer/imgui_render_nodes";
 import "./gl_renderer/primitives";
+
+import "./gl_renderer/components/node_component";
+import "./gl_renderer/components/task_component";
+import "./gl_renderer/components/gl_renderer_task";

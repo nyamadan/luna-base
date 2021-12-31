@@ -1,8 +1,10 @@
 import "luna-base";
-import Node, { Command, CommandState } from "luna-base/dist/gl_renderer/node";
+import { Command, CommandState } from "luna-base/dist/gl_renderer/node";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
-import NodeTask, { NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
+import { NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
 import LunaX from "luna-base/dist/gl_renderer/lunax";
+import Node from "luna-base/dist/gl_renderer/components/node_component";
+import NodeTask from "luna-base/dist/gl_renderer/components/task_component";
 
 const update = coroutine.create(function (
   this: void,
@@ -12,23 +14,22 @@ const update = coroutine.create(function (
   let frame = 0;
   let running = true;
   while (running) {
-    print(frame);
     frame++;
     coroutine.yield();
   }
 });
 
 export default function createLunaXNode(this: void) {
-  type Runner<U = any> = (
-    this: ScriptTask,
+  type Runner<U> = (
+    this: ScriptTask<U>,
     command: Command,
     state: CommandState<U>
   ) => CommandState<U>;
 
-  type WithRunner = Pick<ScriptTask, "run">;
+  type WithRunner<U = any> = Pick<ScriptTask<U>, "run">;
 
-  interface ScriptTask extends NodeTaskType {
-    run: Runner;
+  interface ScriptTask<U> extends NodeTaskType {
+    run: Runner<U>;
   }
 
   const runner: WithRunner = {

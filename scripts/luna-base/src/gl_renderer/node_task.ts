@@ -38,23 +38,3 @@ export function createTask<
 export function isNodeTask(this: void, x: unknown): x is NodeTaskType {
   return (x as any)?.run != null;
 }
-
-export default function NodeTask(
-  this: void,
-  {
-    field,
-    prototype,
-    name,
-    onCreate,
-  }: Partial<{
-    onCreate: (this: void, o: ReturnType<typeof createTask>) => void;
-  }> & {
-    name?: TableName;
-    field?: Omit<NodeTaskField, "id" | "enabled">;
-    prototype: NodeTaskPrototype;
-  }
-) {
-  const node = createTask(name ?? null, field ?? null, prototype);
-  onCreate?.(node);
-  return node;
-}

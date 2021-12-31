@@ -275,20 +275,3 @@ export function createNode<T = any>(
 export function isNode(this: void, x: unknown): x is NodeType {
   return getMetatableName(x) === TABLE_NAME;
 }
-
-export default function Node(
-  this: void,
-  {
-    name,
-    enabled,
-    onCreate,
-  }: Partial<{
-    name: string;
-    enabled: boolean;
-    onCreate: (this: void, o: ReturnType<typeof createNode>) => void;
-  }> = {}
-) {
-  const node = createNode({ name, enabled });
-  onCreate?.(node);
-  return node;
-}
