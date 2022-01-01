@@ -20,6 +20,9 @@ initGlfw();
 import "./test_gl_program";
 import "./test_gl_vertex_array";
 import "./test_node";
+import { logger } from "../src/logger";
+
+logger.setLevel("OFF");
 
 const runner = LuaUnit.new();
 runner.setOutputType("text");

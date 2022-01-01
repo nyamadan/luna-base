@@ -5,9 +5,11 @@ import { logger } from "../src/logger";
 let origPrint: (this: void, ...messages: any[]) => void;
 test("Test_Logger", {
   setUp() {
+    logger.setLevel("DEBUG");
     origPrint = _G["print"];
   },
   tearDown() {
+    logger.setLevel("OFF");
     _G["print"] = origPrint;
   },
   test_logger() {
