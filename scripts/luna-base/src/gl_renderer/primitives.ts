@@ -1,6 +1,6 @@
-import { mat4, Mat4, ReadonlyMat4 } from "../math/mat4";
-import { quat } from "../math/quat";
-import { ReadonlyVec3, vec3, Vec3 } from "../math/vec3";
+import mat4, { ReadonlyMat4 } from "../math/mat4";
+import quat from "../math/quat";
+import vec3, { ReadonlyVec3, Vec3 } from "../math/vec3";
 import { assertIsNotNull } from "../type_utils";
 import { createGeometry, GeometryFields } from "./geometry";
 

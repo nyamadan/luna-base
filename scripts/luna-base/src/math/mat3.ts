@@ -33,7 +33,7 @@ export type ReadonlyMat3 = readonly [
   number
 ];
 
-export namespace mat3 {
+namespace mat3 {
   /**
    * Creates a new identity mat3
    *
@@ -944,3 +944,5 @@ export namespace mat3 {
    */
   export const sub = subtract;
 }
+
+export default mat3;

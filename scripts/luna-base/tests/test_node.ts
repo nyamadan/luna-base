@@ -1,9 +1,9 @@
 import * as lu from "./lib/luaunit/luaunit";
 
-import { vec3 } from "../src/math/vec3";
+import vec3 from "../src/math/vec3";
 import { Command, createNode, initCommandState } from "../src/gl_renderer/node";
 import { test } from "./utils";
-import { mat4 } from "../src/math/mat4";
+import mat4 from "../src/math/mat4";
 import { createTask } from "../src/gl_renderer/node_task";
 
 let origPrint: (this: void, ...args: any[]) => void;
@@ -20,7 +20,7 @@ test("Test_Node", {
     type StateType = typeof state;
 
     let called = 0;
-    const root = createNode<null>();
+    const root = createNode<null>({ enabled: false });
     const task = createTask(
       null,
       {},
@@ -32,9 +32,24 @@ test("Test_Node", {
       }
     );
     root.addTask(task);
-    task.enabled = false;
     const state = root.update(initCommandState(null));
     lu.assertIs(called, 0);
+  },
+  test_name: function () {
+    const root = createNode<null>({ name: "MyName" });
+    lu.assertIs(root.name, "MyName");
+  },
+  test_task_name: function () {
+    const task = createTask(
+      null,
+      { name: "MyTaskName" },
+      {
+        run(_, state) {
+          return state;
+        },
+      }
+    );
+    lu.assertIs(task.name, "MyTaskName");
   },
   test_error: function () {
     type StateType = typeof state;

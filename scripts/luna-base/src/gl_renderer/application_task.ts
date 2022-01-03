@@ -2,7 +2,7 @@ import * as _gl from "gl";
 import * as glfw from "glfw";
 import * as imgui from "imgui";
 import { isEmscripten } from "utils";
-import { mat4 } from "../math/mat4";
+import mat4 from "../math/mat4";
 
 import { allocTableName, getMetatableName } from "../tables";
 import { createGLRendererTask } from "./gl_renderer_task";
@@ -94,7 +94,8 @@ const prototype: ApplicationTaskPrototype = {
 };
 
 export function createApplicationTask(this: void): ApplicationTask {
-  const field: Omit<ApplicationTaskField, "id" | "enabled"> = {
+  const field: Pick<ApplicationTaskField, "initialized" | "name"> = {
+    name: "Application",
     initialized: false,
   };
   return createTask(TABLE_NAME, field, prototype);

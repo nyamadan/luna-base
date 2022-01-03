@@ -1,6 +1,6 @@
 import * as _gl from "gl";
 import { createF32Mat4 } from "../buffers/f32array";
-import { mat4 } from "../math/mat4";
+import mat4 from "../math/mat4";
 import { allocTableName, getMetatableName } from "../tables";
 import {
   createTask,

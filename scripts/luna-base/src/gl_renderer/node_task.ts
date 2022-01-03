@@ -6,6 +6,7 @@ export type NodeTaskId = string & { __node_task: never };
 
 export interface NodeTaskField {
   readonly id: NodeTaskId;
+  readonly name: string;
   enabled: boolean;
 }
 
@@ -20,17 +21,19 @@ export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 
 export function createTask<
   T extends TableName,
-  T1 extends Omit<NodeTaskField, "id" | "enabled">,
+  T1 extends Omit<NodeTaskField, "id" | "name" | "enabled"> &
+    Partial<Pick<NodeTaskField, "name" | "enabled">>,
   T2 extends NodeTaskPrototype
 >(this: void, tableName: T | null, fields: T1 | null, prototype: T2) {
-  const initial: Pick<NodeTaskField, "id" | "enabled"> = {
+  const initial: Pick<NodeTaskField, "id" | "name" | "enabled"> = {
     id: uuid.v4() as NodeTaskId,
+    name: "Task",
     enabled: true,
   };
 
   return createTable(
     tableName,
-    { ...initial, ...fields } as T1 & Pick<NodeTaskField, "id" | "enabled">,
+    { ...initial, ...fields } as T1 & typeof initial,
     prototype as T2
   );
 }

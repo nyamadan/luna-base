@@ -28,7 +28,7 @@ test("Test_Image", {
     node.addTask(image);
     const state = node.setup(initCommandState(null));
 
-    const img = state.images[node.id];
+    const img = state.images[image.id];
     lu.assertNotNil(img);
     lu.assertEquals(img.getWidth(), 512);
     lu.assertEquals(img.getHeight(), 512);

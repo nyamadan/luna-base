@@ -1,4 +1,4 @@
-import { mat4, Mat4 } from "../math/mat4";
+import mat4, { Mat4 } from "../math/mat4";
 import {
   generateTypedNativeArrayFactory,
   isNativeArray,

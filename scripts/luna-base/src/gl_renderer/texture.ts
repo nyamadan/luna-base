@@ -5,8 +5,10 @@ import { Image } from "./image";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_TEXTURE");
 
+export type TextureId = string & { __texture: never };
+
 interface TextureFields {
-  id: string;
+  id: TextureId;
   image: Image;
 }
 
@@ -17,7 +19,7 @@ export type Texture = TexturePrototype & TextureFields;
 const prototype: TexturePrototype = {};
 
 export function createTexture(this: void, image: Image): Texture {
-  const fields: TextureFields = { id: uuid.v4(), image };
+  const fields: TextureFields = { id: uuid.v4() as TextureId, image };
   return createTable(TABLE_NAME, fields, prototype);
 }
 

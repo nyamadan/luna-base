@@ -12,7 +12,7 @@ import { EPSILON, hypot } from "./math_common";
 export type Vec4 = [number, number, number, number];
 export type ReadonlyVec4 = readonly [number, number, number, number];
 
-export namespace vec4 {
+namespace vec4 {
   /**
    * Creates a new, empty vec4
    *
@@ -730,3 +730,5 @@ export namespace vec4 {
     };
   })();
 }
+
+export default vec4;

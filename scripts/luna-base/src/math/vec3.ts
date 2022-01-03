@@ -13,7 +13,7 @@ import { EPSILON, hypot } from "./math_common";
 export type Vec3 = [number, number, number];
 export type ReadonlyVec3 = readonly [number, number, number];
 
-export namespace vec3 {
+namespace vec3 {
   /**
    * Creates a new, empty vec3
    *
@@ -884,3 +884,5 @@ export namespace vec3 {
     };
   })();
 }
+
+export default vec3;

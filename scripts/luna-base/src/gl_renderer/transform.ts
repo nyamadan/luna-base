@@ -1,7 +1,7 @@
 import * as _gl from "gl";
-import { mat4, Mat4 } from "../math/mat4";
-import { quat, Quat } from "../math/quat";
-import { vec3, Vec3 } from "../math/vec3";
+import mat4, { Mat4 } from "../math/mat4";
+import quat, { Quat } from "../math/quat";
+import vec3, { Vec3 } from "../math/vec3";
 import { allocTableName, createTable } from "../tables";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_TRANSFORM");

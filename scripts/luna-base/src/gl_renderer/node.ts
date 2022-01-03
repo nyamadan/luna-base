@@ -7,7 +7,7 @@ import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
 import { Image } from "./image";
-import { NodeTaskType } from "./node_task";
+import { NodeTaskId, NodeTaskType } from "./node_task";
 import { createTransform, Transform } from "./transform";
 import { createTransformTask, isTransformTask } from "./transform_task";
 
@@ -48,7 +48,7 @@ export type Command =
 
 export interface CommandState<T extends any = any> {
   worlds: Record<NodeId, F32Mat4 | undefined>;
-  images: Record<NodeId, Image | undefined>;
+  images: Record<NodeTaskId, Image | undefined>;
   userdata: T;
 }
 
@@ -112,14 +112,14 @@ const prototype: NodePrototype = {
       return state;
     }
 
+    for (const node of this.children) {
+      state = node.setup(state);
+    }
+
     try {
       state = this.runTask({ name: "setup", node: this }, state);
     } catch (e) {
       logger.error("%s", inspect(e));
-    }
-
-    for (const node of this.children) {
-      state = node.setup(state);
     }
 
     return state;

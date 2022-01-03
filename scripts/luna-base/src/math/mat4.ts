@@ -46,7 +46,7 @@ export type ReadonlyMat4 = readonly [
   number
 ];
 
-export namespace mat4 {
+namespace mat4 {
   /**
    * Creates a new identity mat4
    *
@@ -2336,3 +2336,5 @@ export namespace mat4 {
    */
   export const sub = subtract;
 }
+
+export default mat4;

@@ -5,16 +5,16 @@
  * @module quat
  */
 
-import { ReadonlyVec3, vec3, Vec3 } from "./vec3";
-import { vec4 } from "./vec4";
-import { mat3, ReadonlyMat3 } from "./mat3";
+import vec3, { ReadonlyVec3, Vec3 } from "./vec3";
+import vec4 from "./vec4";
+import mat3, { ReadonlyMat3 } from "./mat3";
 import { EPSILON } from "./math_common";
 import { safeUnreachable } from "../unreachable";
 
 export type Quat = [number, number, number, number];
 export type ReadonlyQuat = readonly [number, number, number, number];
 
-export namespace quat {
+namespace quat {
   /**
    * Creates a new identity quat
    *
@@ -827,3 +827,5 @@ export namespace quat {
     };
   })();
 }
+
+export default quat;

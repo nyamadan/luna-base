@@ -10,8 +10,8 @@ import { assertIsNotNull } from "luna-base/dist/type_utils";
 import { createTexture } from "luna-base/dist/gl_renderer/texture";
 import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
 import { createSubMeshTask } from "luna-base/dist/gl_renderer/sub_mesh_task";
-import { quat } from "luna-base/dist/math/quat";
-import { vec3 } from "luna-base/dist/math/vec3";
+import quat from "luna-base/dist/math/quat";
+import vec3 from "luna-base/dist/math/vec3";
 import {
   createImageTask,
   loadImageFromState,
@@ -21,35 +21,18 @@ import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes"
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import { createTask, NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
 
-function appendImageNode(
-  this: void,
-  parent: NodeType,
-  path: string,
-  option: Partial<Omit<NodeField, "id">> = {}
-) {
-  return parent.addChild(
-    createNode({
-      ...option,
-      tasks: [createImageTask(path), ...(option.tasks ?? [])],
-    })
-  );
-}
-
 export default function createRotateImageNode(this: void) {
-  const root = createNode({ name: "Root" });
-
-  const imageNode = appendImageNode(
-    root,
-    "./scripts/luna-base/tests/assets/waterfall-512x512.png",
-    { name: "Image" }
+  const imageTask = createImageTask(
+    "./scripts/luna-base/tests/assets/waterfall-512x512.png"
   );
+  const root = createNode({ name: "Root", tasks: [imageTask] });
 
   const update = coroutine.create(function (
     this: void,
     node: Command["node"],
     state: CommandState
   ) {
-    const image = loadImageFromState(state, imageNode.id);
+    const image = loadImageFromState(state, imageTask.id);
     assertIsNotNull(image);
 
     const node0 = createNode({
@@ -105,7 +88,7 @@ export default function createRotateImageNode(this: void) {
     run: Runner<UserState>;
   }
 
-  type ScriptTaskNoId = Omit<ScriptTask, "id" | "enabled">;
+  type ScriptTaskNoId = Pick<ScriptTask, "run">;
 
   const runner: ScriptTaskNoId = {
     run(command, state) {

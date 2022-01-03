@@ -13,7 +13,6 @@ import { logger } from "../logger";
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE_TASK");
 
 interface ImageTaskField extends NodeTaskField {
-  id: NodeTaskId;
   path: string;
 }
 
@@ -28,9 +27,9 @@ const prototype: ImageTaskPrototype = {
       case "setup": {
         const images = { ...state.images };
 
-        if (images[node.id] == null) {
+        if (images[this.id] == null) {
           logger.debug(`ImageTask.load: ${this.path}`);
-          images[node.id] = createImage(this.path);
+          images[this.id] = createImage(this.path);
         }
 
         return { ...state, images };
@@ -45,7 +44,7 @@ const prototype: ImageTaskPrototype = {
 export function loadImageFromState(
   this: void,
   state: CommandState,
-  id: NodeId
+  id: NodeTaskId
 ): Image | null {
   const img = state.images[id];
 
