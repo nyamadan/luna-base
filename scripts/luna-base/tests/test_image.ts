@@ -13,9 +13,7 @@ test("Test_Image", {
   tearDown: function (this: void) {},
 
   test_loadImage() {
-    const img = createImage();
-    img.setup("./assets/waterfall-512x512.png");
-
+    const img = createImage("./assets/waterfall-512x512.png");
     lu.assertEquals(img.getWidth(), 512);
     lu.assertEquals(img.getHeight(), 512);
     lu.assertEquals(img.getChannels(), 3);
@@ -24,7 +22,7 @@ test("Test_Image", {
 
   test_loadImageTask() {
     const node = createNode();
-    const image = createImageTask("./assets/waterfall-512x512.png");
+    const image = createImageTask({ path: "./assets/waterfall-512x512.png" });
     node.addTask(image);
     const state = node.setup(initCommandState(null));
 

@@ -6,9 +6,9 @@ import LunaX from "luna-base/dist/gl_renderer/lunax";
 import Node from "luna-base/dist/gl_renderer/components/node_component";
 import NodeTask from "luna-base/dist/gl_renderer/components/task_component";
 import ImageTask from "luna-base/dist/gl_renderer/components/image_task";
-import TextureImageTask from "luna-base/dist/gl_renderer/components/texture_image_task";
 import { logger } from "luna-base/dist/logger";
-import { getMetatableName } from "luna-base/dist/tables";
+import TextureImageNode from "luna-base/dist/gl_renderer/components/texture_image_node";
+import MeshNode from "luna-base/dist/gl_renderer/components/mesh_node";
 
 const update = coroutine.create(function (
   this: void,
@@ -60,14 +60,18 @@ export default function createLunaXNode(this: void) {
 
   return (
     <Node name="Root">
-      <TextureImageTask
-        onLoad={function (x) {
-          logger.debug("%s", x);
-        }}
-      >
-        <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
-        <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
-      </TextureImageTask>
+      <MeshNode>
+        <TextureImageNode
+          onLoad={function (task, node) {
+            for (const texture of Object.values(task.textures)) {
+              logger.debug("%s, %s", task.name, texture?.image?.path);
+            }
+          }}
+        >
+          <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
+          <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
+        </TextureImageNode>
+      </MeshNode>
       <NodeTask task={createTask(null, null, runner)} />
     </Node>
   );

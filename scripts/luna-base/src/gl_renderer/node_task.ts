@@ -19,13 +19,15 @@ export interface NodeTaskPrototype<
 
 export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 
+export type NodeTaskTypeOptionalField = "name" | "enabled";
+
 export function createTask<
   T extends TableName,
-  T1 extends Omit<NodeTaskField, "id" | "name" | "enabled"> &
-    Partial<Pick<NodeTaskField, "name" | "enabled">>,
+  T1 extends Omit<NodeTaskField, "id" | NodeTaskTypeOptionalField> &
+    Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>,
   T2 extends NodeTaskPrototype
 >(this: void, tableName: T | null, fields: T1 | null, prototype: T2) {
-  const initial: Pick<NodeTaskField, "id" | "name" | "enabled"> = {
+  const initial: Pick<NodeTaskField, "id" | NodeTaskTypeOptionalField> = {
     id: uuid.v4() as NodeTaskId,
     name: tableName ?? "TASK",
     enabled: true,

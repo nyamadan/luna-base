@@ -10,6 +10,7 @@ export type ImageId = string & { __image: never };
 
 interface ImageFieldBase {
   id: ImageId;
+  path?: string;
   status: "ready" | "progress" | "complete" | "error";
 }
 
@@ -26,7 +27,7 @@ interface PngImageField extends ImageFieldBase {
 type ImageField = PngImageField | UnknownImageField;
 
 interface ImagePrototype {
-  setup(this: Image, path: string): boolean;
+  setup(this: Image): boolean;
   getBuffer(this: Image): NativeBuffer | null;
   getWidth(this: Image): number | null;
   getHeight(this: Image): number | null;
@@ -37,12 +38,13 @@ interface ImagePrototype {
 export type Image = ImagePrototype & ImageField;
 
 const prototype: ImagePrototype = {
-  setup(path) {
-    if (this.status !== "ready") {
+  setup() {
+    if (this.status !== "ready" || this.path == null) {
       return false;
     }
+
     this.status = "progress";
-    const result = createPngImage(path);
+    const result = createPngImage(this.path);
     if (!isPngImage(result)) {
       this.status = "error";
       return false;
@@ -91,14 +93,13 @@ const prototype: ImagePrototype = {
 
 export function createImage(this: void, path?: string): Image {
   const fields: ImageField = {
+    path,
     id: uuid.v4() as ImageId,
     type: "unknown",
     status: "ready",
   };
   const o = createTable(TABLE_NAME, fields, prototype);
-  if (path != null) {
-    o.setup(path);
-  }
+  o.setup();
   return o;
 }
 
