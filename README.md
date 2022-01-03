@@ -19,6 +19,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] TaskにEnabledを足す
  * [x] Task作成のユーティリティ
  * [x] JSX対応
+ * [x] startを消す
  * [ ] JSX画像読み込み
  * [ ] CIでテスト
  * [ ] start commandの削除

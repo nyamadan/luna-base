@@ -18,10 +18,6 @@ interface CommandInterface {
   node: NodeType;
 }
 
-interface StartCommand extends CommandInterface {
-  name: "start";
-}
-
 interface LoadCommand extends CommandInterface {
   name: "load";
 }
@@ -44,7 +40,6 @@ interface RenderCommand extends CommandInterface {
 }
 
 export type Command =
-  | StartCommand
   | UpdateCommand
   | LoadCommand
   | TransformCommand
@@ -78,7 +73,6 @@ export interface NodePrototype<U = any> {
     command: Command,
     state: CommandState<U>
   ): CommandState<U>;
-  start(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   load(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   update(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   transform(
@@ -110,23 +104,6 @@ const prototype: NodePrototype = {
       if (task.enabled) {
         state = task.run(command, state);
       }
-    }
-    return state;
-  },
-  start: function (state) {
-    if (!this.enabled) {
-      return state;
-    }
-
-    const node = this;
-    try {
-      state = this.runTask({ name: "start", node }, state);
-    } catch (e) {
-      logger.error("%s", inspect(e));
-    }
-
-    for (const node of this.children) {
-      state = node.start(state);
     }
     return state;
   },
