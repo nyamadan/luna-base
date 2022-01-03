@@ -226,7 +226,7 @@ export function createNode<T = any>(
 ): NodePrototype<T> & NodeField {
   const fields: NodeField = {
     id: uuid.v4() as NodeId,
-    name: name ?? "Node",
+    name: name ?? "NODE",
     enabled: enabled ?? true,
     children: [],
     tasks: [],

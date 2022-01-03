@@ -1,6 +1,6 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
-import { CommandState, NodeId } from "./node";
+import { CommandState } from "./node";
 import { createImage, Image } from "./image";
 import {
   createTask,
@@ -59,8 +59,13 @@ export function loadImageFromState(
   return img;
 }
 
-export function createImageTask(this: void, path: string): ImageTaskType {
-  return createTask(TABLE_NAME, { path }, prototype);
+export function createImageTask(
+  this: void,
+  params: Partial<Omit<ImageTaskField, "id" | "name" | "path">> &
+    Pick<ImageTaskField, "path"> &
+    Partial<Pick<ImageTaskField, "name">>
+): ImageTaskType {
+  return createTask(TABLE_NAME, params, prototype);
 }
 
 export function isImageTask(this: void, x: unknown): x is ImageTaskType {

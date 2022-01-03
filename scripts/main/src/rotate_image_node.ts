@@ -3,8 +3,6 @@ import {
   Command,
   CommandState,
   createNode,
-  NodeField,
-  NodeType,
 } from "luna-base/dist/gl_renderer/node";
 import { assertIsNotNull } from "luna-base/dist/type_utils";
 import { createTexture } from "luna-base/dist/gl_renderer/texture";
@@ -22,9 +20,9 @@ import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import { createTask, NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
 
 export default function createRotateImageNode(this: void) {
-  const imageTask = createImageTask(
-    "./scripts/luna-base/tests/assets/waterfall-512x512.png"
-  );
+  const imageTask = createImageTask({
+    path: "./scripts/luna-base/tests/assets/waterfall-512x512.png",
+  });
   const root = createNode({ name: "Root", tasks: [imageTask] });
 
   const update = coroutine.create(function (

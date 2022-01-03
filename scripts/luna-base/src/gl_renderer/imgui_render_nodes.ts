@@ -7,6 +7,10 @@ function _imguiRenderNodes(this: void, node: NodeType) {
   }
 
   if (imgui.treeNode(node.id, node.name)) {
+    for (const task of node.tasks) {
+      imgui.text(`${task.name}`);
+    }
+
     for (const child of node.children) {
       _imguiRenderNodes(child);
     }
@@ -15,7 +19,7 @@ function _imguiRenderNodes(this: void, node: NodeType) {
 }
 
 export function imguiRenderNodes(node: NodeType) {
-  if (imgui.begin("Tree Nodes")) {
+  if (imgui.begin("Nodes")) {
     _imguiRenderNodes(node);
   }
   imgui.end();

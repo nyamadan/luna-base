@@ -27,7 +27,7 @@ export function createTask<
 >(this: void, tableName: T | null, fields: T1 | null, prototype: T2) {
   const initial: Pick<NodeTaskField, "id" | "name" | "enabled"> = {
     id: uuid.v4() as NodeTaskId,
-    name: "Task",
+    name: tableName ?? "TASK",
     enabled: true,
   };
 

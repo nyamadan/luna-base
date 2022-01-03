@@ -5,15 +5,15 @@ export default function ImageTask(
   {
     path,
     enabled,
+    name,
     onCreate,
   }: Partial<{
-    enabled: boolean;
     onCreate: (this: void, fn: ReturnType<typeof createImageTask>) => void;
   }> &
-    Pick<ImageTaskType, "path">
+    Pick<ImageTaskType, "path"> &
+    Partial<Pick<ImageTaskType, "enabled" | "name">>
 ) {
-  const o = createImageTask(path);
-  o.enabled = enabled !== false;
+  const o = createImageTask({ path, enabled, name });
   onCreate?.(o);
   return o;
 }
