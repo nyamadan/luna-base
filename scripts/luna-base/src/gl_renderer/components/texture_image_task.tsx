@@ -45,7 +45,7 @@ function createTextureImageNode(
                       image?.status === "complete" &&
                       this.textures[task.id] == null
                     ) {
-                      logger.debug(`createTexture: ${image}`);
+                      logger.debug(`createTexture: %s`, task.path);
                       const texture = createTexture(image);
                       this.textures[task.id] = texture;
                       numCompleteImageTask++;

@@ -8,6 +8,7 @@ import NodeTask from "luna-base/dist/gl_renderer/components/task_component";
 import ImageTask from "luna-base/dist/gl_renderer/components/image_task";
 import TextureImageTask from "luna-base/dist/gl_renderer/components/texture_image_task";
 import { logger } from "luna-base/dist/logger";
+import { getMetatableName } from "luna-base/dist/tables";
 
 const update = coroutine.create(function (
   this: void,
@@ -60,8 +61,8 @@ export default function createLunaXNode(this: void) {
   return (
     <Node name="Root">
       <TextureImageTask
-        onLoad={function (...args) {
-          logger.debug(args as any);
+        onLoad={function (x) {
+          logger.debug("%s", x);
         }}
       >
         <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />

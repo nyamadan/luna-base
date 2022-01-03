@@ -1,4 +1,5 @@
 import { NativeBuffer, new_buffer } from "native_buffer";
+import { logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
 import { isNumber } from "../type_utils";
 
@@ -33,6 +34,10 @@ export function generateTypedNativeArrayFactory(
   const metatable: NativeArrayMetatable = {
     prototype,
     __name: prototype.name,
+
+    __gc: function () {
+      logger.debug(`free native array: ${this}`);
+    },
 
     __len: function () {
       return this.size / prototype.byteSizePerElement;

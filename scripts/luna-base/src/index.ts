@@ -5,8 +5,7 @@ import { logger } from "./logger";
 setErrorLogger(function (this: void, msg: string) {
   logger.error("%s", msg);
 });
-
-import "./lib/inspect/inspect";
+import { inspect as __inspect } from "./lib/inspect/inspect";
 import "./uuid";
 import "./tables";
 import "./buffers/pointer_array";
