@@ -14,7 +14,7 @@ test("Test_Image", {
 
   test_loadImage() {
     const img = createImage();
-    img.load("./assets/waterfall-512x512.png");
+    img.setup("./assets/waterfall-512x512.png");
 
     lu.assertEquals(img.getWidth(), 512);
     lu.assertEquals(img.getHeight(), 512);
@@ -26,7 +26,7 @@ test("Test_Image", {
     const node = createNode();
     const image = createImageTask("./assets/waterfall-512x512.png");
     node.addTask(image);
-    const state = node.load(initCommandState(null));
+    const state = node.setup(initCommandState(null));
 
     const img = state.images[node.id];
     lu.assertNotNil(img);

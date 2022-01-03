@@ -26,7 +26,7 @@ interface PngImageField extends ImageFieldBase {
 type ImageField = PngImageField | UnknownImageField;
 
 interface ImagePrototype {
-  load(this: Image, path: string): boolean;
+  setup(this: Image, path: string): boolean;
   getBuffer(this: Image): NativeBuffer | null;
   getWidth(this: Image): number | null;
   getHeight(this: Image): number | null;
@@ -37,7 +37,7 @@ interface ImagePrototype {
 export type Image = ImagePrototype & ImageField;
 
 const prototype: ImagePrototype = {
-  load(path) {
+  setup(path) {
     if (this.status !== "ready") {
       return false;
     }
@@ -97,7 +97,7 @@ export function createImage(this: void, path?: string): Image {
   };
   const o = createTable(TABLE_NAME, fields, prototype);
   if (path != null) {
-    o.load(path);
+    o.setup(path);
   }
   return o;
 }

@@ -25,7 +25,7 @@ const prototype: ImageTaskPrototype = {
   run: function (command, state) {
     const { name, node } = command;
     switch (name) {
-      case "load": {
+      case "setup": {
         const images = { ...state.images };
 
         if (images[node.id] == null) {

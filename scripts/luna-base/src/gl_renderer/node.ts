@@ -19,7 +19,7 @@ interface CommandInterface {
 }
 
 interface LoadCommand extends CommandInterface {
-  name: "load";
+  name: "setup";
 }
 
 interface UpdateCommand extends CommandInterface {
@@ -73,7 +73,7 @@ export interface NodePrototype<U = any> {
     command: Command,
     state: CommandState<U>
   ): CommandState<U>;
-  load(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
+  setup(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   update(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   transform(
     this: NodeType,
@@ -107,19 +107,19 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  load: function (state) {
+  setup: function (state) {
     if (!this.enabled) {
       return state;
     }
 
     try {
-      state = this.runTask({ name: "load", node: this }, state);
+      state = this.runTask({ name: "setup", node: this }, state);
     } catch (e) {
       logger.error("%s", inspect(e));
     }
 
     for (const node of this.children) {
-      state = node.load(state);
+      state = node.setup(state);
     }
 
     return state;
