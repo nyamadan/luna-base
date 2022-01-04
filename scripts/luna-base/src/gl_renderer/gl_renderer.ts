@@ -76,7 +76,9 @@ function renderSubMesh(
     switch (value.type) {
       case "Texture": {
         if (renderer.textures[value.texture.id] == null) {
-          const texture = createGLTexture(value.texture.image);
+          const image = state.images[value.texture.imageTaskId]
+          assertIsNotNull(image);
+          const texture = createGLTexture(image);
           assertIsNotNull(texture);
           renderer.textures[value.texture.id] = texture;
         }

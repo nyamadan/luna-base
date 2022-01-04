@@ -37,7 +37,7 @@ const prototype: TextureImageTaskPrototype = {
           const image = images[task.id];
           if (image?.status === "complete" && this.textures[task.id] == null) {
             logger.debug(`createTexture: %s`, task.path);
-            const texture = createTexture(image);
+            const texture = createTexture(task.id);
             this.textures[task.id] = texture;
             numCompleteImageTask++;
           }

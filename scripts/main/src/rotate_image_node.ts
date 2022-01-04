@@ -30,16 +30,13 @@ export default function createRotateImageNode(this: void) {
     node: Command["node"],
     state: CommandState
   ) {
-    const image = loadImageFromState(state, imageTask.id);
-    assertIsNotNull(image);
-
     const node0 = createNode({
       name: "SubMesh",
       tasks: [
         createSubMeshTask({
           subMesh: createSubMesh(
             createPlaneGeometryXY(2, 2, 1, 1),
-            createBasicMaterial(createTexture(image))
+            createBasicMaterial(createTexture(imageTask.id))
           ),
         }),
       ],
@@ -52,7 +49,7 @@ export default function createRotateImageNode(this: void) {
         createSubMeshTask({
           subMesh: createSubMesh(
             createPlaneGeometryXY(2, 2, 1, 1),
-            createBasicMaterial(createTexture(image))
+            createBasicMaterial(createTexture(imageTask.id))
           ),
         }),
       ],
