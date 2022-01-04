@@ -134,6 +134,9 @@ const prototype: NodePrototype = {
     return state;
   },
   setup(state) {
+    let ok: boolean;
+    let err: unknown;
+
     if (!this.enabled) {
       return state;
     }
@@ -142,10 +145,11 @@ const prototype: NodePrototype = {
       state = node.setup(state);
     }
 
-    try {
+    [ok, err] = xpcall(() => {
       state = this.runTask({ name: "setup", node: this }, state);
-    } catch (e) {
-      logger.error("%s", inspect(e));
+    }, debug.traceback);
+    if (!ok) {
+      logger.error("%s", err);
     }
 
     return state;
@@ -155,10 +159,14 @@ const prototype: NodePrototype = {
       return state;
     }
 
-    try {
+    let ok: boolean;
+    let err: unknown;
+
+    [ok, err] = xpcall(() => {
       state = this.runTask({ name: "update", node: this }, state);
-    } catch (e) {
-      logger.error("%s", inspect(e));
+    }, debug.traceback);
+    if (!ok) {
+      logger.error("%s", err);
     }
 
     for (const node of this.children) {
@@ -171,10 +179,16 @@ const prototype: NodePrototype = {
     if (!this.enabled) {
       return state;
     }
-    try {
+
+    let ok: boolean;
+    let err: unknown;
+
+    [ok, err] = xpcall(() => {
       state = this.runTask({ name: "transform", node: this, world }, state);
-    } catch (e) {
-      logger.error("%s", inspect(e));
+    }, debug.traceback);
+
+    if (!ok) {
+      logger.error("%s", err);
     }
     const updatedWorld = state.worlds[this.id];
     assertIsNotNull(updatedWorld);
@@ -188,20 +202,27 @@ const prototype: NodePrototype = {
       return state;
     }
 
-    try {
+    let ok: boolean;
+    let err: unknown;
+
+    [ok, err] = xpcall(() => {
       state = this.runTask({ name: "prerender", node: this }, state);
-    } catch (e) {
-      logger.error("%s", inspect(e));
+    }, debug.traceback);
+
+    if (!ok) {
+      logger.error("%s", err);
     }
 
     for (const node of this.children) {
       state = node.render(state);
     }
 
-    try {
+    [ok, err] = xpcall(() => {
       state = this.runTask({ name: "render", node: this }, state);
-    } catch (e) {
-      logger.error("%s", inspect(e));
+    }, debug.traceback);
+
+    if (!ok) {
+      logger.error("%s", err);
     }
     return state;
   },

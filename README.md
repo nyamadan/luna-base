@@ -23,7 +23,6 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] JSX画像読み込み
  * [x] TextureImageとMeshのTaskを分離
  * [ ] JSX画像表示
- * [ ] エラーのスタックトレースを整理
  * [ ] Taskのoptionalを処理
  * [ ] Render IMGUIのタスクを作成
  * [ ] CIでテスト
