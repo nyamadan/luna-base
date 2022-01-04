@@ -27,7 +27,7 @@ export function assertIsNotNull<T>(
   x: T,
   message?: string
 ): asserts x is NonNullable<T> {
-  assert(x != null, message);
+  assert(x != null, message ?? "value is nil");
 }
 
 export function assertIsNull(

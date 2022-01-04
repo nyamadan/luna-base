@@ -6,6 +6,7 @@ import { Mat4 } from "../math/mat4";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
+import { Geometry } from "./geometry";
 import { Image } from "./image";
 import { NodeTaskId, NodeTaskType } from "./node_task";
 import { createTransform, Transform } from "./transform";
@@ -53,11 +54,12 @@ export type Command =
 export interface CommandState<T extends any = any> {
   worlds: Record<NodeId, F32Mat4 | undefined>;
   images: Record<NodeTaskId, Image | undefined>;
+  geometries: Record<NodeTaskId, Geometry | undefined>;
   userdata: T;
 }
 
 export function initCommandState<U>(userdata: U): CommandState<U> {
-  return { images: {}, worlds: {}, userdata };
+  return { images: {}, worlds: {}, geometries: {}, userdata };
 }
 
 export type NodeId = string & { __node: never };

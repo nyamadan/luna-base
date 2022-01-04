@@ -1,5 +1,7 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
+import { assertIsNotNull } from "../type_utils";
+import { isGeometryTask } from "./geometry_task";
 import {
   createTask,
   NodeTaskField,
@@ -7,7 +9,7 @@ import {
   NodeTaskType,
   NodeTaskTypeOptionalField,
 } from "./node_task";
-import { SubMesh } from "./sub_mesh";
+import { createSubMesh, SubMesh } from "./sub_mesh";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH_TASK");
 
@@ -28,6 +30,9 @@ const prototype: SubMeshTaskPrototype = {
         if (this.subMesh != null) {
           return state;
         }
+
+        const geometry = node.findTask(isGeometryTask);
+        assertIsNotNull(geometry);
 
         return state;
       }
