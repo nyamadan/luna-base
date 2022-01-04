@@ -32,17 +32,17 @@ const prototype: TextureImageTaskPrototype = {
         let numImageTask = 0;
         let numCompleteImageTask = 0;
         let numTotalCompleteImageTask = 0;
-        for (const task of node.findTasks(isImageTask)) {
+        for (const task of node.findTasks(isImageTask, 0)) {
           const images = { ...state.images };
-          const image = images[task.id];
-          if (image?.status === "complete" && this.textures[task.id] == null) {
+          const image = images[task.guid];
+          if (image?.status === "complete" && this.textures[task.guid] == null) {
             logger.debug(`createTexture: %s`, task.path);
-            const texture = createTexture(task.id);
-            this.textures[task.id] = texture;
+            const texture = createTexture(task.guid);
+            this.textures[task.guid] = texture;
             numCompleteImageTask++;
           }
 
-          if (this.textures[task.id] != null) {
+          if (this.textures[task.guid] != null) {
             numTotalCompleteImageTask++;
           }
           numImageTask++;

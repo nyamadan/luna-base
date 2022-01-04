@@ -60,12 +60,10 @@ export default function createLunaXNode(this: void) {
 
   return (
     <Node name="Root">
-      <MeshTask>
-        <TextureImageTask>
-          <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
-        </TextureImageTask>
-      </MeshTask>
-      <NodeTask task={createTask(null, null, runner)} />
+      <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
+      <TextureImageTask />
+      <MeshTask />
+      <NodeTask task={createTask(null, {name: "Runner"}, runner)} />
     </Node>
   );
 }

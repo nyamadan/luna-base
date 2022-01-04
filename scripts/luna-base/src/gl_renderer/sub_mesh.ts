@@ -9,7 +9,7 @@ const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH");
 export type SubMeshId = string & { __subMesh: never };
 
 interface SubMeshFields {
-  id: SubMeshId;
+  guid: SubMeshId;
   material: Material;
   geometry: Geometry;
 }
@@ -26,7 +26,7 @@ export function createSubMesh(
   material: Material
 ): SubMesh {
   const fields: SubMeshFields = {
-    id: uuid.v4() as SubMeshId,
+    guid: uuid.v4() as SubMeshId,
     geometry,
     material,
   };

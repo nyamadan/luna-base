@@ -13,7 +13,7 @@ import { Transform } from "./transform";
 const TABLE_NAME = allocTableName("LUA_TYPE_TRANSFORM_TASK");
 
 interface TransformTaskField extends NodeTaskField {
-  id: NodeTaskId;
+  guid: NodeTaskId;
   transform: Transform;
 }
 

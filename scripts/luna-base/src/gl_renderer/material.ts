@@ -14,7 +14,7 @@ type UniformValue = {
 };
 
 interface MaterialFields {
-  id: MaterialId;
+  guid: MaterialId;
   shaderProgram: ShaderProgram;
   uniformValues: Record<string, UniformValue>;
 }
@@ -31,7 +31,7 @@ export function createMaterial(
   uniformValues: Record<string, UniformValue> = {}
 ): Material {
   const fields: MaterialFields = {
-    id: uuid.v4() as MaterialId,
+    guid: uuid.v4() as MaterialId,
     shaderProgram,
     uniformValues,
   };

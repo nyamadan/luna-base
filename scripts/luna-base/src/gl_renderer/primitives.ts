@@ -136,7 +136,7 @@ function createPlaneVertices(
     }
   }
 
-  const arrays: Record<Exclude<keyof GeometryFields, "id">, number[]> = {
+  const arrays: Record<Exclude<keyof GeometryFields, "guid">, number[]> = {
     colors: colors,
     indices: indices,
     positions: positions,

@@ -12,7 +12,6 @@ import {
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_RENDERER_TASK");
 
 interface GLRendererTaskField extends NodeTaskField {
-  id: NodeTaskId;
   renderer: GLRenderer;
 }
 

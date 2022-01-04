@@ -1,6 +1,6 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
-import { createGeometry, Geometry } from "./geometry";
+import { Geometry } from "./geometry";
 import {
   createTask,
   NodeTaskField,
@@ -28,7 +28,7 @@ const prototype: GeometryTaskPrototype = {
       case "setup": {
         const geometries = { ...state.geometries };
 
-        if (geometries[this.id] == null) {
+        if (geometries[this.guid] == null) {
         }
 
         return { ...state, geometries };

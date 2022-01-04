@@ -9,7 +9,7 @@ export type ShaderId = string & { __shader_program: never };
 export type ShaderType = "VERTEX_SHADER" | "FRAGMENT_SHADER";
 
 interface ShaderField<T extends ShaderType> {
-  id: ShaderId;
+  guid: ShaderId;
   type: T;
   source: string;
 }
@@ -27,7 +27,7 @@ export function createShader<T extends ShaderType>(
   source: string
 ): Shader<T> {
   const field: ShaderField<T> = {
-    id: uuid.v4() as ShaderId,
+    guid: uuid.v4() as ShaderId,
     type,
     source,
   };

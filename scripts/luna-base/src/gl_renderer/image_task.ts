@@ -27,9 +27,9 @@ const prototype: ImageTaskPrototype = {
       case "setup": {
         const images = { ...state.images };
 
-        if (images[this.id] == null) {
+        if (images[this.guid] == null) {
           logger.debug(`ImageTask.load: ${this.path}`);
-          images[this.id] = createImage(this.path);
+          images[this.guid] = createImage(this.path);
         }
 
         return { ...state, images };
@@ -44,9 +44,9 @@ const prototype: ImageTaskPrototype = {
 export function loadImageFromState(
   this: void,
   state: CommandState,
-  id: NodeTaskId
+  guid: NodeTaskId
 ): Image | null {
-  const img = state.images[id];
+  const img = state.images[guid];
 
   if (img == null) {
     return null;
@@ -61,7 +61,7 @@ export function loadImageFromState(
 
 export function createImageTask(
   this: void,
-  params: Partial<Omit<ImageTaskField, "id" | "name" | "path">> &
+  params: Partial<Omit<ImageTaskField, "guid" | "name" | "path">> &
     Pick<ImageTaskField, "path"> &
     Partial<Pick<ImageTaskField, "name">>
 ): ImageTaskType {

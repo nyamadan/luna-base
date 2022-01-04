@@ -17,7 +17,7 @@ import {
 const TABLE_NAME = allocTableName("LUA_TYPE_APPLICATION_TASK");
 
 interface ApplicationTaskField extends NodeTaskField {
-  id: NodeTaskId;
+  guid: NodeTaskId;
   initialized: boolean;
 }
 

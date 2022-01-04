@@ -8,7 +8,7 @@ const TABLE_NAME = allocTableName("LUA_TYPE_SHADER_PROGRAM");
 export type ShaderProgramId = string & { __shader_program: never };
 
 interface ShaderProgramField {
-  id: ShaderProgramId;
+  guid: ShaderProgramId;
   vertexShader: Shader;
   fragmentShader: Shader;
 }
@@ -25,7 +25,7 @@ export function createShaderProgram(
   fragmentShader: Shader<"FRAGMENT_SHADER">
 ): ShaderProgram {
   const field: ShaderProgramField = {
-    id: uuid.v4() as ShaderProgramId,
+    guid: uuid.v4() as ShaderProgramId,
     vertexShader,
     fragmentShader,
   };

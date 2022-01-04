@@ -37,24 +37,24 @@ function renderSubMesh(
 
   assertIsNotNull(subMesh);
 
-  if (renderer.programs[subMesh.material.shaderProgram.id] == null) {
+  if (renderer.programs[subMesh.material.shaderProgram.guid] == null) {
     const program = createGLProgram(
       subMesh.material.shaderProgram.vertexShader.source,
       subMesh.material.shaderProgram.fragmentShader.source
     );
     if (isGLProgram(program)) {
-      renderer.programs[subMesh.material.shaderProgram.id] = program;
+      renderer.programs[subMesh.material.shaderProgram.guid] = program;
     } else {
       error(inspect(program));
     }
   }
 
-  const program = renderer.programs[subMesh.material.shaderProgram.id];
+  const program = renderer.programs[subMesh.material.shaderProgram.guid];
 
   assertIsNotNull(program);
 
-  if (renderer.vaos[subMesh.geometry.id] == null) {
-    renderer.vaos[subMesh.geometry.id] = createGLVertexArray(
+  if (renderer.vaos[subMesh.geometry.guid] == null) {
+    renderer.vaos[subMesh.geometry.guid] = createGLVertexArray(
       program,
       createGLGeometryBuffer(
         {
@@ -68,19 +68,19 @@ function renderSubMesh(
     );
   }
 
-  const vao = renderer.vaos[subMesh.geometry.id];
+  const vao = renderer.vaos[subMesh.geometry.guid];
   assertIsNotNull(vao);
 
   // Setup Uniform Values
   for (const value of Object.values(subMesh.material.uniformValues)) {
     switch (value.type) {
       case "Texture": {
-        if (renderer.textures[value.texture.id] == null) {
-          const image = state.images[value.texture.imageTaskId]
+        if (renderer.textures[value.texture.guid] == null) {
+          const image = state.images[value.texture.imageTaskGuid];
           assertIsNotNull(image);
           const texture = createGLTexture(image);
           assertIsNotNull(texture);
-          renderer.textures[value.texture.id] = texture;
+          renderer.textures[value.texture.guid] = texture;
         }
         break;
       }
@@ -103,7 +103,7 @@ function renderSubMesh(
     switch (value.type) {
       case "Texture": {
         const texture =
-          value.texture != null ? renderer.textures[value.texture.id] : null;
+          value.texture != null ? renderer.textures[value.texture.guid] : null;
         const uTex = program.uniforms.find((x) => x.name === name);
         if (uTex?.texUnit != null && texture?.tex != null) {
           const unit = uTex.texUnit;

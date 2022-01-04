@@ -6,7 +6,7 @@ import { uuid } from "../uuid";
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY");
 
 export interface GeometryFields {
-  id: string;
+  guid: string;
   positions: F32Array | number[] | null;
   colors: F32Array | number[] | null;
   uv0s: F32Array | number[] | null;
@@ -22,10 +22,10 @@ const prototype: GeometryPrototype = {};
 
 export function createGeometry(
   this: void,
-  params: Partial<Omit<GeometryFields, "id">> = {}
+  params: Partial<Omit<GeometryFields, "guid">> = {}
 ) {
   const fields: GeometryFields = {
-    id: uuid.v4(),
+    guid: uuid.v4(),
     colors: null,
     indices: null,
     positions: null,

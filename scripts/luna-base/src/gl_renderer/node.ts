@@ -325,7 +325,7 @@ const prototype: NodePrototype = {
 
 export function createNode<T = any>(
   this: void,
-  { tasks, children, name, enabled }: Partial<Omit<NodeField, "id">> = {}
+  { tasks, children, name, enabled }: Partial<Omit<NodeField, "guid">> = {}
 ): NodePrototype<T> & NodeField {
   const fields: NodeField = {
     id: uuid.v4() as NodeId,

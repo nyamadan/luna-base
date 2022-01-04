@@ -36,7 +36,7 @@ export default function createRotateImageNode(this: void) {
         createSubMeshTask({
           subMesh: createSubMesh(
             createPlaneGeometryXY(2, 2, 1, 1),
-            createBasicMaterial(createTexture(imageTask.id))
+            createBasicMaterial(createTexture(imageTask.guid))
           ),
         }),
       ],
@@ -49,7 +49,7 @@ export default function createRotateImageNode(this: void) {
         createSubMeshTask({
           subMesh: createSubMesh(
             createPlaneGeometryXY(2, 2, 1, 1),
-            createBasicMaterial(createTexture(imageTask.id))
+            createBasicMaterial(createTexture(imageTask.guid))
           ),
         }),
       ],
