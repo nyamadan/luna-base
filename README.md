@@ -21,8 +21,9 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] JSX対応
  * [x] startを消す
  * [x] JSX画像読み込み
- * [ ] TextureImageとMeshのTaskを分離
+ * [x] TextureImageとMeshのTaskを分離
  * [ ] JSX画像表示
+ * [ ] Taskのoptionalを処理
  * [ ] CIでテスト
  * [ ] start commandの削除
  * [ ] NodeのGenerics削除

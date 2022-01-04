@@ -36,12 +36,12 @@ export default function createRotateImageNode(this: void) {
     const node0 = createNode({
       name: "SubMesh",
       tasks: [
-        createSubMeshTask(
-          createSubMesh(
+        createSubMeshTask({
+          subMesh: createSubMesh(
             createPlaneGeometryXY(2, 2, 1, 1),
             createBasicMaterial(createTexture(image))
-          )
-        ),
+          ),
+        }),
       ],
     });
     node.addChild(node0);
@@ -49,12 +49,12 @@ export default function createRotateImageNode(this: void) {
     const node1 = createNode({
       name: "SubMesh",
       tasks: [
-        createSubMeshTask(
-          createSubMesh(
+        createSubMeshTask({
+          subMesh: createSubMesh(
             createPlaneGeometryXY(2, 2, 1, 1),
             createBasicMaterial(createTexture(image))
-          )
-        ),
+          ),
+        }),
       ],
     });
     node.addChild(node1);

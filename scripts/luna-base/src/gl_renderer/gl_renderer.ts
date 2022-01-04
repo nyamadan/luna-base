@@ -10,7 +10,7 @@ import { assertIsNotNull } from "../type_utils";
 import { safeUnreachable } from "../unreachable";
 import { CommandState, NodeType } from "./node";
 import { ShaderProgramId } from "./shader_program";
-import { isSubMeshTask, SubMeshTask } from "./sub_mesh_task";
+import { isSubMeshTask, SubMeshTaskType } from "./sub_mesh_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_RENDERER");
 
@@ -31,9 +31,11 @@ function renderSubMesh(
   renderer: GLRenderer,
   state: CommandState,
   node: NodeType,
-  task: SubMeshTask
+  task: SubMeshTaskType
 ) {
   const subMesh = task.subMesh;
+
+  assertIsNotNull(subMesh);
 
   if (renderer.programs[subMesh.material.shaderProgram.id] == null) {
     const program = createGLProgram(

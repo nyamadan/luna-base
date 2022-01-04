@@ -1,7 +1,7 @@
 import { NodeTaskType, NodeTaskTypeOptionalField } from "../node_task";
 import { createMeshTask, MeshTask, MeshTaskField } from "../mesh_task";
 
-export default function MeshNode(
+export default function MeshTask(
   this: void,
   {
     onCreate,
