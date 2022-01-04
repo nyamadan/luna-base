@@ -30,7 +30,7 @@ const prototype: ApplicationTaskPrototype = {
     const { name, node } = command;
 
     switch (name) {
-      case "update": {
+      case "setup": {
         if (this.initialized) {
           return state;
         } else {

@@ -9,7 +9,11 @@ import { uuid } from "../uuid";
 import { Image } from "./image";
 import { NodeTaskId, NodeTaskType } from "./node_task";
 import { createTransform, Transform } from "./transform";
-import { createTransformTask, isTransformTask } from "./transform_task";
+import {
+  createTransformTask,
+  isTransformTask,
+  TransformTask,
+} from "./transform_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_NODE");
 
@@ -83,10 +87,30 @@ export interface NodePrototype<U = any> {
   render(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   addChild(this: NodeType, node: NodeType): NodeType;
   addTask(this: NodeType, task: NodeTaskType): void;
-  findTasks(
+  findTasks<S extends NodeTaskType>(
     this: NodeType,
-    fn: (this: void, task: NodeTaskType) => boolean
+    fn:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean),
+    maxDepth?: number
+  ): S[];
+  findTasksByName(
+    this: NodeType,
+    name: string,
+    maxDepth?: number
   ): NodeTaskType[];
+  findTask<S extends NodeTaskType>(
+    this: NodeType,
+    fn:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean),
+    maxDepth?: number
+  ): S | null;
+  findTaskByName<S extends NodeTaskType>(
+    this: NodeType,
+    name: string,
+    maxDepth?: number
+  ): S | null;
   findTransform(this: NodeType): Transform | null;
   traverse(
     this: NodeType,
@@ -99,7 +123,7 @@ export interface NodePrototype<U = any> {
 export type NodeType = NodePrototype & NodeField;
 
 const prototype: NodePrototype = {
-  runTask: function (command, state) {
+  runTask(command, state) {
     for (const task of this.tasks) {
       if (task.enabled) {
         state = task.run(command, state);
@@ -107,7 +131,7 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  setup: function (state) {
+  setup(state) {
     if (!this.enabled) {
       return state;
     }
@@ -124,7 +148,7 @@ const prototype: NodePrototype = {
 
     return state;
   },
-  update: function (state) {
+  update(state) {
     if (!this.enabled) {
       return state;
     }
@@ -157,7 +181,7 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  render: function (state) {
+  render(state) {
     if (!this.enabled) {
       return state;
     }
@@ -179,31 +203,87 @@ const prototype: NodePrototype = {
     }
     return state;
   },
-  addChild: function (node) {
+  addChild(node) {
     this.children.push(node);
     return node;
   },
-  addTask: function (task) {
+  addTask(task) {
     this.tasks.push(task);
   },
-  findTasks: function (f) {
-    const results: NodeTaskType[] = [];
+  findTasks<S extends NodeTaskType>(
+    this: NodeType,
+    f:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean),
+    maxDepth?: number
+  ) {
+    maxDepth = maxDepth ?? 0xffffffff;
+    assert(maxDepth >= 0, "maxDepth >= 0");
+
+    const results: S[] = [];
+
     for (const task of this.tasks) {
       if (f(task)) {
         results.push(task);
       }
     }
-    return results;
-  },
-  findTransform: function () {
-    for (const task of this.tasks) {
-      if (isTransformTask(task)) {
-        return task.transform;
+
+    if (maxDepth > 0) {
+      for (const node of this.children) {
+        results.push(...node.findTasks(f, maxDepth - 1));
       }
     }
+    return results;
+  },
+  findTasksByName(name, maxDepth) {
+    return this.findTasks(function (task) {
+      return task.name === name;
+    }, maxDepth);
+  },
+  findTask<S extends NodeTaskType>(
+    this: NodeType,
+    f:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean),
+    maxDepth?: number
+  ) {
+    maxDepth = maxDepth ?? 0xffffffff;
+    assert(maxDepth >= 0, "maxDepth >= 0");
+
+    for (const task of this.tasks) {
+      if (f(task)) {
+        return task;
+      }
+    }
+
+    if (maxDepth > 0) {
+      for (const node of this.children) {
+        const task = node.findTask(f, maxDepth - 1);
+        if (task != null) {
+          return task;
+        }
+      }
+    }
+
     return null;
   },
-  traverse: function (enter, leave) {
+  findTaskByName<S extends NodeTaskType>(
+    this: NodeType,
+    name: string,
+    maxDepth?: number
+  ) {
+    return this.findTask(function (task): task is S {
+      return task.name === name;
+    }, maxDepth);
+  },
+  findTransform() {
+    return (
+      this.findTask(function (task): task is TransformTask {
+        return isTransformTask(task);
+      }, 0)?.transform ?? null
+    );
+  },
+  traverse(enter, leave) {
     if (enter(this) !== false) {
       for (const node of this.children) {
         node.traverse(enter);
@@ -211,7 +291,7 @@ const prototype: NodePrototype = {
     }
     leave?.(this);
   },
-  flat: function () {
+  flat() {
     const tasks: NodeType[] = [];
     this.traverse(function (node) {
       tasks.push(node);

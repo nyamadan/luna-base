@@ -11,7 +11,7 @@ import { createTask } from "luna-base/dist/gl_renderer/node_task";
 const root = createNode({
   tasks: [createApplicationTask()],
 });
-root.update(initCommandState(null));
+root.setup(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
 rotateImage.enabled = false;

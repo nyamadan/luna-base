@@ -1,5 +1,5 @@
 import { safeUnreachable } from "../../unreachable";
-import { isNode, NodeType } from "../node";
+import { createNode, isNode, NodeType } from "../node";
 import { isNodeTask, NodeTaskType } from "../node_task";
 
 type NodeOrTask = NodeTaskType | NodeType;
@@ -25,7 +25,27 @@ namespace LunaX {
       }
       return node;
     } else if (isNodeTask(nodeOrTask)) {
-      return nodeOrTask;
+      const task = nodeOrTask;
+      let node: NodeType | null = null;
+      for (const child of children) {
+        if (isNode(child)) {
+          if (node == null) {
+            node = createNode({ name: `(NODE)${task.name}` });
+            node.addTask(task);
+          }
+          node.addChild(child);
+        } else if (isNodeTask(child)) {
+          if (node == null) {
+            node = createNode({ name: `(NODE)${task.name}` });
+            node.addTask(task);
+          }
+          node.addTask(child);
+        } else {
+          safeUnreachable(child);
+        }
+      }
+
+      return node ?? task;
     }
 
     safeUnreachable(nodeOrTask);
