@@ -24,6 +24,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] TextureImageとMeshのTaskを分離
  * [ ] JSX画像表示
  * [ ] Taskのoptionalを処理
+ * [ ] Render IMGUIのタスクを作成
  * [ ] CIでテスト
  * [ ] start commandの削除
  * [ ] NodeのGenerics削除
