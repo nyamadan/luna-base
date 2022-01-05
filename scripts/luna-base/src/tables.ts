@@ -41,13 +41,9 @@ export function createTable<T1, T2>(
   prototype?: T2 | null,
   __gc?: (this: T1 & T2) => void
 ) {
-  function __tostring(this: T1 & T2) {
-    return inspect(this);
-  }
   const metatable = {
     __index: prototype,
     __name: tableName,
-    __tostring,
     __gc,
   };
   return setmetatable(fields as any, metatable as any) as T1 & T2;

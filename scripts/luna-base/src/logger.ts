@@ -1,3 +1,5 @@
+import { inspect } from "./lib/inspect/inspect";
+
 type Level = "OFF" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
 type LogMsg = (this: Logger, level: Level, message: string) => boolean;
 
@@ -21,3 +23,7 @@ export const logger = logging["new"](function (level, message) {
   print(`[${level}] ${message}`);
   return true;
 });
+
+export function dbg(this: void, x: any) {
+  logger.debug(inspect(x));
+}

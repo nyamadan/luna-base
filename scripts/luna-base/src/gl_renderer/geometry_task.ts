@@ -11,12 +11,12 @@ import {
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY_TASK");
 
-interface GeometryTaskField extends NodeTaskField {
-  geometry: Geometry | null;
+export interface GeometryTaskField extends NodeTaskField {
   generator: ((this: void) => Geometry) | null;
 }
 
-interface GeometryTaskPrototype extends NodeTaskPrototype<GeometryTaskType> {}
+export interface GeometryTaskPrototype
+  extends NodeTaskPrototype<GeometryTaskType> {}
 
 export type GeometryTaskType = GeometryTaskPrototype & GeometryTaskField;
 
@@ -26,10 +26,7 @@ const prototype: GeometryTaskPrototype = {
     switch (name) {
       case "setup": {
         const geometries = { ...state.geometries };
-
-        if (geometries[this.guid] == null) {
-        }
-
+        geometries[this.guid] ??= this.generator?.();
         return { ...state, geometries };
       }
       default: {
@@ -41,15 +38,17 @@ const prototype: GeometryTaskPrototype = {
 
 export function createGeometryTask(
   this: void,
-  params: NodeTaskProps<{}, Pick<GeometryTaskField, "generator" | "geometry">>
+  params: NodeTaskProps<
+    Pick<Omit<GeometryTaskField, keyof NodeTaskField>, "generator">,
+    {}
+  >
 ): GeometryTaskType {
-  const { generator, geometry } = params;
+  const { generator } = params;
   return createTask(
     TABLE_NAME,
     {
       ...pickOptionalField(params),
       ...{
-        geometry: geometry ?? null,
         generator: generator ?? null,
       },
     },

@@ -1,12 +1,18 @@
 import "luna-base";
 import { Command, CommandState } from "luna-base/dist/gl_renderer/node";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
-import { createTask, NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
+import {
+  createTask,
+  NodeTaskType,
+  TaskRef,
+} from "luna-base/dist/gl_renderer/node_task";
 import LunaX from "luna-base/dist/gl_renderer/lunax";
 import NodeTask from "luna-base/dist/gl_renderer/components/task_component";
 import ImageTask from "luna-base/dist/gl_renderer/components/image_task";
 import TextureImageTask from "luna-base/dist/gl_renderer/components/texture_image_task";
 import MeshTask from "luna-base/dist/gl_renderer/components/mesh_task";
+import GeometryTask from "luna-base/dist/gl_renderer/components/geometry_task";
+import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 
 const update = coroutine.create(function (
   this: void,
@@ -42,7 +48,6 @@ export default function createLunaXNode(this: void) {
           if (coroutine.status(update) === "suspended") {
             coroutine.resume(update, node, state);
           }
-
           return state;
         }
         case "render": {
@@ -61,7 +66,9 @@ export default function createLunaXNode(this: void) {
       <TextureImageTask>
         <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
       </TextureImageTask>
-      <MeshTask></MeshTask>
+      <MeshTask>
+        <GeometryTask generator={createPlaneGeometryXY}></GeometryTask>
+      </MeshTask>
     </NodeTask>
   );
 }

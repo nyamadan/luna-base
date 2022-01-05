@@ -96,3 +96,10 @@ export function isTextureImageTask(
 ): x is TextureImageTask {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export function assertTextureImageTask(
+  this: void,
+  x: unknown
+): asserts x is TextureImageTask {
+  assert(isTextureImageTask(x));
+}

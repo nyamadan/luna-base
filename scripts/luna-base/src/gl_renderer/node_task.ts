@@ -1,6 +1,6 @@
 import { createTable, TableName } from "../tables";
 import { uuid } from "../uuid";
-import { Command, CommandState, NodeRef, NodeType } from "./node";
+import { Command, CommandState, NodeType } from "./node";
 
 export type NodeTaskId = string & { __node_task: never };
 
