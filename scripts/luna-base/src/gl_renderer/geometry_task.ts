@@ -38,10 +38,7 @@ const prototype: GeometryTaskPrototype = {
 
 export function createGeometryTask(
   this: void,
-  params: NodeTaskProps<
-    Pick<Omit<GeometryTaskField, keyof NodeTaskField>, "generator">,
-    {}
-  >
+  params: NodeTaskProps<GeometryTaskField, "generator", never>
 ): GeometryTaskType {
   const { generator } = params;
   return createTask(

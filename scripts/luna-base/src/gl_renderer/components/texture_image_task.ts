@@ -1,7 +1,4 @@
-import {
-  NodeTaskProps,
-  pickOptionalField,
-} from "../node_task";
+import { NodeTaskProps, pickOptionalField } from "../node_task";
 import {
   createTextureImageTask,
   TextureImageTask,
@@ -11,12 +8,13 @@ import {
 export default function TextureImageTask(
   this: void,
   params: NodeTaskProps<
-    {},
-    Pick<TextureImageTaskField, "onLoad"> & {
+    TextureImageTaskField & {
       onCreate: (this: void, task: TextureImageTask) => void;
-    }
+    },
+    never,
+    "onCreate" | "onLoad"
   > = {}
-) {
+): TextureImageTask {
   const { onCreate, onLoad } = params;
   const task = createTextureImageTask({
     ...pickOptionalField(params),

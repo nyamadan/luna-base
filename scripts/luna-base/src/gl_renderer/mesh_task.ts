@@ -38,7 +38,7 @@ const prototype: MeshTaskPrototype = {
 
 export function createMeshTask(
   this: void,
-  params: NodeTaskProps<{}, Pick<MeshTaskField, "onLoad">> = {}
+  params: NodeTaskProps<MeshTaskField, never, "onLoad"> = {}
 ): MeshTask {
   const { onLoad } = params;
   return createTask(

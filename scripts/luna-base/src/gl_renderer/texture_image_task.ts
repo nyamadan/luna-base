@@ -74,7 +74,7 @@ const prototype: TextureImageTaskPrototype = {
 
 export function createTextureImageTask(
   this: void,
-  params: NodeTaskProps<{}, Pick<TextureImageTaskField, "onLoad">> = {}
+  params: NodeTaskProps<TextureImageTaskField, never, "onLoad"> = {}
 ): TextureImageTask {
   const { onLoad } = params;
   return createTask(

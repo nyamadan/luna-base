@@ -8,10 +8,11 @@ import {
 export default function GeometryTask(
   this: void,
   params: NodeTaskProps<
-    Pick<Omit<GeometryTaskField, keyof NodeTaskField>, "generator">,
-    {
+    GeometryTaskField & {
       onCreate: (this: void, task: GeometryTaskType) => void;
-    }
+    },
+    "generator",
+    "onCreate"
   >
 ) {
   const { generator, onCreate } = params;

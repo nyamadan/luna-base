@@ -28,11 +28,13 @@ export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 
 type NodeTaskTypeOptionalField = "name" | "enabled" | "tags" | "ref";
 
-export type NodeTaskProps<Mandatory = {}, Optional = {}> = Partial<
-  Pick<NodeTaskField, NodeTaskTypeOptionalField>
-> &
-  Mandatory &
-  Partial<Optional>;
+export type NodeTaskProps<
+  T extends NodeTaskField,
+  M extends keyof Omit<T, keyof NodeTaskField>,
+  O extends keyof Omit<T, keyof NodeTaskField>
+> = Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>> &
+  Pick<Omit<T, keyof NodeTaskField>, M> &
+  Partial<Pick<Omit<T, keyof NodeTaskField>, O>>;
 
 export function pickOptionalField(
   this: void,

@@ -46,7 +46,7 @@ const prototype: SubMeshTaskPrototype = {
 
 export function createSubMeshTask(
   this: void,
-  params: NodeTaskProps<{}, Pick<SubMeshTaskField, "subMesh">> = {}
+  params: NodeTaskProps<SubMeshTaskField, never, "subMesh"> = {}
 ): SubMeshTaskType {
   const { subMesh } = params;
   const task = createTask(
