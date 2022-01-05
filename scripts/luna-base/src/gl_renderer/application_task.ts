@@ -75,6 +75,7 @@ const prototype: ApplicationTaskPrototype = {
             },
             update: () => {
               glfw.pollEvents();
+              node.updateRefs();
               state = node.setup(state);
               state = node.update(state);
               state = node.transform(state, mat4.create());

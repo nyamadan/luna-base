@@ -7,7 +7,6 @@ import NodeTask from "luna-base/dist/gl_renderer/components/task_component";
 import ImageTask from "luna-base/dist/gl_renderer/components/image_task";
 import TextureImageTask from "luna-base/dist/gl_renderer/components/texture_image_task";
 import MeshTask from "luna-base/dist/gl_renderer/components/mesh_task";
-import { logger } from "luna-base/dist/logger";
 
 const update = coroutine.create(function (
   this: void,

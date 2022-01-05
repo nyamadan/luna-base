@@ -7,16 +7,33 @@ import {
   initCommandState,
   NodeField,
   NodePrototype,
+  NodeRef,
 } from "../src/gl_renderer/node";
-import { createTask } from "../src/gl_renderer/node_task";
+import { createTask, TaskRef } from "../src/gl_renderer/node_task";
+import { ImageTaskType } from "../src/gl_renderer/image_task";
 
 test("Test_LunaX", {
   setUp() {},
   tearDown() {},
   test_node() {
     let called = 0;
+
+    const taskRef: TaskRef = { node: null, task: null };
+    const nodeRef: NodeRef = { node: null };
     const root: NodePrototype<null> & NodeField = (
-      <Node>
+      <Node ref={nodeRef}>
+        <NodeTask
+          task={createTask(
+            null,
+            {
+              ref: taskRef,
+              name: "REF",
+            },
+            {
+              run: (_, state) => state,
+            }
+          )}
+        />
         <NodeTask
           task={createTask(
             null,
@@ -34,6 +51,11 @@ test("Test_LunaX", {
         />
       </Node>
     );
+
+    root.updateRefs();
+    lu.assertEquals(nodeRef.node, root);
+    lu.assertEquals(taskRef.task?.name, "REF");
+
     root.update(initCommandState(null));
     lu.assertIs(called, 1);
     lu.assertNil(root.findTask((task) => task.name == "NULL"));

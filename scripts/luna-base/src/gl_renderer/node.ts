@@ -5,6 +5,7 @@ import { Mat4 } from "../math/mat4";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
+import Node from "./components/node_component";
 import { Geometry } from "./geometry";
 import { Image } from "./image";
 import { NodeTaskId, NodeTaskType } from "./node_task";
@@ -22,7 +23,7 @@ interface CommandInterface {
   node: NodeType;
 }
 
-interface LoadCommand extends CommandInterface {
+interface SetupCommand extends CommandInterface {
   name: "setup";
 }
 
@@ -44,8 +45,8 @@ interface RenderCommand extends CommandInterface {
 }
 
 export type Command =
+  | SetupCommand
   | UpdateCommand
-  | LoadCommand
   | TransformCommand
   | PreRenderCommand
   | RenderCommand;
@@ -63,6 +64,10 @@ export function initCommandState<U>(userdata: U): CommandState<U> {
 
 export type NodeId = string & { __node: never };
 
+export interface NodeRef {
+  node: NodeType | null;
+}
+
 export interface NodeField {
   readonly guid: NodeId;
   readonly name: string;
@@ -70,6 +75,7 @@ export interface NodeField {
   children: NodeType[];
   tasks: NodeTaskType[];
   tags: string[];
+  ref: NodeRef | null;
 }
 
 type RunTaskResult<T> = CommandState<T>;
@@ -79,6 +85,7 @@ export interface NodePrototype<U = any> {
     command: Command,
     state: CommandState<U>
   ): CommandState<U>;
+  updateRefs(this: NodeType): void;
   setup(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   update(this: NodeType, state: CommandState<U>): RunTaskResult<U>;
   transform(
@@ -118,8 +125,12 @@ export interface NodePrototype<U = any> {
   findTransform(this: NodeType): Transform | null;
   traverse(
     this: NodeType,
-    enter: (this: void, node: NodeType) => void | boolean,
-    leave?: (this: void, node: NodeType) => void
+    enter: (
+      this: void,
+      node: NodeType,
+      parent: NodeType | null
+    ) => void | boolean,
+    leave?: (this: void, node: NodeType, parent: NodeType | null) => void
   ): void;
   flat(this: NodeType): NodeType[];
 }
@@ -134,6 +145,20 @@ const prototype: NodePrototype = {
       }
     }
     return state;
+  },
+  updateRefs() {
+    this.traverse((node) => {
+      if (node.ref != null) {
+        node.ref.node = node;
+      }
+
+      for (const task of node.tasks) {
+        if (task.ref != null) {
+          task.ref.node = node;
+          task.ref.task = task;
+        }
+      }
+    });
   },
   setup(state) {
     let ok: boolean;
@@ -321,12 +346,21 @@ const prototype: NodePrototype = {
     );
   },
   traverse(enter, leave) {
-    if (enter(this) !== false) {
-      for (const node of this.children) {
-        node.traverse(enter);
+    function t(
+      this: void,
+      node: NodeType,
+      parent: NodeType | null,
+      ...[enter, leave]: Parameters<NodeType["traverse"]>
+    ) {
+      if (enter(node, parent) !== false) {
+        for (const child of node.children) {
+          t(child, node, enter, leave);
+        }
       }
+      leave?.(node, parent);
     }
-    leave?.(this);
+
+    t(this, null, enter, leave);
   },
   flat() {
     const tasks: NodeType[] = [];
@@ -345,6 +379,7 @@ export function createNode<T = any>(
     name,
     enabled,
     tags,
+    ref,
   }: Partial<Omit<NodeField, "guid">> = {}
 ): NodePrototype<T> & NodeField {
   const fields: NodeField = {
@@ -352,6 +387,7 @@ export function createNode<T = any>(
     name: name ?? "NODE",
     enabled: enabled ?? true,
     tags: tags ?? [],
+    ref: ref ?? null,
     children: [],
     tasks: [],
   };

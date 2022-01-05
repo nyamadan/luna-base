@@ -1,4 +1,4 @@
-import { createNode, NodeType } from "../node";
+import { createNode, NodeRef, NodeType } from "../node";
 
 export default function Node(
   this: void,
@@ -6,13 +6,15 @@ export default function Node(
     name,
     enabled,
     onCreate,
+    ref,
   }: Partial<{
     name: string;
     enabled: boolean;
+    ref?: NodeRef;
     onCreate: (this: void, o: ReturnType<typeof createNode>) => void;
   }> = {}
 ): NodeType {
-  const node = createNode({ name, enabled });
+  const node = createNode({ ref: ref ?? null, name, enabled });
   onCreate?.(node);
   return node;
 }

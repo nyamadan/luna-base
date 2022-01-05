@@ -1,14 +1,20 @@
 import { createTable, TableName } from "../tables";
 import { uuid } from "../uuid";
-import { Command, CommandState } from "./node";
+import { Command, CommandState, NodeRef, NodeType } from "./node";
 
 export type NodeTaskId = string & { __node_task: never };
+
+export interface TaskRef {
+  node: NodeType | null;
+  task: NodeTaskType | null;
+}
 
 export interface NodeTaskField {
   readonly guid: NodeTaskId;
   readonly name: string;
   enabled: boolean;
   tags: string[];
+  ref: TaskRef | null;
 }
 
 export interface NodeTaskPrototype<
@@ -20,7 +26,7 @@ export interface NodeTaskPrototype<
 
 export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 
-type NodeTaskTypeOptionalField = "name" | "enabled" | "tags";
+type NodeTaskTypeOptionalField = "name" | "enabled" | "tags" | "ref";
 
 export type NodeTaskProps<Mandatory = {}, Optional = {}> = Partial<
   Pick<NodeTaskField, NodeTaskTypeOptionalField>
@@ -32,11 +38,12 @@ export function pickOptionalField(
   this: void,
   params: Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>
 ) {
-  const { enabled, name, tags } = params;
+  const { enabled, name, tags, ref } = params;
   return {
     name,
     enabled,
     tags,
+    ref,
   };
 }
 
@@ -51,6 +58,7 @@ export function createTask<
     name: tableName ?? "TASK",
     enabled: true,
     tags: [],
+    ref: null,
   };
 
   return createTable(
