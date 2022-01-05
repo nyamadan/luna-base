@@ -1,4 +1,7 @@
-import { NodeTaskType, NodeTaskTypeOptionalField } from "../node_task";
+import {
+  NodeTaskProps,
+  pickOptionalField,
+} from "../node_task";
 import {
   createSubMeshTask,
   SubMeshTaskField,
@@ -7,18 +10,20 @@ import {
 
 export default function SubMeshTask(
   this: void,
-  {
-    onCreate,
-    subMesh,
-    enabled,
-    name,
-  }: Partial<{
-    onCreate: (this: void, task: SubMeshTaskType) => void;
-  }> &
-    Partial<Pick<NodeTaskType, NodeTaskTypeOptionalField>> &
-    Partial<Pick<SubMeshTaskField, "subMesh">> = {}
-) {
-  const task = createSubMeshTask({ subMesh, enabled, name });
+  params: NodeTaskProps<
+    {},
+    Pick<SubMeshTaskField, "subMesh"> & {
+      onCreate: (this: void, task: SubMeshTaskType) => void;
+    }
+  > = {}
+): SubMeshTaskType {
+  const { onCreate, subMesh } = params;
+  const task = createSubMeshTask({
+    ...pickOptionalField(params),
+    ...{
+      subMesh,
+    },
+  });
   onCreate?.(task);
   return task;
 }

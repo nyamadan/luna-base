@@ -4,11 +4,10 @@ import { Geometry } from "./geometry";
 import {
   createTask,
   NodeTaskField,
+  NodeTaskProps,
   NodeTaskPrototype,
-  NodeTaskType,
-  NodeTaskTypeOptionalField,
+  pickOptionalField,
 } from "./node_task";
-import { logger } from "../logger";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY_TASK");
 
@@ -42,15 +41,20 @@ const prototype: GeometryTaskPrototype = {
 
 export function createGeometryTask(
   this: void,
-  params: Partial<Pick<NodeTaskType, NodeTaskTypeOptionalField>> &
-    Partial<Pick<GeometryTaskField, "generator" | "geometry">>
+  params: NodeTaskProps<{}, Pick<GeometryTaskField, "generator" | "geometry">>
 ): GeometryTaskType {
   const { generator, geometry } = params;
-  const field = {
-    geometry: geometry ?? null,
-    generator: generator ?? null,
-  };
-  return createTask(TABLE_NAME, { ...params, ...field }, prototype);
+  return createTask(
+    TABLE_NAME,
+    {
+      ...pickOptionalField(params),
+      ...{
+        geometry: geometry ?? null,
+        generator: generator ?? null,
+      },
+    },
+    prototype
+  );
 }
 
 export function isGeometryTask(this: void, x: unknown): x is GeometryTaskType {

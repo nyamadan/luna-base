@@ -1,20 +1,25 @@
-import { NodeTaskType, NodeTaskTypeOptionalField } from "../node_task";
+import {
+  NodeTaskProps,
+  pickOptionalField,
+} from "../node_task";
 import { createMeshTask, MeshTask, MeshTaskField } from "../mesh_task";
 
 export default function MeshTask(
   this: void,
-  {
-    onCreate,
-    enabled,
-    name,
-    onLoad,
-  }: Partial<{
-    onCreate: (this: void, task: MeshTask) => void;
-  }> &
-    Partial<Pick<NodeTaskType, NodeTaskTypeOptionalField>> &
-    Pick<MeshTaskField, "onLoad"> = {}
+  params: NodeTaskProps<
+    {},
+    Pick<MeshTaskField, "onLoad"> & {
+      onCreate: (this: void, task: MeshTask) => void;
+    }
+  > = {}
 ) {
-  const task = createMeshTask({ onLoad, enabled, name });
+  const { onLoad, onCreate } = params;
+  const task = createMeshTask({
+    ...pickOptionalField(params),
+    ...{
+      onLoad,
+    },
+  });
   onCreate?.(task);
   return task;
 }

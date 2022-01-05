@@ -5,11 +5,11 @@ import { isGeometryTask } from "./geometry_task";
 import {
   createTask,
   NodeTaskField,
+  NodeTaskProps,
   NodeTaskPrototype,
-  NodeTaskType,
-  NodeTaskTypeOptionalField,
+  pickOptionalField,
 } from "./node_task";
-import { createSubMesh, SubMesh } from "./sub_mesh";
+import { SubMesh } from "./sub_mesh";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH_TASK");
 
@@ -46,21 +46,20 @@ const prototype: SubMeshTaskPrototype = {
 
 export function createSubMeshTask(
   this: void,
-  {
-    enabled,
-    name,
-    subMesh,
-  }: Partial<Pick<NodeTaskType, NodeTaskTypeOptionalField>> &
-    Partial<Pick<SubMeshTaskField, "subMesh">> = {}
-) {
-  const field: Pick<SubMeshTaskType, "subMesh"> &
-    Partial<Pick<SubMeshTaskType, NodeTaskTypeOptionalField>> = {
-    enabled,
-    name,
-    subMesh: subMesh ?? null,
-  };
-
-  return createTask(TABLE_NAME, field, prototype);
+  params: NodeTaskProps<{}, Pick<SubMeshTaskField, "subMesh">> = {}
+): SubMeshTaskType {
+  const { subMesh } = params;
+  const task = createTask(
+    TABLE_NAME,
+    {
+      ...pickOptionalField(params),
+      ...{
+        subMesh: subMesh ?? null,
+      },
+    },
+    prototype
+  );
+  return task;
 }
 
 export function isSubMeshTask(this: void, x: unknown): x is SubMeshTaskType {

@@ -4,8 +4,9 @@ import {
   createTask,
   NodeTaskField,
   NodeTaskId,
+  NodeTaskProps,
   NodeTaskPrototype,
-  NodeTaskTypeOptionalField,
+  pickOptionalField,
 } from "./node_task";
 import { logger } from "../logger";
 import { NodeType } from "./node";
@@ -35,7 +36,10 @@ const prototype: TextureImageTaskPrototype = {
         for (const task of node.findTasks(isImageTask, 0)) {
           const images = { ...state.images };
           const image = images[task.guid];
-          if (image?.status === "complete" && this.textures[task.guid] == null) {
+          if (
+            image?.status === "complete" &&
+            this.textures[task.guid] == null
+          ) {
             logger.debug(`createTexture: %s`, task.path);
             const texture = createTexture(task.guid);
             this.textures[task.guid] = texture;
@@ -70,21 +74,20 @@ const prototype: TextureImageTaskPrototype = {
 
 export function createTextureImageTask(
   this: void,
-  {
-    enabled,
-    name,
-    onLoad,
-  }: Partial<Pick<TextureImageTask, NodeTaskTypeOptionalField | "onLoad">> = {}
-) {
-  const field: Pick<TextureImageTaskField, "textures" | "onLoad"> &
-    Partial<Pick<TextureImageTaskField, NodeTaskTypeOptionalField>> = {
-    enabled,
-    name,
-    onLoad,
-    textures: {},
-  };
-
-  return createTask(TABLE_NAME, field, prototype);
+  params: NodeTaskProps<{}, Pick<TextureImageTaskField, "onLoad">> = {}
+): TextureImageTask {
+  const { onLoad } = params;
+  return createTask(
+    TABLE_NAME,
+    {
+      ...pickOptionalField(params),
+      ...{
+        onLoad,
+        textures: {},
+      },
+    },
+    prototype
+  );
 }
 
 export function isTextureImageTask(

@@ -8,6 +8,7 @@ export interface NodeTaskField {
   readonly guid: NodeTaskId;
   readonly name: string;
   enabled: boolean;
+  tags: string[];
 }
 
 export interface NodeTaskPrototype<
@@ -19,7 +20,25 @@ export interface NodeTaskPrototype<
 
 export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 
-export type NodeTaskTypeOptionalField = "name" | "enabled";
+type NodeTaskTypeOptionalField = "name" | "enabled" | "tags";
+
+export type NodeTaskProps<Mandatory = {}, Optional = {}> = Partial<
+  Pick<NodeTaskField, NodeTaskTypeOptionalField>
+> &
+  Mandatory &
+  Partial<Optional>;
+
+export function pickOptionalField(
+  this: void,
+  params: Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>
+) {
+  const { enabled, name, tags } = params;
+  return {
+    name,
+    enabled,
+    tags,
+  };
+}
 
 export function createTask<
   T extends TableName,
@@ -31,6 +50,7 @@ export function createTask<
     guid: uuid.v4() as NodeTaskId,
     name: tableName ?? "TASK",
     enabled: true,
+    tags: [],
   };
 
   return createTable(

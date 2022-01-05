@@ -1,18 +1,14 @@
-import LunaX from "./lunax";
-import Node from "./components/node_component";
-import NodeTask from "./components/task_component";
 import {
   createTask,
   NodeTaskField,
+  NodeTaskProps,
   NodeTaskPrototype,
-  NodeTaskType,
-  NodeTaskTypeOptionalField,
+  pickOptionalField,
 } from "./node_task";
 import { Command, CommandState, NodeType } from "./node";
 import { allocTableName, getMetatableName } from "../tables";
-import { isTextureImageTask, TextureImageTask } from "./texture_image_task";
+import { isTextureImageTask } from "./texture_image_task";
 import { logger } from "../logger";
-import { TransformTask } from "./transform_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MESH_TASK");
 
@@ -42,20 +38,14 @@ const prototype: MeshTaskPrototype = {
 
 export function createMeshTask(
   this: void,
-  {
-    enabled,
-    name,
-    onLoad,
-  }: Partial<Pick<MeshTask, NodeTaskTypeOptionalField | "onLoad">> = {}
+  params: NodeTaskProps<{}, Pick<MeshTaskField, "onLoad">> = {}
 ): MeshTask {
-  const field: Pick<MeshTaskField, "onLoad"> &
-    Partial<Pick<MeshTaskField, NodeTaskTypeOptionalField>> = {
-    enabled,
-    name,
-    onLoad,
-  };
-
-  return createTask(TABLE_NAME, field, prototype);
+  const { onLoad } = params;
+  return createTask(
+    TABLE_NAME,
+    { ...pickOptionalField(params), ...{ onLoad } },
+    prototype
+  );
 }
 
 export function isMeshTask(this: void, x: unknown): x is MeshTask {

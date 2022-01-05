@@ -22,15 +22,17 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] startを消す
  * [x] JSX画像読み込み
  * [x] TextureImageとMeshのTaskを分離
+ * [x] start commandの削除
+ * [x] Taskのoptionalを処理
+ * [ ] 検索用タスクタグを実装
+ * [ ] 1task 1node?
  * [ ] GeometryTaskを作成
  * [ ] MaterialTaskを作成
  * [ ] ShaderTaskを作成
  * [ ] TransformTaskを作成?
  * [ ] JSX画像表示
- * [ ] Taskのoptionalを処理
  * [ ] Render IMGUIのタスクを作成
  * [ ] CIでテスト
- * [x] start commandの削除
  * [ ] NodeのGenerics削除
  * [ ] SDLにさしかえ
  * [ ] キーボード入力を実装する
