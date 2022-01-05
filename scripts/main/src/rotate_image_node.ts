@@ -10,20 +10,23 @@ import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
 import { createSubMeshTask } from "luna-base/dist/gl_renderer/sub_mesh_task";
 import quat from "luna-base/dist/math/quat";
 import vec3 from "luna-base/dist/math/vec3";
-import {
-  createImageTask,
-  loadImageFromState,
-} from "luna-base/dist/gl_renderer/image_task";
+import { createImageTask } from "luna-base/dist/gl_renderer/image_task";
 import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import { createTask, NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
+import { createGeometryTask } from "luna-base/dist/gl_renderer/geometry_task";
 
 export default function createRotateImageNode(this: void) {
   const imageTask = createImageTask({
     path: "./scripts/luna-base/tests/assets/waterfall-512x512.png",
   });
-  const root = createNode({ name: "Root", tasks: [imageTask] });
+
+  const geometryTask = createGeometryTask({
+    generator: () => createPlaneGeometryXY(2, 2, 1, 1),
+  });
+
+  const root = createNode({ name: "Root", tasks: [geometryTask, imageTask] });
 
   const update = coroutine.create(function (
     this: void,
@@ -35,7 +38,7 @@ export default function createRotateImageNode(this: void) {
       tasks: [
         createSubMeshTask({
           subMesh: createSubMesh(
-            createPlaneGeometryXY(2, 2, 1, 1),
+            geometryTask.guid,
             createBasicMaterial(createTexture(imageTask.guid))
           ),
         }),
@@ -48,7 +51,7 @@ export default function createRotateImageNode(this: void) {
       tasks: [
         createSubMeshTask({
           subMesh: createSubMesh(
-            createPlaneGeometryXY(2, 2, 1, 1),
+            geometryTask.guid,
             createBasicMaterial(createTexture(imageTask.guid))
           ),
         }),

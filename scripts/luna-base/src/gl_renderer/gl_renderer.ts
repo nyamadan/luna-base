@@ -53,22 +53,26 @@ function renderSubMesh(
 
   assertIsNotNull(program);
 
-  if (renderer.vaos[subMesh.geometry.guid] == null) {
-    renderer.vaos[subMesh.geometry.guid] = createGLVertexArray(
+  const geometry = state.geometries[subMesh.geometryTaskGuid];
+
+  assertIsNotNull(geometry);
+
+  if (renderer.vaos[geometry.guid] == null) {
+    renderer.vaos[geometry.guid] = createGLVertexArray(
       program,
       createGLGeometryBuffer(
         {
-          aPosition: subMesh.geometry.positions ?? [],
-          aUv: subMesh.geometry.uv0s ?? [],
-          aColor: subMesh.geometry.colors ?? [],
-          indices: subMesh.geometry.indices ?? [],
+          aPosition: geometry.positions ?? [],
+          aUv: geometry.uv0s ?? [],
+          aColor: geometry.colors ?? [],
+          indices: geometry.indices ?? [],
         },
         { usage: _gl.STATIC_DRAW }
       )
     );
   }
 
-  const vao = renderer.vaos[subMesh.geometry.guid];
+  const vao = renderer.vaos[geometry.guid];
   assertIsNotNull(vao);
 
   // Setup Uniform Values
