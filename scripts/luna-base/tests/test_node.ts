@@ -128,7 +128,7 @@ test("Test_Node", {
     //   ],
     // );
 
-    const world = state.worlds[child.id];
+    const world = state.worlds[child.guid];
     lu.assertNotNil(world);
     const x = vec3.set(vec3.create(), 1, 2, 3);
     vec3.transformMat4(x, x, world);

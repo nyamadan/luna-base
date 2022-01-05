@@ -31,7 +31,7 @@ const prototype: SubMeshTaskPrototype = {
           return state;
         }
 
-        const geometry = node.findTask(isGeometryTask);
+        const geometry = node.findTaskInChildren(isGeometryTask);
         assertIsNotNull(geometry);
 
         return state;

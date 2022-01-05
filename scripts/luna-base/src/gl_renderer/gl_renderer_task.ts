@@ -5,7 +5,6 @@ import { createGLRenderer, GLRenderer } from "./gl_renderer";
 import {
   createTask,
   NodeTaskField,
-  NodeTaskId,
   NodeTaskPrototype,
 } from "./node_task";
 

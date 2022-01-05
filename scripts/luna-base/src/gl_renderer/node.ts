@@ -1,6 +1,5 @@
 import * as _gl from "gl";
 import { F32Mat4 } from "../buffers/f32array";
-import { inspect } from "../lib/inspect/inspect";
 import { logger } from "../logger";
 import { Mat4 } from "../math/mat4";
 import { allocTableName, createTable, getMetatableName } from "../tables";
@@ -65,11 +64,12 @@ export function initCommandState<U>(userdata: U): CommandState<U> {
 export type NodeId = string & { __node: never };
 
 export interface NodeField {
-  readonly id: NodeId;
+  readonly guid: NodeId;
   readonly name: string;
   enabled: boolean;
   children: NodeType[];
   tasks: NodeTaskType[];
+  tags: string[];
 }
 
 type RunTaskResult<T> = CommandState<T>;
@@ -96,11 +96,12 @@ export interface NodePrototype<U = any> {
       | ((this: void, task: NodeTaskType) => boolean),
     maxDepth?: number
   ): S[];
-  findTasksByName(
+  findTasksInChildren<S extends NodeTaskType>(
     this: NodeType,
-    name: string,
-    maxDepth?: number
-  ): NodeTaskType[];
+    fn:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean)
+  ): S[];
   findTask<S extends NodeTaskType>(
     this: NodeType,
     fn:
@@ -108,10 +109,11 @@ export interface NodePrototype<U = any> {
       | ((this: void, task: NodeTaskType) => boolean),
     maxDepth?: number
   ): S | null;
-  findTaskByName<S extends NodeTaskType>(
+  findTaskInChildren<S extends NodeTaskType>(
     this: NodeType,
-    name: string,
-    maxDepth?: number
+    fn:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean)
   ): S | null;
   findTransform(this: NodeType): Transform | null;
   traverse(
@@ -190,7 +192,7 @@ const prototype: NodePrototype = {
     if (!ok) {
       logger.error("%s", err);
     }
-    const updatedWorld = state.worlds[this.id];
+    const updatedWorld = state.worlds[this.guid];
     assertIsNotNull(updatedWorld);
     for (const node of this.children) {
       state = node.transform(state, updatedWorld);
@@ -258,10 +260,17 @@ const prototype: NodePrototype = {
     }
     return results;
   },
-  findTasksByName(name, maxDepth) {
-    return this.findTasks(function (task) {
-      return task.name === name;
-    }, maxDepth);
+  findTasksInChildren<S extends NodeTaskType>(
+    this: NodeType,
+    f:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean)
+  ) {
+    const results: S[] = [];
+    for (const child of this.children) {
+      results.push(...child.findTasks(f, 0));
+    }
+    return results;
   },
   findTask<S extends NodeTaskType>(
     this: NodeType,
@@ -290,14 +299,19 @@ const prototype: NodePrototype = {
 
     return null;
   },
-  findTaskByName<S extends NodeTaskType>(
+  findTaskInChildren<S extends NodeTaskType>(
     this: NodeType,
-    name: string,
-    maxDepth?: number
+    f:
+      | ((this: void, task: NodeTaskType) => task is S)
+      | ((this: void, task: NodeTaskType) => boolean)
   ) {
-    return this.findTask(function (task): task is S {
-      return task.name === name;
-    }, maxDepth);
+    for (const child of this.children) {
+      const task = child.findTask(f, 0);
+      if (task != null) {
+        return task;
+      }
+    }
+    return null;
   },
   findTransform() {
     return (
@@ -325,12 +339,19 @@ const prototype: NodePrototype = {
 
 export function createNode<T = any>(
   this: void,
-  { tasks, children, name, enabled }: Partial<Omit<NodeField, "guid">> = {}
+  {
+    tasks,
+    children,
+    name,
+    enabled,
+    tags,
+  }: Partial<Omit<NodeField, "guid">> = {}
 ): NodePrototype<T> & NodeField {
   const fields: NodeField = {
-    id: uuid.v4() as NodeId,
+    guid: uuid.v4() as NodeId,
     name: name ?? "NODE",
     enabled: enabled ?? true,
+    tags: tags ?? [],
     children: [],
     tasks: [],
   };

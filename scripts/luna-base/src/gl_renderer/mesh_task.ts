@@ -23,7 +23,7 @@ const prototype: MeshTaskPrototype = {
     const { name, node } = command;
     switch (name) {
       case "setup": {
-        const textureImageTasks = node.findTasks(isTextureImageTask, 1);
+        const textureImageTasks = node.findTasksInChildren(isTextureImageTask);
         for (const textureImageTask of textureImageTasks) {
           logger.debug("Mesh: %s", textureImageTask.name);
         }

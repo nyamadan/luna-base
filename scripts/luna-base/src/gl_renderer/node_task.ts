@@ -57,7 +57,7 @@ export function createTask<
     tableName,
     { ...initial, ...fields } as T1 & typeof initial,
     prototype as T2
-  );
+  ) as (T1 & typeof initial) & T2;
 }
 
 export function isNodeTask(this: void, x: unknown): x is NodeTaskType {

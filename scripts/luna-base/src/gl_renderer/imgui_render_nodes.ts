@@ -6,7 +6,7 @@ function _imguiRenderNodes(this: void, node: NodeType) {
     return;
   }
 
-  if (imgui.treeNode(node.id, node.name)) {
+  if (imgui.treeNode(node.guid, node.name)) {
     for (const task of node.tasks) {
       imgui.text(`${task.name}`);
     }

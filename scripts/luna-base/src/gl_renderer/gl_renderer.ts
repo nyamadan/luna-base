@@ -94,7 +94,7 @@ function renderSubMesh(
 
   const uWorld = program.getWorld();
   if (uWorld != null) {
-    const world = state.worlds[node.id];
+    const world = state.worlds[node.guid];
     assertIsNotNull(world);
     _gl.uniformMatrix4fv(uWorld.location, 1, false, world.buffer);
   }

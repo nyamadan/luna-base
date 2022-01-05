@@ -18,7 +18,12 @@ namespace LunaX {
         if (isNode(child)) {
           node.addChild(child);
         } else if (isNodeTask(child)) {
-          node.addTask(child);
+          node.addChild(
+            createNode({
+              name: `NODE: ${child.name}`,
+              tasks: [child],
+            })
+          );
         } else {
           safeUnreachable(child);
         }
@@ -26,26 +31,26 @@ namespace LunaX {
       return node;
     } else if (isNodeTask(nodeOrTask)) {
       const task = nodeOrTask;
-      let node: NodeType | null = null;
+      const node = createNode({
+        name: `NODE: ${task.name}`,
+        tasks: [task],
+      });
       for (const child of children) {
         if (isNode(child)) {
-          if (node == null) {
-            node = createNode({ name: `(NODE)${task.name}` });
-            node.addTask(task);
-          }
           node.addChild(child);
         } else if (isNodeTask(child)) {
-          if (node == null) {
-            node = createNode({ name: `(NODE)${task.name}` });
-            node.addTask(task);
-          }
-          node.addTask(child);
+          node.addChild(
+            createNode({
+              name: `NODE: ${child.name}`,
+              tasks: [child],
+            })
+          );
         } else {
           safeUnreachable(child);
         }
       }
 
-      return node ?? task;
+      return node;
     }
 
     safeUnreachable(nodeOrTask);

@@ -5,7 +5,6 @@ import { allocTableName, getMetatableName } from "../tables";
 import {
   createTask,
   NodeTaskField,
-  NodeTaskId,
   NodeTaskPrototype,
 } from "./node_task";
 import { Transform } from "./transform";
@@ -13,7 +12,6 @@ import { Transform } from "./transform";
 const TABLE_NAME = allocTableName("LUA_TYPE_TRANSFORM_TASK");
 
 interface TransformTaskField extends NodeTaskField {
-  guid: NodeTaskId;
   transform: Transform;
 }
 
@@ -28,7 +26,7 @@ const prototype: TransformTaskPrototype = {
       case "transform": {
         this.transform.update();
         const worlds = { ...state.worlds };
-        const world = (worlds[command.node.id] ??= createF32Mat4());
+        const world = (worlds[command.node.guid] ??= createF32Mat4());
         mat4.mul(world, command.world, this.transform.local);
         return { ...state, worlds };
       }

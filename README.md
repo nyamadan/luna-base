@@ -24,8 +24,8 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] TextureImageとMeshのTaskを分離
  * [x] start commandの削除
  * [x] Taskのoptionalを処理
- * [ ] 検索用タスクタグを実装
- * [ ] 1task 1node?
+ * [x] 1task 1node?
+ * [x] 検索用タスクタグを実装
  * [ ] GeometryTaskを作成
  * [ ] MaterialTaskを作成
  * [ ] ShaderTaskを作成

@@ -33,7 +33,7 @@ const prototype: TextureImageTaskPrototype = {
         let numImageTask = 0;
         let numCompleteImageTask = 0;
         let numTotalCompleteImageTask = 0;
-        for (const task of node.findTasks(isImageTask, 0)) {
+        for (const task of node.findTasksInChildren(isImageTask)) {
           const images = { ...state.images };
           const image = images[task.guid];
           if (
