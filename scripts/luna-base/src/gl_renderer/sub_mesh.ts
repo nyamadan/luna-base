@@ -22,13 +22,11 @@ const prototype: SubMeshPrototype = {};
 
 export function createSubMesh(
   this: void,
-  geometryTaskGuid: NodeTaskId,
-  material: Material
+  params: Omit<SubMeshFields, "guid">
 ): SubMesh {
   const fields: SubMeshFields = {
-    guid: uuid.v4() as SubMeshId,
-    geometryTaskGuid,
-    material,
+    ...params,
+    ...{ guid: uuid.v4() as SubMeshId },
   };
   return createTable(TABLE_NAME, fields, prototype);
 }

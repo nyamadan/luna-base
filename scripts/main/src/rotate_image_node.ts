@@ -37,10 +37,10 @@ export default function createRotateImageNode(this: void) {
       name: "SubMesh",
       tasks: [
         createSubMeshTask({
-          subMesh: createSubMesh(
-            geometryTask.guid,
-            createBasicMaterial(createTexture(imageTask.guid))
-          ),
+          subMesh: createSubMesh({
+            geometryTaskGuid: geometryTask.guid,
+            material: createBasicMaterial(createTexture(imageTask.guid)),
+          }),
         }),
       ],
     });
@@ -50,10 +50,10 @@ export default function createRotateImageNode(this: void) {
       name: "SubMesh",
       tasks: [
         createSubMeshTask({
-          subMesh: createSubMesh(
-            geometryTask.guid,
-            createBasicMaterial(createTexture(imageTask.guid))
-          ),
+          subMesh: createSubMesh({
+            geometryTaskGuid: geometryTask.guid,
+            material: createBasicMaterial(createTexture(imageTask.guid)),
+          }),
         }),
       ],
     });
@@ -113,7 +113,7 @@ export default function createRotateImageNode(this: void) {
   root.addChild(
     createNode({
       name: "Script",
-      tasks: [createTask(null, {}, runner)],
+      tasks: [createTask(null, { name: "Runner" }, runner)],
     })
   );
 
