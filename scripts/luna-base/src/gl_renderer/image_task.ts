@@ -13,6 +13,7 @@ import { logger } from "../logger";
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE_TASK");
 
 interface ImageTaskField extends NodeTaskField {
+  readonly guid: NodeTaskId & { __image_task: never };
   path: string;
 }
 
@@ -22,7 +23,7 @@ export type ImageTaskType = ImageTaskPrototype & ImageTaskField;
 
 const prototype: ImageTaskPrototype = {
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
     switch (name) {
       case "setup": {
         const images = { ...state.images };
@@ -65,7 +66,7 @@ export function createImageTask(
     Pick<ImageTaskField, "path"> &
     Partial<Pick<ImageTaskField, "name">>
 ): ImageTaskType {
-  return createTask(TABLE_NAME, params, prototype);
+  return createTask(TABLE_NAME, params, prototype) as ImageTaskType;
 }
 
 export function isImageTask(this: void, x: unknown): x is ImageTaskType {

@@ -4,6 +4,7 @@ import { Geometry } from "./geometry";
 import {
   createTask,
   NodeTaskField,
+  NodeTaskId,
   NodeTaskProps,
   NodeTaskPrototype,
   pickOptionalField,
@@ -12,6 +13,7 @@ import {
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY_TASK");
 
 export interface GeometryTaskField extends NodeTaskField {
+  readonly guid: NodeTaskId & { __geometry_task: never };
   generator: ((this: void) => Geometry) | null;
 }
 
@@ -50,7 +52,7 @@ export function createGeometryTask(
       },
     },
     prototype
-  );
+  ) as GeometryTaskType;
 }
 
 export function isGeometryTask(this: void, x: unknown): x is GeometryTaskType {
