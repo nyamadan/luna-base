@@ -7,8 +7,6 @@ import {
 } from "./node_task";
 import { Command, CommandState, NodeType } from "./node";
 import { allocTableName, getMetatableName } from "../tables";
-import { isTextureTask } from "./texture_task";
-import { logger } from "../logger";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MESH_TASK");
 
@@ -23,10 +21,6 @@ const prototype: MeshTaskPrototype = {
     const { name, node } = command;
     switch (name) {
       case "setup": {
-        const textureImageTasks = node.findTasksInChildren(isTextureTask);
-        for (const textureImageTask of textureImageTasks) {
-          logger.debug("Mesh: %s", textureImageTask.name);
-        }
         return state;
       }
       default: {

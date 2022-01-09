@@ -5,6 +5,7 @@ import { createGLProgram, GLProgram, isGLProgram } from "../gl/gl_program";
 import { createGLTexture, GLTexture } from "../gl/gl_texture";
 import { createGLVertexArray, GLVertexArray } from "../gl/gl_vertex_array";
 import { inspect } from "../lib/inspect/inspect";
+import { logger } from "../logger";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { safeUnreachable } from "../unreachable";
@@ -35,7 +36,10 @@ function renderSubMesh(
 ) {
   const subMesh = task.subMesh;
 
-  assertIsNotNull(subMesh);
+  if (subMesh == null) {
+    logger.info(`subMesh was not rendered: ${task.name}(${task.guid})`);
+    return;
+  }
 
   if (renderer.programs[subMesh.material.shaderProgram.guid] == null) {
     const program = createGLProgram(

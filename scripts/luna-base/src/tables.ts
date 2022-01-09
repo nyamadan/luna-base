@@ -1,4 +1,3 @@
-import { inspect } from "./lib/inspect/inspect";
 import { assertIsFalsy } from "./type_utils";
 
 export type TableName =
@@ -12,6 +11,7 @@ export type TableName =
   | "LUA_TYPE_SUB_MESH"
   | "LUA_TYPE_SUB_MESH_TASK"
   | "LUA_TYPE_MATERIAL"
+  | "LUA_TYPE_MATERIAL_TASK"
   | "LUA_TYPE_GEOMETRY"
   | "LUA_TYPE_GEOMETRY_TASK"
   | "LUA_TYPE_GL_TEXTURE"

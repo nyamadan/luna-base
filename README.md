@@ -9,31 +9,16 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * WASMとWindowsネイティブで動作
 
 ## TODO
- * [x] 画像の読み込みを抽象化
- * [x] transformの更新コマンドを作る
- * [x] シェーダのタスクを作る
- * [x] Nodeのビジュアライザ
- * [x] イベントのエラーハンドリングする
- * [x] Loggerをいれる
- * [x] ジオメトリのプリセットを作る
- * [x] TaskにEnabledを足す
- * [x] Task作成のユーティリティ
- * [x] JSX対応
- * [x] startを消す
- * [x] JSX画像読み込み
- * [x] TextureImageとMeshのTaskを分離
- * [x] start commandの削除
- * [x] Taskのoptionalを処理
- * [x] 1task 1node?
- * [x] 検索用タスクタグを実装
- * [ ] GeometryTaskを作成
- * [ ] MaterialTaskを作成
+ * [x] GeometryTaskを作成
  * [ ] ShaderTaskを作成
+ * [ ] ShaderProgramTaskを作成
+ * [ ] MaterialTaskを作成
  * [ ] TransformTaskを作成?
- * [ ] JSX画像表示
+ * [x] JSX画像表示
+ * [ ] components多分いらない
  * [ ] Render IMGUIのタスクを作成
  * [ ] CIでテスト
- * [ ] NodeのGenerics削除
+ * [ ] NodeのUserdata Generics削除
  * [ ] SDLにさしかえ
  * [ ] キーボード入力を実装する
  * [ ] GLBを読めるようにする

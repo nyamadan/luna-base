@@ -1,7 +1,11 @@
 import "luna-base";
 import * as imgui from "imgui";
 import { createApplicationTask } from "luna-base/dist/gl_renderer/application_task";
-import { createNode, initCommandState } from "luna-base/dist/gl_renderer/node";
+import {
+  createNode,
+  initCommandState,
+  NodeType,
+} from "luna-base/dist/gl_renderer/node";
 import createRotateImageNode from "./rotate_image_node";
 import createImguiNode from "./imgui_node";
 import createLunaXNode from "./lunax_node";
@@ -14,18 +18,15 @@ const root = createNode({
 root.setup(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
-rotateImage.enabled = false;
 root.addChild(rotateImage);
 
 const imguiNode = createImguiNode();
-imguiNode.enabled = false;
 root.addChild(imguiNode);
 
 const lunaxNode = createLunaXNode();
-lunaxNode.enabled = false;
 root.addChild(lunaxNode);
 
-const nodes = [
+const nodes: { name: string; node: NodeType }[] = [
   {
     name: "LunaX",
     node: lunaxNode,
@@ -39,6 +40,9 @@ const nodes = [
     node: rotateImage,
   },
 ];
+for (const [index, { node }] of nodes.entries()) {
+  node.enabled = index === 0;
+}
 
 const render = coroutine.create(function (this: void) {
   let running = true;

@@ -3,6 +3,7 @@ import { dbg, logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { isGeometryTask } from "./geometry_task";
+import { isMaterialTask } from "./material_task";
 import {
   createTask,
   NodeTaskField,
@@ -11,7 +12,7 @@ import {
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
-import { SubMesh } from "./sub_mesh";
+import { createSubMesh, SubMesh } from "./sub_mesh";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH_TASK");
 
@@ -37,8 +38,18 @@ const prototype: SubMeshTaskPrototype = {
 
         const geometry = node.findTaskInChildren(isGeometryTask);
         assertIsNotNull(geometry);
+        logger.debug(
+          `SubMeshTask.geometry = ${geometry.name}(${geometry.guid})`
+        );
 
-        logger.debug(`SubMeshTask:geometry ${geometry.name}(${geometry.guid})`);
+        const material = node.findTaskInChildren(isMaterialTask)?.material;
+        assertIsNotNull(material);
+        logger.debug(`SubMeshTask.material = ${material.guid}`);
+
+        this.subMesh = createSubMesh({
+          geometryTaskGuid: geometry.guid,
+          material: material,
+        });
 
         return state;
       }
