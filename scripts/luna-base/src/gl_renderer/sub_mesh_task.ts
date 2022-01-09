@@ -1,10 +1,12 @@
 import * as _gl from "gl";
+import { dbg, logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { isGeometryTask } from "./geometry_task";
 import {
   createTask,
   NodeTaskField,
+  NodeTaskId,
   NodeTaskProps,
   NodeTaskPrototype,
   pickOptionalField,
@@ -13,7 +15,9 @@ import { SubMesh } from "./sub_mesh";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH_TASK");
 
-export interface SubMeshTaskField extends NodeTaskField {
+export type SubMeshTaskId = NodeTaskId & { __sub_mesh_task: never };
+export interface SubMeshTaskField
+  extends NodeTaskField<SubMeshTaskId, SubMeshTaskType> {
   subMesh: SubMesh | null;
 }
 
@@ -34,6 +38,8 @@ const prototype: SubMeshTaskPrototype = {
         const geometry = node.findTaskInChildren(isGeometryTask);
         assertIsNotNull(geometry);
 
+        logger.debug(`SubMeshTask:geometry ${geometry.name}(${geometry.guid})`);
+
         return state;
       }
 
@@ -48,18 +54,17 @@ export function createSubMeshTask(
   this: void,
   params: NodeTaskProps<SubMeshTaskField, never, "subMesh"> = {}
 ): SubMeshTaskType {
-  const { subMesh } = params;
-  const task = createTask(
+  const field: Omit<SubMeshTaskField, keyof NodeTaskField> = {
+    subMesh: params.subMesh ?? null,
+  };
+  return createTask(
     TABLE_NAME,
     {
       ...pickOptionalField(params),
-      ...{
-        subMesh: subMesh ?? null,
-      },
+      ...field,
     },
     prototype
-  );
-  return task;
+  ) as SubMeshTaskType;
 }
 
 export function isSubMeshTask(this: void, x: unknown): x is SubMeshTaskType {

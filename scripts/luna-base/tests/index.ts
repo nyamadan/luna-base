@@ -20,9 +20,10 @@ initGlfw();
 import "./test_gl_program";
 import "./test_gl_vertex_array";
 import "./test_node";
+import "./test_texture_task";
 import { logger } from "../src/logger";
 
-logger.setLevel("OFF");
+logger.setLevel("ERROR");
 
 const runner = LuaUnit.new();
 runner.setOutputType("text");

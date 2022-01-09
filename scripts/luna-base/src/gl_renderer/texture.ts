@@ -2,7 +2,6 @@ import * as _gl from "gl";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
 import { ImageTaskType } from "./image_task";
-import { NodeTaskId } from "./node_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_TEXTURE");
 

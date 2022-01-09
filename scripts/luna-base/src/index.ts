@@ -56,5 +56,5 @@ import "./gl_renderer/components/image_task";
 import "./gl_renderer/components/mesh_task";
 import "./gl_renderer/components/sub_mesh_task";
 import "./gl_renderer/components/geometry_task";
-import "./gl_renderer/components/texture_image_task";
+import "./gl_renderer/components/texture_task";
 import "./gl_renderer/components/gl_renderer_task";

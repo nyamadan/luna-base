@@ -132,7 +132,10 @@ export function assertIsCoroutine(this: void, actual: unknown): void;
 export function assertNotNumber(this: void, actual: unknown): void;
 export function assertNotIsMinusInf(this: void, actual: unknown): void;
 export function assertNotUserdata(this: void, actual: unknown): void;
-export function assertNotNil<T>(this: void, actual: T | null): asserts actual is NonNullable<T>;
+export function assertNotNil<T>(
+  this: void,
+  actual: T | null
+): asserts actual is NonNullable<T>;
 export function assertIsThread(
   this: void,
   actual: unknown

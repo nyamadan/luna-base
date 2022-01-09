@@ -12,8 +12,10 @@ import {
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY_TASK");
 
-export interface GeometryTaskField extends NodeTaskField {
-  readonly guid: NodeTaskId & { __geometry_task: never };
+export type GeometryTaskId = NodeTaskId & { __geometry_task: never };
+
+export interface GeometryTaskField
+  extends NodeTaskField<GeometryTaskId, GeometryTaskType> {
   generator: ((this: void) => Geometry) | null;
 }
 

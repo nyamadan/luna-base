@@ -10,7 +10,6 @@ import {
   NodeRef,
 } from "../src/gl_renderer/node";
 import { createTask, TaskRef } from "../src/gl_renderer/node_task";
-import { ImageTaskType } from "../src/gl_renderer/image_task";
 
 test("Test_LunaX", {
   setUp() {},

@@ -3,16 +3,20 @@ import { Command, CommandState } from "luna-base/dist/gl_renderer/node";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import {
   createTask,
+  createTaskRef,
   NodeTaskType,
-  TaskRef,
 } from "luna-base/dist/gl_renderer/node_task";
 import LunaX from "luna-base/dist/gl_renderer/lunax";
 import NodeTask from "luna-base/dist/gl_renderer/components/task_component";
 import ImageTask from "luna-base/dist/gl_renderer/components/image_task";
-import TextureImageTask from "luna-base/dist/gl_renderer/components/texture_image_task";
-import MeshTask from "luna-base/dist/gl_renderer/components/mesh_task";
 import GeometryTask from "luna-base/dist/gl_renderer/components/geometry_task";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
+import { ImageTaskType } from "luna-base/dist/gl_renderer/image_task";
+import SubMeshTask from "luna-base/dist/gl_renderer/components/sub_mesh_task";
+import Node from "luna-base/dist/gl_renderer/components/node_component";
+import { GeometryTaskType } from "luna-base/dist/gl_renderer/geometry_task";
+import { TextureTaskType } from "luna-base/dist/gl_renderer/texture_task";
+import TextureTask from "luna-base/dist/gl_renderer/components/texture_task";
 
 const update = coroutine.create(function (
   this: void,
@@ -63,12 +67,14 @@ export default function createLunaXNode(this: void) {
 
   return (
     <NodeTask task={createTask(null, { name: "Root" }, runner)}>
-      <TextureImageTask>
-        <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
-      </TextureImageTask>
-      <MeshTask>
-        <GeometryTask generator={createPlaneGeometryXY}></GeometryTask>
-      </MeshTask>
+      <Node>
+        {/* <SubMeshTask> */}
+          <TextureTask name="color">
+            <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
+          </TextureTask>
+          <GeometryTask generator={createPlaneGeometryXY} />
+        {/* </SubMeshTask> */}
+      </Node>
     </NodeTask>
   );
 }

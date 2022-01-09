@@ -4,17 +4,30 @@ import { Command, CommandState, NodeType } from "./node";
 
 export type NodeTaskId = string & { __node_task: never };
 
-export interface TaskRef {
+export interface TaskRef<T extends NodeTaskType = NodeTaskType> {
   node: NodeType | null;
-  task: NodeTaskType | null;
+  task: T | null;
 }
 
-export interface NodeTaskField {
-  readonly guid: NodeTaskId;
-  readonly name: string;
+export function createTaskRef<T extends NodeTaskType = NodeTaskType>(
+  node?: NodeType | null,
+  task?: T | null
+): TaskRef<T> {
+  return {
+    node: node ?? null,
+    task: task ?? null,
+  };
+}
+
+export interface NodeTaskField<
+  Id extends NodeTaskId = NodeTaskId,
+  T extends NodeTaskType = NodeTaskType
+> {
+  readonly guid: Id;
+  name: string;
   enabled: boolean;
   tags: string[];
-  ref: TaskRef | null;
+  ref: TaskRef<T> | null;
 }
 
 export interface NodeTaskPrototype<
@@ -32,7 +45,7 @@ export type NodeTaskProps<
   T extends NodeTaskField,
   M extends keyof Omit<T, keyof NodeTaskField>,
   O extends keyof Omit<T, keyof NodeTaskField>
-> = Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>> &
+> = Partial<Pick<T, NodeTaskTypeOptionalField>> &
   Pick<Omit<T, keyof NodeTaskField>, M> &
   Partial<Pick<Omit<T, keyof NodeTaskField>, O>>;
 

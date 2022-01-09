@@ -5,7 +5,9 @@ import { createGLRenderer, GLRenderer } from "./gl_renderer";
 import {
   createTask,
   NodeTaskField,
+  NodeTaskProps,
   NodeTaskPrototype,
+  pickOptionalField,
 } from "./node_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_RENDERER_TASK");
@@ -43,8 +45,18 @@ const prototype: GLRendererTaskPrototype = {
   },
 };
 
-export function createGLRendererTask(this: void): GLRendererTaskType {
-  return createTask(TABLE_NAME, { renderer: createGLRenderer() }, prototype);
+export function createGLRendererTask(
+  this: void,
+  params: NodeTaskProps<GLRendererTaskField, never, never> = {}
+): GLRendererTaskType {
+  const field: Omit<GLRendererTaskField, keyof NodeTaskField> = {
+    renderer: createGLRenderer(),
+  };
+  return createTask(
+    TABLE_NAME,
+    { ...pickOptionalField(params), ...field },
+    prototype
+  );
 }
 
 export function isGLRendererTask(

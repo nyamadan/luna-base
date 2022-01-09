@@ -6,18 +6,22 @@ import {
   createTask,
   NodeTaskField,
   NodeTaskId,
+  NodeTaskProps,
   NodeTaskPrototype,
+  pickOptionalField,
 } from "./node_task";
 import { logger } from "../logger";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE_TASK");
 
-interface ImageTaskField extends NodeTaskField {
-  readonly guid: NodeTaskId & { __image_task: never };
+export type ImageTaskId = NodeTaskId & { __image_task: never };
+
+export interface ImageTaskField
+  extends NodeTaskField<ImageTaskId, ImageTaskType> {
   path: string;
 }
 
-interface ImageTaskPrototype extends NodeTaskPrototype<ImageTaskType> {}
+export interface ImageTaskPrototype extends NodeTaskPrototype<ImageTaskType> {}
 
 export type ImageTaskType = ImageTaskPrototype & ImageTaskField;
 
@@ -62,11 +66,19 @@ export function loadImageFromState(
 
 export function createImageTask(
   this: void,
-  params: Partial<Omit<ImageTaskField, "guid" | "name" | "path">> &
-    Pick<ImageTaskField, "path"> &
-    Partial<Pick<ImageTaskField, "name">>
+  params: NodeTaskProps<ImageTaskField, "path", never>
 ): ImageTaskType {
-  return createTask(TABLE_NAME, params, prototype) as ImageTaskType;
+  const field: Omit<ImageTaskField, keyof NodeTaskField> = {
+    path: params.path,
+  };
+  return createTask(
+    TABLE_NAME,
+    {
+      ...pickOptionalField(params),
+      ...field,
+    },
+    prototype
+  ) as ImageTaskType;
 }
 
 export function isImageTask(this: void, x: unknown): x is ImageTaskType {
