@@ -1,9 +1,4 @@
 import "luna-base";
-import {
-  Command,
-  CommandState,
-  createNode,
-} from "luna-base/dist/gl_renderer/node";
 import { assertIsNotNull } from "luna-base/dist/type_utils";
 import { createTexture } from "luna-base/dist/gl_renderer/texture";
 import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
@@ -14,7 +9,14 @@ import { createImageTask } from "luna-base/dist/gl_renderer/image_task";
 import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
-import { createTask, NodeTaskType } from "luna-base/dist/gl_renderer/node_task";
+import {
+  Command,
+  CommandState,
+  createNullTask,
+  createTask,
+  nodeTaskPrototype,
+  NodeTaskPrototype,
+} from "luna-base/dist/gl_renderer/node_task";
 import { createGeometryTask } from "luna-base/dist/gl_renderer/geometry_task";
 
 export default function createRotateImageNode(this: void) {
@@ -26,14 +28,17 @@ export default function createRotateImageNode(this: void) {
     generator: () => createPlaneGeometryXY(2, 2, 1, 1),
   });
 
-  const root = createNode({ name: "Root", tasks: [geometryTask, imageTask] });
+  const root = createNullTask({
+    name: "Root",
+    children: [geometryTask, imageTask],
+  });
 
   const update = coroutine.create(function (
     this: void,
-    node: Command["node"],
+    task: Command["task"],
     state: CommandState
   ) {
-    const node0 = createNode({
+    const node0 = createNullTask({
       name: "SubMesh",
       tasks: [
         createSubMeshTask({
@@ -44,9 +49,9 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    node.addChild(node0);
+    task.addTask(node0);
 
-    const node1 = createNode({
+    const node1 = createNullTask({
       name: "SubMesh",
       tasks: [
         createSubMeshTask({
@@ -57,44 +62,30 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    node.addChild(node1);
+    task.addTask(node1);
 
     let frame = 0;
     let running = true;
     while (running) {
       const rotation = frame * 0.02;
-      const node1Transform = node1.findTransform();
+      const node1Transform = node1.transform;
       assertIsNotNull(node1Transform);
       quat.rotateZ(node1Transform.rotation, quat.create(), rotation);
       const scale = 0.25 * math.sin(rotation) + 0.75;
       vec3.set(node1Transform.scale, scale, scale, scale);
 
-      coroutine.yield() as LuaMultiReturn<[Command["node"]]>;
+      coroutine.yield() as LuaMultiReturn<[Command["task"]]>;
       frame += 1;
     }
   });
 
-  type Runner<U> = (
-    this: ScriptTask,
-    command: Command,
-    state: CommandState<U>
-  ) => CommandState<U>;
-
-  interface UserState {}
-
-  interface ScriptTask extends NodeTaskType {
-    run: Runner<UserState>;
-  }
-
-  type ScriptTaskNoId = Pick<ScriptTask, "run">;
-
-  const runner: ScriptTaskNoId = {
+  const runner: NodeTaskPrototype = {
     run(command, state) {
-      const { name, node } = command;
+      const { name, task } = command;
       switch (name) {
         case "update": {
           if (coroutine.status(update) === "suspended") {
-            coroutine.resume(update, node, state);
+            coroutine.resume(update, task, state);
           }
 
           return state;
@@ -108,10 +99,11 @@ export default function createRotateImageNode(this: void) {
         }
       }
     },
+    ...nodeTaskPrototype,
   };
 
-  root.addChild(
-    createNode({
+  root.addTask(
+    createNullTask({
       name: "Script",
       tasks: [createTask(null, { name: "Runner" }, runner)],
     })

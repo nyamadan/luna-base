@@ -2,23 +2,23 @@ import {
   createTask,
   NodeTaskField,
   NodeTaskProps,
+  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
-import { Command, CommandState, NodeType } from "./node";
 import { allocTableName, getMetatableName } from "../tables";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MESH_TASK");
 
 export interface MeshTaskField extends NodeTaskField {
-  onLoad?: (this: void, task: MeshTask, node: NodeType) => void;
+  onLoad?: (this: void, task: MeshTask) => void;
 }
 export interface MeshTaskPrototype extends NodeTaskPrototype<MeshTask> {}
 export type MeshTask = MeshTaskPrototype & MeshTaskField;
 
 const prototype: MeshTaskPrototype = {
-  run(this: MeshTask, command: Command, state: CommandState) {
-    const { name, node } = command;
+  run(command, state) {
+    const { name } = command;
     switch (name) {
       case "setup": {
         return state;
@@ -28,6 +28,7 @@ const prototype: MeshTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function createMeshTask(

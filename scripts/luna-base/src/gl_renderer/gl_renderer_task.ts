@@ -6,6 +6,7 @@ import {
   createTask,
   NodeTaskField,
   NodeTaskProps,
+  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -33,7 +34,7 @@ const prototype: GLRendererTaskPrototype = {
       }
       case "render": {
         imgui.render();
-        this.renderer.render(state, command.node);
+        this.renderer.render(state, command.task);
         imgui.implOpenGL3_RenderDrawData();
         collectgarbage("collect");
         return state;
@@ -43,6 +44,7 @@ const prototype: GLRendererTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function createGLRendererTask(

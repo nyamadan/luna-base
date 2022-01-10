@@ -9,6 +9,7 @@ import {
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
+  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -29,20 +30,20 @@ export type SubMeshTaskType = SubMeshTaskPrototype & SubMeshTaskField;
 
 const prototype: SubMeshTaskPrototype = {
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
     switch (name) {
       case "setup": {
         if (this.subMesh != null) {
           return state;
         }
 
-        const geometry = node.findTaskInChildren(isGeometryTask);
+        const geometry = this.findTaskInChildren(isGeometryTask);
         assertIsNotNull(geometry);
         logger.debug(
           `SubMeshTask.geometry = ${geometry.name}(${geometry.guid})`
         );
 
-        const material = node.findTaskInChildren(isMaterialTask)?.material;
+        const material = this.findTaskInChildren(isMaterialTask)?.material;
         assertIsNotNull(material);
         logger.debug(`SubMeshTask.material = ${material.guid}`);
 
@@ -59,6 +60,7 @@ const prototype: SubMeshTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function createSubMeshTask(

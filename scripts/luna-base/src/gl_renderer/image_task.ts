@@ -1,12 +1,13 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
-import { CommandState } from "./node";
 import { createImage, Image } from "./image";
 import {
+  CommandState,
   createTask,
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
+  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -44,6 +45,7 @@ const prototype: ImageTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function loadImageFromState(

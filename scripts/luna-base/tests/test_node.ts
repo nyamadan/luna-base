@@ -1,10 +1,15 @@
 import * as lu from "./lib/luaunit/luaunit";
 
 import vec3 from "../src/math/vec3";
-import { Command, createNode, initCommandState } from "../src/gl_renderer/node";
 import { test } from "./utils";
 import mat4 from "../src/math/mat4";
-import { createTask } from "../src/gl_renderer/node_task";
+import {
+  Command,
+  createNullTask,
+  createTask,
+  initCommandState,
+  nodeTaskPrototype,
+} from "../src/gl_renderer/node_task";
 
 let origPrint: (this: void, ...args: any[]) => void;
 
@@ -20,15 +25,16 @@ test("Test_Node", {
     type StateType = typeof state;
 
     let called = 0;
-    const root = createNode<null>({ enabled: false });
+    const root = createNullTask({ enabled: false });
     const task = createTask(
       null,
       {},
       {
-        run: function (_: Command, state: StateType) {
+        run: function (_, state) {
           called++;
           return state;
         },
+        ...nodeTaskPrototype,
       }
     );
     root.addTask(task);
@@ -36,7 +42,7 @@ test("Test_Node", {
     lu.assertIs(called, 0);
   },
   test_name: function () {
-    const root = createNode<null>({ name: "MyName" });
+    const root = createNullTask({ name: "MyName" });
     lu.assertIs(root.name, "MyName");
   },
   test_task_name: function () {
@@ -47,22 +53,24 @@ test("Test_Node", {
         run(_, state) {
           return state;
         },
+        ...nodeTaskPrototype,
       }
     );
     lu.assertIs(task.name, "MyTaskName");
   },
   test_error: function () {
     type StateType = typeof state;
-    const root = createNode<null>();
+    const root = createNullTask();
     root.addTask(
       createTask(
         null,
         {},
         {
-          run: function (command: Command, state: StateType) {
+          run: function (command, state) {
             error("error");
             return state;
           },
+          ...nodeTaskPrototype,
         }
       )
     );
@@ -70,16 +78,16 @@ test("Test_Node", {
     lu.success();
   },
   test_transform: function () {
-    const root = createNode();
+    const root = createNullTask();
 
-    const parent = createNode();
-    const trParent = parent.findTransform();
+    const parent = createNullTask();
+    const trParent = parent.transform;
     lu.assertNotNil(trParent);
     vec3.set(trParent.position, 1, 1, 1);
     vec3.set(trParent.scale, 2, 2, 2);
 
     let command: Command | undefined;
-    const child = createNode();
+    const child = createNullTask();
     child.addTask(
       createTask(
         null,
@@ -87,7 +95,7 @@ test("Test_Node", {
         {
           run: function (x, state) {
             switch (x.name) {
-              case "transform": {
+              case "update-world": {
                 lu.assertIsNil(command);
                 command = x;
                 return state;
@@ -97,19 +105,20 @@ test("Test_Node", {
               }
             }
           },
+          ...nodeTaskPrototype,
         }
       )
     );
 
-    const trChild = child.findTransform();
+    const trChild = child.transform;
     lu.assertNotNil(trChild);
     vec3.set(trChild.position, 1, 1, 1);
     vec3.set(trChild.scale, 2, 2, 2);
 
-    root.addChild(parent);
-    parent.addChild(child);
+    root.addTask(parent);
+    parent.addTask(child);
 
-    const state = root.transform(initCommandState(null), mat4.create());
+    const state = root.updateWorld(initCommandState(null), mat4.create());
 
     lu.assertEquals(
       // prettier-ignore
@@ -133,7 +142,6 @@ test("Test_Node", {
     const x = vec3.set(vec3.create(), 1, 2, 3);
     vec3.transformMat4(x, x, world);
     lu.assertEquals(x, [7, 11, 15]);
-    lu.assertEquals(command?.name, "transform");
-    lu.assertEquals(root.flat(), [root, parent, child]);
+    lu.assertEquals(command?.name, "update-world");
   },
 });

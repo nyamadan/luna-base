@@ -12,6 +12,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] GeometryTaskを作成
  * [x] TextTaskを作成
  * [ ] NodeとTaskを統合
+ * [ ] setupメソッドを削除
  * [ ] ShaderTaskを作成
  * [ ] ShaderProgramTaskを作成
  * [ ] MaterialTaskを作成

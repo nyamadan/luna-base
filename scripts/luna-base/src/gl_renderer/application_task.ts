@@ -5,12 +5,12 @@ import { isEmscripten } from "utils";
 import mat4 from "../math/mat4";
 
 import { allocTableName, getMetatableName } from "../tables";
-import { createGLRendererTask } from "./gl_renderer_task";
-import { initCommandState } from "./node";
 import {
   createTask,
+  initCommandState,
   NodeTaskField,
   NodeTaskId,
+  nodeTaskPrototype,
   NodeTaskPrototype,
 } from "./node_task";
 
@@ -27,7 +27,7 @@ export type ApplicationTask = ApplicationTaskPrototype & ApplicationTaskField;
 
 const prototype: ApplicationTaskPrototype = {
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
 
     switch (name) {
       case "setup": {
@@ -63,8 +63,6 @@ const prototype: ApplicationTaskPrototype = {
             width,
             height,
             start: () => {
-              node.addTask(createGLRendererTask());
-
               _gl.viewport(0, 0, width, height);
               _gl.clearColor(1.0, 0.0, 1.0, 1.0);
 
@@ -75,11 +73,11 @@ const prototype: ApplicationTaskPrototype = {
             },
             update: () => {
               glfw.pollEvents();
-              node.updateRefs();
-              state = node.setup(state);
-              state = node.update(state);
-              state = node.transform(state, mat4.create());
-              state = node.render(state);
+              this.updateRefs();
+              state = this.setup(state);
+              state = this.update(state);
+              state = this.updateWorld(state, mat4.create());
+              state = this.render(state);
               collectgarbage("collect");
             },
           });
@@ -92,6 +90,7 @@ const prototype: ApplicationTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function createApplicationTask(this: void): ApplicationTask {

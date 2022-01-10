@@ -4,6 +4,7 @@ import {
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
+  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -28,6 +29,7 @@ const prototype: TextTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function createTextTask(

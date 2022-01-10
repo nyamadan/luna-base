@@ -30,7 +30,6 @@ import "./type_utils";
 import "./math/vec3";
 import "./math/mat4";
 
-import "./gl_renderer/node";
 import "./gl_renderer/node_task";
 import "./gl_renderer/application_task";
 import "./gl_renderer/gl_renderer";
@@ -44,15 +43,14 @@ import "./gl_renderer/material_task";
 import "./gl_renderer/sub_mesh";
 import "./gl_renderer/sub_mesh_task";
 import "./gl_renderer/transform";
-import "./gl_renderer/transform_task";
 import "./gl_renderer/texture";
 import "./gl_renderer/image";
 import "./gl_renderer/image_task";
 import "./gl_renderer/imgui_render_nodes";
 import "./gl_renderer/primitives";
 
-import "./gl_renderer/components/node_component";
 import "./gl_renderer/components/task_component";
+import "./gl_renderer/components/null_task";
 import "./gl_renderer/components/image_task";
 import "./gl_renderer/components/mesh_task";
 import "./gl_renderer/components/sub_mesh_task";

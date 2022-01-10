@@ -1,32 +1,33 @@
 import "luna-base";
 import * as imgui from "imgui";
 import { createApplicationTask } from "luna-base/dist/gl_renderer/application_task";
-import {
-  createNode,
-  initCommandState,
-  NodeType,
-} from "luna-base/dist/gl_renderer/node";
 import createRotateImageNode from "./rotate_image_node";
 import createImguiNode from "./imgui_node";
 import createLunaXNode from "./lunax_node";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
-import { createTask } from "luna-base/dist/gl_renderer/node_task";
+import {
+  createTask,
+  initCommandState,
+  nodeTaskPrototype,
+  NodeTaskType,
+} from "luna-base/dist/gl_renderer/node_task";
+import { createGLRendererTask } from "luna-base/dist/gl_renderer/gl_renderer_task";
 
-const root = createNode({
-  tasks: [createApplicationTask()],
-});
-root.setup(initCommandState(null));
+const app = createApplicationTask();
+const root = createGLRendererTask();
+app.addTask(root);
+app.setup(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
-root.addChild(rotateImage);
+root.addTask(rotateImage);
 
 const imguiNode = createImguiNode();
-root.addChild(imguiNode);
+root.addTask(imguiNode);
 
 const lunaxNode = createLunaXNode();
-root.addChild(lunaxNode);
+root.addTask(lunaxNode);
 
-const nodes: { name: string; node: NodeType }[] = [
+const nodes: { name: string; node: NodeTaskType }[] = [
   {
     name: "LunaX",
     node: lunaxNode,
@@ -74,11 +75,11 @@ const scriptTask = createTask(
   {},
   {
     run: function (command, state) {
-      const { name, node } = command;
+      const { name, task } = command;
       switch (name) {
         case "render": {
           if (coroutine.status(render) === "suspended") {
-            coroutine.resume(render, node);
+            coroutine.resume(render, task);
           }
           return state;
         }
@@ -87,11 +88,8 @@ const scriptTask = createTask(
         }
       }
     },
+    ...nodeTaskPrototype,
   }
 );
 
-root.addChild(
-  createNode({
-    tasks: [scriptTask],
-  })
-);
+root.addTask(scriptTask);

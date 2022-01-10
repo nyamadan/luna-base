@@ -6,6 +6,7 @@ import {
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
+  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -26,7 +27,7 @@ export type GeometryTaskType = GeometryTaskPrototype & GeometryTaskField;
 
 const prototype: GeometryTaskPrototype = {
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
     switch (name) {
       case "setup": {
         const geometries = { ...state.geometries };
@@ -38,6 +39,7 @@ const prototype: GeometryTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function createGeometryTask(

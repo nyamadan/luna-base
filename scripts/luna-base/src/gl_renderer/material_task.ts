@@ -7,6 +7,7 @@ import {
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
+  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -28,14 +29,14 @@ export type MaterialTaskType = MaterialTaskPrototype & MaterialTaskField;
 
 const prototype: MaterialTaskPrototype = {
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
     switch (name) {
       case "setup": {
         if (this.material != null) {
           return state;
         }
 
-        var texture = node.findTaskInChildren(isTextureTask)?.texture;
+        const texture = this.findTaskInChildren(isTextureTask)?.texture;
         if (texture == null) {
           return state;
         }
@@ -49,6 +50,7 @@ const prototype: MaterialTaskPrototype = {
       }
     }
   },
+  ...nodeTaskPrototype,
 };
 
 export function createMaterialTask(
