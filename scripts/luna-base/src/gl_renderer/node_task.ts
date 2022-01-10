@@ -24,6 +24,7 @@ export interface NodeTaskField<
   T extends NodeTaskType = NodeTaskType
 > {
   readonly guid: Id;
+  readonly isTask: true;
   name: string;
   enabled: boolean;
   tags: string[];
@@ -40,6 +41,7 @@ export interface NodeTaskPrototype<
 export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 
 type NodeTaskTypeOptionalField = "name" | "enabled" | "tags" | "ref";
+type NodeTaskTypeAutoField = "guid" | "isTask";
 
 export type NodeTaskProps<
   T extends NodeTaskField,
@@ -64,14 +66,21 @@ export function pickOptionalField(
 
 export function createTask<
   T extends TableName,
-  T1 extends Omit<NodeTaskField, "guid" | NodeTaskTypeOptionalField> &
+  T1 extends Omit<
+    NodeTaskField,
+    NodeTaskTypeAutoField | NodeTaskTypeOptionalField
+  > &
     Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>,
   T2 extends NodeTaskPrototype
 >(this: void, tableName: T | null, fields: T1 | null, prototype: T2) {
-  const initial: Pick<NodeTaskField, "guid" | NodeTaskTypeOptionalField> = {
+  const initial: Pick<
+    NodeTaskField,
+    NodeTaskTypeAutoField | NodeTaskTypeOptionalField
+  > = {
     guid: uuid.v4() as NodeTaskId,
     name: tableName ?? "TASK",
     enabled: true,
+    isTask: true,
     tags: [],
     ref: null,
   };
@@ -84,5 +93,5 @@ export function createTask<
 }
 
 export function isNodeTask(this: void, x: unknown): x is NodeTaskType {
-  return (x as any)?.run != null;
+  return (x as any)?.isTask === true;
 }

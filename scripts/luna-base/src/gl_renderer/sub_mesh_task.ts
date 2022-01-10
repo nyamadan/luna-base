@@ -1,5 +1,5 @@
 import * as _gl from "gl";
-import { dbg, logger } from "../logger";
+import { logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { isGeometryTask } from "./geometry_task";

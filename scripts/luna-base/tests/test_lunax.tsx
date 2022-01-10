@@ -10,10 +10,21 @@ import {
   NodeRef,
 } from "../src/gl_renderer/node";
 import { createTask, TaskRef } from "../src/gl_renderer/node_task";
+import { isTextTask } from "../src/gl_renderer/text_task";
 
 test("Test_LunaX", {
   setUp() {},
   tearDown() {},
+  test_text() {
+    const nodeRef: NodeRef = { node: null };
+    const root: NodePrototype<null> & NodeField = (
+      <Node ref={nodeRef}>Hello World</Node>
+    );
+
+    root.updateRefs();
+    root.update(initCommandState(null));
+    lu.assertNotNil(root.findTaskInChildren(isTextTask));
+  },
   test_node() {
     let called = 0;
 

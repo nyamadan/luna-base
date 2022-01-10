@@ -2,7 +2,6 @@ import * as _gl from "gl";
 import { Material } from "./material";
 import { uuid } from "../uuid";
 import { allocTableName, createTable, getMetatableName } from "../tables";
-import { NodeTaskId } from "./node_task";
 import { GeometryTaskType } from "./geometry_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH");

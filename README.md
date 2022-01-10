@@ -10,6 +10,8 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
 
 ## TODO
  * [x] GeometryTaskを作成
+ * [x] TextTaskを作成
+ * [ ] NodeとTaskを統合
  * [ ] ShaderTaskを作成
  * [ ] ShaderProgramTaskを作成
  * [ ] MaterialTaskを作成
