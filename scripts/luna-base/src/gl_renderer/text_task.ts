@@ -1,10 +1,10 @@
 import { allocTableName, getMetatableName } from "../tables";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
-  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -20,7 +20,7 @@ export interface TextTaskPrototype extends NodeTaskPrototype<TextTaskType> {}
 
 export type TextTaskType = TextTaskPrototype & TextTaskField;
 
-const prototype: TextTaskPrototype = {
+const prototype: TextTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
     const { name } = command;
     switch (name) {
@@ -29,8 +29,7 @@ const prototype: TextTaskPrototype = {
       }
     }
   },
-  ...nodeTaskPrototype,
-};
+});
 
 export function createTextTask(
   this: void,

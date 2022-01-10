@@ -6,11 +6,11 @@ import mat4 from "../math/mat4";
 
 import { allocTableName, getMetatableName } from "../tables";
 import {
+  createNodeTaskPrototype,
   createTask,
   initCommandState,
   NodeTaskField,
   NodeTaskId,
-  nodeTaskPrototype,
   NodeTaskPrototype,
 } from "./node_task";
 
@@ -25,7 +25,7 @@ interface ApplicationTaskPrototype extends NodeTaskPrototype<ApplicationTask> {}
 
 export type ApplicationTask = ApplicationTaskPrototype & ApplicationTaskField;
 
-const prototype: ApplicationTaskPrototype = {
+const prototype: ApplicationTaskPrototype = createNodeTaskPrototype<ApplicationTask>({
   run: function (command, state) {
     const { name } = command;
 
@@ -90,8 +90,7 @@ const prototype: ApplicationTaskPrototype = {
       }
     }
   },
-  ...nodeTaskPrototype,
-};
+});
 
 export function createApplicationTask(this: void): ApplicationTask {
   const field: Pick<ApplicationTaskField, "initialized" | "name"> = {

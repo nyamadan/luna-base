@@ -3,10 +3,10 @@ import * as imgui from "imgui";
 import { allocTableName, getMetatableName } from "../tables";
 import { createGLRenderer, GLRenderer } from "./gl_renderer";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskProps,
-  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -22,7 +22,7 @@ interface GLRendererTaskPrototype
 
 export type GLRendererTaskType = GLRendererTaskPrototype & GLRendererTaskField;
 
-const prototype: GLRendererTaskPrototype = {
+const prototype: GLRendererTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
     const { name } = command;
     switch (name) {
@@ -44,8 +44,7 @@ const prototype: GLRendererTaskPrototype = {
       }
     }
   },
-  ...nodeTaskPrototype,
-};
+});
 
 export function createGLRendererTask(
   this: void,

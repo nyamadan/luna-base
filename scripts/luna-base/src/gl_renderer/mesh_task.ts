@@ -1,8 +1,8 @@
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskProps,
-  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -16,7 +16,7 @@ export interface MeshTaskField extends NodeTaskField {
 export interface MeshTaskPrototype extends NodeTaskPrototype<MeshTask> {}
 export type MeshTask = MeshTaskPrototype & MeshTaskField;
 
-const prototype: MeshTaskPrototype = {
+const prototype: MeshTaskPrototype = createNodeTaskPrototype({
   run(command, state) {
     const { name } = command;
     switch (name) {
@@ -28,8 +28,7 @@ const prototype: MeshTaskPrototype = {
       }
     }
   },
-  ...nodeTaskPrototype,
-};
+});
 
 export function createMeshTask(
   this: void,

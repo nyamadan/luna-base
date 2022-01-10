@@ -3,11 +3,11 @@ import { allocTableName, getMetatableName } from "../tables";
 import { createImage, Image } from "./image";
 import {
   CommandState,
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
-  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -26,7 +26,7 @@ export interface ImageTaskPrototype extends NodeTaskPrototype<ImageTaskType> {}
 
 export type ImageTaskType = ImageTaskPrototype & ImageTaskField;
 
-const prototype: ImageTaskPrototype = {
+const prototype: ImageTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
     const { name } = command;
     switch (name) {
@@ -45,8 +45,7 @@ const prototype: ImageTaskPrototype = {
       }
     }
   },
-  ...nodeTaskPrototype,
-};
+});
 
 export function loadImageFromState(
   this: void,

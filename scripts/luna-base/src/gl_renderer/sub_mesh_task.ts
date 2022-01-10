@@ -5,11 +5,11 @@ import { assertIsNotNull } from "../type_utils";
 import { isGeometryTask } from "./geometry_task";
 import { isMaterialTask } from "./material_task";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
-  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
@@ -28,7 +28,7 @@ export interface SubMeshTaskPrototype
 
 export type SubMeshTaskType = SubMeshTaskPrototype & SubMeshTaskField;
 
-const prototype: SubMeshTaskPrototype = {
+const prototype: SubMeshTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
     const { name } = command;
     switch (name) {
@@ -60,8 +60,7 @@ const prototype: SubMeshTaskPrototype = {
       }
     }
   },
-  ...nodeTaskPrototype,
-};
+});
 
 export function createSubMeshTask(
   this: void,

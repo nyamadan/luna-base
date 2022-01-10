@@ -54,7 +54,7 @@ export function initCommandState(this: void, userdata: any): CommandState {
 
 type RunTaskResult = CommandState;
 
-export const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
+const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
   runCommand(command, state) {
     if (this.enabled) {
       state = this.run(command, state);
@@ -272,6 +272,13 @@ export const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
     return tasks;
   },
 };
+
+export function createNodeTaskPrototype<T extends NodeTaskType = NodeTaskType>(
+  params: Pick<T, keyof NodeTaskRunner<T>> &
+    Partial<Omit<T, keyof NodeTaskRunner<T>>>
+): NodeTaskPrototype<T> {
+  return { ...nodeTaskPrototype, ...params };
+}
 
 export type NodeTaskId = string & { __task_task: never };
 

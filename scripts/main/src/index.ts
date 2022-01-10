@@ -6,9 +6,9 @@ import createImguiNode from "./imgui_node";
 import createLunaXNode from "./lunax_node";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
 import {
+  createNodeTaskPrototype,
   createTask,
   initCommandState,
-  nodeTaskPrototype,
   NodeTaskType,
 } from "luna-base/dist/gl_renderer/node_task";
 import { createGLRendererTask } from "luna-base/dist/gl_renderer/gl_renderer_task";
@@ -73,7 +73,7 @@ const render = coroutine.create(function (this: void) {
 const scriptTask = createTask(
   null,
   {},
-  {
+  createNodeTaskPrototype({
     run: function (command, state) {
       const { name, task } = command;
       switch (name) {
@@ -88,8 +88,7 @@ const scriptTask = createTask(
         }
       }
     },
-    ...nodeTaskPrototype,
-  }
+  })
 );
 
 root.addChild(scriptTask);

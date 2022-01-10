@@ -3,8 +3,8 @@ import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes"
 import {
   Command,
   CommandState,
+  createNodeTaskPrototype,
   createTask,
-  nodeTaskPrototype,
   NodeTaskPrototype,
 } from "luna-base/dist/gl_renderer/node_task";
 import LunaX from "luna-base/dist/gl_renderer/lunax";
@@ -30,7 +30,7 @@ const update = coroutine.create(function (
 });
 
 export default function createLunaXNode(this: void) {
-  const runner: NodeTaskPrototype = {
+  const runner: NodeTaskPrototype = createNodeTaskPrototype({
     run(command, state) {
       const { name, task } = command;
       switch (name) {
@@ -49,8 +49,7 @@ export default function createLunaXNode(this: void) {
         }
       }
     },
-    ...nodeTaskPrototype,
-  };
+  });
 
   return (
     <NodeTask task={createTask(null, { name: "Root" }, runner)}>

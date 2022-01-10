@@ -1,10 +1,10 @@
 import { createTexture, Texture } from "./texture";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
   NodeTaskProps,
-  nodeTaskPrototype,
   NodeTaskPrototype,
   pickOptionalField,
   TaskRef,
@@ -29,8 +29,8 @@ export interface TextureTaskPrototype
 
 export type TextureTaskType = TextureTaskPrototype & TextureTaskField;
 
-const prototype: TextureTaskPrototype = {
-  run(this, command, state) {
+const prototype: TextureTaskPrototype = createNodeTaskPrototype({
+  run(command, state) {
     const { name } = command;
     switch (name) {
       case "setup": {
@@ -60,8 +60,7 @@ const prototype: TextureTaskPrototype = {
       }
     }
   },
-  ...nodeTaskPrototype,
-};
+});
 
 export function createTextureTask(
   this: void,

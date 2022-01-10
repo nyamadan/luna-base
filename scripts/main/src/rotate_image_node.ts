@@ -12,9 +12,9 @@ import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import {
   Command,
   CommandState,
+  createNodeTaskPrototype,
   createNullTask,
   createTask,
-  nodeTaskPrototype,
   NodeTaskPrototype,
 } from "luna-base/dist/gl_renderer/node_task";
 import { createGeometryTask } from "luna-base/dist/gl_renderer/geometry_task";
@@ -79,7 +79,7 @@ export default function createRotateImageNode(this: void) {
     }
   });
 
-  const runner: NodeTaskPrototype = {
+  const runner: NodeTaskPrototype = createNodeTaskPrototype({
     run(command, state) {
       const { name, task } = command;
       switch (name) {
@@ -99,8 +99,7 @@ export default function createRotateImageNode(this: void) {
         }
       }
     },
-    ...nodeTaskPrototype,
-  };
+  });
 
   root.addChild(
     createNullTask({
