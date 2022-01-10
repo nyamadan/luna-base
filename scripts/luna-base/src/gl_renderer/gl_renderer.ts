@@ -9,7 +9,7 @@ import { logger } from "../logger";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { safeUnreachable } from "../unreachable";
-import { CommandState, NodeType } from "./node";
+import { CommandState, NodeTaskType } from "./node_task";
 import { ShaderProgramId } from "./shader_program";
 import { isSubMeshTask, SubMeshTaskType } from "./sub_mesh_task";
 
@@ -22,7 +22,7 @@ interface GLRendererFields {
 }
 
 interface GLRendererPrototype {
-  render: (this: GLRenderer, state: CommandState, node: NodeType) => void;
+  render: (this: GLRenderer, state: CommandState, task: NodeTaskType) => void;
 }
 
 export type GLRenderer = GLRendererPrototype & GLRendererFields;
@@ -31,7 +31,6 @@ function renderSubMesh(
   this: void,
   renderer: GLRenderer,
   state: CommandState,
-  node: NodeType,
   task: SubMeshTaskType
 ) {
   const subMesh = task.subMesh;
@@ -102,7 +101,7 @@ function renderSubMesh(
 
   const uWorld = program.getWorld();
   if (uWorld != null) {
-    const world = state.worlds[node.guid];
+    const world = state.worlds[task.guid];
     assertIsNotNull(world);
     _gl.uniformMatrix4fv(uWorld.location, 1, false, world.buffer);
   }
@@ -141,21 +140,21 @@ const prototype: GLRendererPrototype = {
   render: function (state, node) {
     _gl.clear(_gl.COLOR_BUFFER_BIT | _gl.DEPTH_BUFFER_BIT);
 
-    const nodes: NodeType[] = [];
-    node.traverse(function (node) {
-      if (!node.enabled) {
+    const tasks: NodeTaskType[] = [];
+    node.traverse(function (task) {
+      if (!task.enabled) {
         return false;
       }
 
-      nodes.push(node);
+      tasks.push(task);
 
       return true;
     });
 
-    for (const node of nodes) {
-      node.tasks.forEach((task) => {
+    for (const task of tasks) {
+      tasks.forEach((task) => {
         if (isSubMeshTask(task)) {
-          renderSubMesh(this, state, node, task);
+          renderSubMesh(this, state, task);
           return;
         }
       });

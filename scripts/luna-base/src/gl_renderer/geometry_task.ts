@@ -2,6 +2,7 @@ import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
 import { Geometry } from "./geometry";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
@@ -24,9 +25,9 @@ export interface GeometryTaskPrototype
 
 export type GeometryTaskType = GeometryTaskPrototype & GeometryTaskField;
 
-const prototype: GeometryTaskPrototype = {
+const prototype: GeometryTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
     switch (name) {
       case "setup": {
         const geometries = { ...state.geometries };
@@ -38,7 +39,7 @@ const prototype: GeometryTaskPrototype = {
       }
     }
   },
-};
+});
 
 export function createGeometryTask(
   this: void,

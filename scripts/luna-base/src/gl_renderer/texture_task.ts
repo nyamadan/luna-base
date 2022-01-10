@@ -1,5 +1,6 @@
 import { createTexture, Texture } from "./texture";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
@@ -9,7 +10,6 @@ import {
   TaskRef,
 } from "./node_task";
 import { logger } from "../logger";
-import { NodeType } from "./node";
 import { allocTableName, getMetatableName } from "../tables";
 import { ImageTaskType, isImageTask } from "./image_task";
 
@@ -21,7 +21,7 @@ export interface TextureTaskField
   extends NodeTaskField<TextureTaskGuid, TextureTaskType> {
   texture: Texture | null;
   imageTaskRef: TaskRef<ImageTaskType> | null;
-  onLoad: ((this: void, task: TextureTaskType, node: NodeType) => void) | null;
+  onLoad: ((this: void, task: TextureTaskType) => void) | null;
 }
 
 export interface TextureTaskPrototype
@@ -29,9 +29,9 @@ export interface TextureTaskPrototype
 
 export type TextureTaskType = TextureTaskPrototype & TextureTaskField;
 
-const prototype: TextureTaskPrototype = {
-  run(this, command, state) {
-    const { name, node } = command;
+const prototype: TextureTaskPrototype = createNodeTaskPrototype({
+  run(command, state) {
+    const { name } = command;
     switch (name) {
       case "setup": {
         if (this.texture != null) {
@@ -39,7 +39,7 @@ const prototype: TextureTaskPrototype = {
         }
 
         const task =
-          this.imageTaskRef?.task ?? node.findTaskInChildren(isImageTask);
+          this.imageTaskRef?.task ?? this.findTaskInChildren(isImageTask);
         if (task == null) {
           return state;
         }
@@ -52,7 +52,7 @@ const prototype: TextureTaskPrototype = {
         logger.debug(`createTexture: %s`, task.path);
         const texture = createTexture(task.guid);
         this.texture = texture;
-        this.onLoad?.(this, node);
+        this.onLoad?.(this);
         return state;
       }
       default: {
@@ -60,7 +60,7 @@ const prototype: TextureTaskPrototype = {
       }
     }
   },
-};
+});
 
 export function createTextureTask(
   this: void,

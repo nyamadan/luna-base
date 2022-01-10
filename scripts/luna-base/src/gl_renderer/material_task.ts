@@ -3,6 +3,7 @@ import { allocTableName, getMetatableName } from "../tables";
 import { createBasicMaterial } from "./basic_shader_program";
 import { Material } from "./material";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
@@ -26,16 +27,16 @@ export interface MaterialTaskPrototype
 
 export type MaterialTaskType = MaterialTaskPrototype & MaterialTaskField;
 
-const prototype: MaterialTaskPrototype = {
+const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
     switch (name) {
       case "setup": {
         if (this.material != null) {
           return state;
         }
 
-        var texture = node.findTaskInChildren(isTextureTask)?.texture;
+        const texture = this.findTaskInChildren(isTextureTask)?.texture;
         if (texture == null) {
           return state;
         }
@@ -49,7 +50,7 @@ const prototype: MaterialTaskPrototype = {
       }
     }
   },
-};
+});
 
 export function createMaterialTask(
   this: void,

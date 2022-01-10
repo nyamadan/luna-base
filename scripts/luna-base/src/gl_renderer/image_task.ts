@@ -1,8 +1,9 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
-import { CommandState } from "./node";
 import { createImage, Image } from "./image";
 import {
+  CommandState,
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
@@ -25,7 +26,7 @@ export interface ImageTaskPrototype extends NodeTaskPrototype<ImageTaskType> {}
 
 export type ImageTaskType = ImageTaskPrototype & ImageTaskField;
 
-const prototype: ImageTaskPrototype = {
+const prototype: ImageTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
     const { name } = command;
     switch (name) {
@@ -44,7 +45,7 @@ const prototype: ImageTaskPrototype = {
       }
     }
   },
-};
+});
 
 export function loadImageFromState(
   this: void,

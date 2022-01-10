@@ -3,6 +3,7 @@ import * as imgui from "imgui";
 import { allocTableName, getMetatableName } from "../tables";
 import { createGLRenderer, GLRenderer } from "./gl_renderer";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskProps,
@@ -21,7 +22,7 @@ interface GLRendererTaskPrototype
 
 export type GLRendererTaskType = GLRendererTaskPrototype & GLRendererTaskField;
 
-const prototype: GLRendererTaskPrototype = {
+const prototype: GLRendererTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
     const { name } = command;
     switch (name) {
@@ -33,7 +34,7 @@ const prototype: GLRendererTaskPrototype = {
       }
       case "render": {
         imgui.render();
-        this.renderer.render(state, command.node);
+        this.renderer.render(state, command.task);
         imgui.implOpenGL3_RenderDrawData();
         collectgarbage("collect");
         return state;
@@ -43,7 +44,7 @@ const prototype: GLRendererTaskPrototype = {
       }
     }
   },
-};
+});
 
 export function createGLRendererTask(
   this: void,

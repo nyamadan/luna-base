@@ -1,20 +1,18 @@
 import "luna-base";
 import * as imgui from "imgui";
 import { createApplicationTask } from "luna-base/dist/gl_renderer/application_task";
-import {
-  createNode,
-  initCommandState,
-  NodeType,
-} from "luna-base/dist/gl_renderer/node";
 import createRotateImageNode from "./rotate_image_node";
 import createImguiNode from "./imgui_node";
 import createLunaXNode from "./lunax_node";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
-import { createTask } from "luna-base/dist/gl_renderer/node_task";
+import {
+  createNodeTaskPrototype,
+  createTask,
+  initCommandState,
+  NodeTaskType,
+} from "luna-base/dist/gl_renderer/node_task";
 
-const root = createNode({
-  tasks: [createApplicationTask()],
-});
+const root = createApplicationTask();
 root.setup(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
@@ -26,22 +24,22 @@ root.addChild(imguiNode);
 const lunaxNode = createLunaXNode();
 root.addChild(lunaxNode);
 
-const nodes: { name: string; node: NodeType }[] = [
+const tasks: { name: string; task: NodeTaskType }[] = [
   {
     name: "LunaX",
-    node: lunaxNode,
+    task: lunaxNode,
   },
   {
     name: "ImGui",
-    node: imguiNode,
+    task: imguiNode,
   },
   {
     name: "Rotate",
-    node: rotateImage,
+    task: rotateImage,
   },
 ];
-for (const [index, { node }] of nodes.entries()) {
-  node.enabled = index === 0;
+for (const [index, { task }] of tasks.entries()) {
+  task.enabled = index === 0;
 }
 
 const render = coroutine.create(function (this: void) {
@@ -52,17 +50,17 @@ const render = coroutine.create(function (this: void) {
 
   while (running) {
     if (imgui.begin("Examples")) {
-      for (let i = 0; i < nodes.length; i++) {
-        const { name } = nodes[i];
+      for (let i = 0; i < tasks.length; i++) {
+        const { name } = tasks[i];
         imgui.radioButton(name, e.buffer, i);
       }
     }
     imgui.end();
 
     const selected = e.getElement(0);
-    for (let i = 0; i < nodes.length; i++) {
-      const { node } = nodes[i];
-      node.enabled = selected === i;
+    for (let i = 0; i < tasks.length; i++) {
+      const { task } = tasks[i];
+      task.enabled = selected === i;
     }
 
     coroutine.yield();
@@ -72,13 +70,13 @@ const render = coroutine.create(function (this: void) {
 const scriptTask = createTask(
   null,
   {},
-  {
+  createNodeTaskPrototype({
     run: function (command, state) {
-      const { name, node } = command;
+      const { name, task } = command;
       switch (name) {
         case "render": {
           if (coroutine.status(render) === "suspended") {
-            coroutine.resume(render, node);
+            coroutine.resume(render, task);
           }
           return state;
         }
@@ -87,11 +85,7 @@ const scriptTask = createTask(
         }
       }
     },
-  }
-);
-
-root.addChild(
-  createNode({
-    tasks: [scriptTask],
   })
 );
+
+root.addChild(scriptTask);

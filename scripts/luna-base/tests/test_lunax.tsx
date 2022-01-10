@@ -1,25 +1,24 @@
 import LunaX from "../src/gl_renderer/lunax";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
-import Node from "../src/gl_renderer/components/node_component";
 import NodeTask from "../src/gl_renderer/components/task_component";
 import {
+  createNodeTaskPrototype,
+  createTask,
+  createTaskRef,
   initCommandState,
-  NodeField,
-  NodePrototype,
-  NodeRef,
-} from "../src/gl_renderer/node";
-import { createTask, TaskRef } from "../src/gl_renderer/node_task";
+  NodeTaskType,
+  TaskRef,
+} from "../src/gl_renderer/node_task";
 import { isTextTask } from "../src/gl_renderer/text_task";
+import NullTask from "../src/gl_renderer/components/null_task";
 
 test("Test_LunaX", {
   setUp() {},
   tearDown() {},
   test_text() {
-    const nodeRef: NodeRef = { node: null };
-    const root: NodePrototype<null> & NodeField = (
-      <Node ref={nodeRef}>Hello World</Node>
-    );
+    const nodeRef = createTaskRef();
+    const root: NodeTaskType = <NullTask ref={nodeRef}>Hello World</NullTask>;
 
     root.updateRefs();
     root.update(initCommandState(null));
@@ -28,10 +27,10 @@ test("Test_LunaX", {
   test_node() {
     let called = 0;
 
-    const taskRef: TaskRef = { node: null, task: null };
-    const nodeRef: NodeRef = { node: null };
-    const root: NodePrototype<null> & NodeField = (
-      <Node ref={nodeRef}>
+    const rootRef: TaskRef = createTaskRef();
+    const taskRef: TaskRef = createTaskRef();
+    const root: NodeTaskType = (
+      <NullTask ref={rootRef}>
         <NodeTask
           task={createTask(
             null,
@@ -39,9 +38,9 @@ test("Test_LunaX", {
               ref: taskRef,
               name: "REF",
             },
-            {
+            createNodeTaskPrototype({
               run: (_, state) => state,
-            }
+            })
           )}
         />
         <NodeTask
@@ -51,20 +50,23 @@ test("Test_LunaX", {
               name: "NAME",
               tags: ["TAGS"],
             },
-            {
+            createNodeTaskPrototype({
               run(_, state) {
                 called++;
                 return state;
               },
-            }
+            })
           )}
         />
-      </Node>
+      </NullTask>
     );
 
     root.updateRefs();
-    lu.assertEquals(nodeRef.node, root);
-    lu.assertEquals(taskRef.task?.name, "REF");
+    lu.assertNotNil(rootRef.task);
+    lu.assertEquals(rootRef.task, root);
+
+    lu.assertNotNil(taskRef.task);
+    lu.assertEquals(taskRef.task.name, "REF");
 
     root.update(initCommandState(null));
     lu.assertIs(called, 1);

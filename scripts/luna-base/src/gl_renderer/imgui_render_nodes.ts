@@ -1,26 +1,26 @@
 import * as imgui from "imgui";
-import { NodeType } from "./node";
+import { NodeTaskType } from "./node_task";
 
-function _imguiRenderNodes(this: void, node: NodeType) {
-  if (!node.enabled) {
+function _imguiRenderNodes(this: void, task: NodeTaskType) {
+  if (!task.enabled) {
     return;
   }
 
-  if (imgui.treeNode(node.guid, node.name)) {
-    for (const task of node.tasks) {
-      imgui.text(`${task.name}`);
+  if (imgui.treeNode(task.guid, task.name)) {
+    for (const t of task.tasks) {
+      imgui.text(t.name);
     }
 
-    for (const child of node.children) {
+    for (const child of task.children) {
       _imguiRenderNodes(child);
     }
     imgui.treePop();
   }
 }
 
-export function imguiRenderNodes(node: NodeType) {
+export function imguiRenderNodes(this: void, task: NodeTaskType) {
   if (imgui.begin("Nodes")) {
-    _imguiRenderNodes(node);
+    _imguiRenderNodes(task);
   }
   imgui.end();
 }

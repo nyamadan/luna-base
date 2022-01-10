@@ -5,6 +5,7 @@ import { assertIsNotNull } from "../type_utils";
 import { isGeometryTask } from "./geometry_task";
 import { isMaterialTask } from "./material_task";
 import {
+  createNodeTaskPrototype,
   createTask,
   NodeTaskField,
   NodeTaskId,
@@ -27,22 +28,22 @@ export interface SubMeshTaskPrototype
 
 export type SubMeshTaskType = SubMeshTaskPrototype & SubMeshTaskField;
 
-const prototype: SubMeshTaskPrototype = {
+const prototype: SubMeshTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
-    const { name, node } = command;
+    const { name } = command;
     switch (name) {
       case "setup": {
         if (this.subMesh != null) {
           return state;
         }
 
-        const geometry = node.findTaskInChildren(isGeometryTask);
+        const geometry = this.findTaskInChildren(isGeometryTask);
         assertIsNotNull(geometry);
         logger.debug(
           `SubMeshTask.geometry = ${geometry.name}(${geometry.guid})`
         );
 
-        const material = node.findTaskInChildren(isMaterialTask)?.material;
+        const material = this.findTaskInChildren(isMaterialTask)?.material;
         assertIsNotNull(material);
         logger.debug(`SubMeshTask.material = ${material.guid}`);
 
@@ -59,7 +60,7 @@ const prototype: SubMeshTaskPrototype = {
       }
     }
   },
-};
+});
 
 export function createSubMeshTask(
   this: void,
