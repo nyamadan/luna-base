@@ -3,10 +3,10 @@ import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 import NodeTask from "../src/gl_renderer/components/task_component";
 import {
+  createNodeTaskPrototype,
   createTask,
   createTaskRef,
   initCommandState,
-  nodeTaskPrototype,
   NodeTaskType,
   TaskRef,
 } from "../src/gl_renderer/node_task";
@@ -38,10 +38,9 @@ test("Test_LunaX", {
               ref: taskRef,
               name: "REF",
             },
-            {
+            createNodeTaskPrototype({
               run: (_, state) => state,
-              ...nodeTaskPrototype,
-            }
+            })
           )}
         />
         <NodeTask
@@ -51,13 +50,12 @@ test("Test_LunaX", {
               name: "NAME",
               tags: ["TAGS"],
             },
-            {
+            createNodeTaskPrototype({
               run(_, state) {
                 called++;
                 return state;
               },
-              ...nodeTaskPrototype,
-            }
+            })
           )}
         />
       </NullTask>

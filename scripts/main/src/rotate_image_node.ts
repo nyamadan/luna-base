@@ -38,7 +38,7 @@ export default function createRotateImageNode(this: void) {
     task: Command["task"],
     state: CommandState
   ) {
-    const node0 = createNullTask({
+    const task0 = createNullTask({
       name: "SubMesh",
       children: [
         createSubMeshTask({
@@ -49,9 +49,9 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    task.addChild(node0);
+    task.addChild(task0);
 
-    const node1 = createNullTask({
+    const task1 = createNullTask({
       name: "SubMesh",
       children: [
         createSubMeshTask({
@@ -62,17 +62,17 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    task.addChild(node1);
+    task.addChild(task1);
 
     let frame = 0;
     let running = true;
     while (running) {
       const rotation = frame * 0.02;
-      const node1Transform = node1.transform;
-      assertIsNotNull(node1Transform);
-      quat.rotateZ(node1Transform.rotation, quat.create(), rotation);
+      const task1Transform = task1.transform;
+      assertIsNotNull(task1Transform);
+      quat.rotateZ(task1Transform.rotation, quat.create(), rotation);
       const scale = 0.25 * math.sin(rotation) + 0.75;
-      vec3.set(node1Transform.scale, scale, scale, scale);
+      vec3.set(task1Transform.scale, scale, scale, scale);
 
       coroutine.yield() as LuaMultiReturn<[Command["task"]]>;
       frame += 1;

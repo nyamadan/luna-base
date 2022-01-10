@@ -2,7 +2,6 @@ import { createF32Mat4, F32Mat4 } from "../buffers/f32array";
 import { logger } from "../logger";
 import mat4, { Mat4 } from "../math/mat4";
 import { createTable, TableName } from "../tables";
-import { assertIsNotNull } from "../type_utils";
 import { uuid } from "../uuid";
 import { Geometry } from "./geometry";
 import { Image } from "./image";
@@ -57,6 +56,9 @@ type RunTaskResult = CommandState;
 const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
   runCommand(command, state) {
     if (this.enabled) {
+      for (const task of this.tasks) {
+        state = task.runCommand(command, state);
+      }
       state = this.run(command, state);
     }
     return state;
@@ -69,105 +71,90 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
     });
   },
   setup(state) {
-    let ok: boolean;
-    let err: unknown;
+    this.traverse(
+      (task) => {
+        return task.enabled;
+      },
+      (task) => {
+        const [ok, err] = xpcall(() => {
+          state = task.runCommand({ name: "setup", task }, state);
+        }, debug.traceback);
 
-    if (!this.enabled) {
-      return state;
-    }
-
-    for (const task of this.children) {
-      state = task.setup(state);
-    }
-
-    [ok, err] = xpcall(() => {
-      state = this.runCommand({ name: "setup", task: this }, state);
-    }, debug.traceback);
-    if (!ok) {
-      logger.error("%s", err);
-    }
-
+        if (!ok) {
+          logger.error("%s", err);
+        }
+      }
+    );
     return state;
   },
   update(state) {
-    if (!this.enabled) {
-      return state;
-    }
+    this.traverse((task) => {
+      if (!task.enabled) {
+        return false;
+      }
 
-    let ok: boolean;
-    let err: unknown;
+      const [ok, err] = xpcall(() => {
+        state = task.runCommand({ name: "update", task }, state);
+      }, debug.traceback);
 
-    [ok, err] = xpcall(() => {
-      state = this.runCommand({ name: "update", task: this }, state);
-    }, debug.traceback);
-    if (!ok) {
-      logger.error("%s", err);
-    }
-
-    for (const task of this.children) {
-      state = task.update(state);
-    }
-
+      if (!ok) {
+        logger.error("%s", err);
+      }
+    });
     return state;
   },
   updateWorld(state, world) {
-    if (!this.enabled) {
-      return state;
-    }
+    this.traverse((task) => {
+      if (!task.enabled) {
+        return false;
+      }
 
-    let ok: boolean;
-    let err: unknown;
+      const [ok, err] = xpcall(() => {
+        state = task.runCommand(
+          { name: "update-world", task: task, world },
+          state
+        );
 
-    [ok, err] = xpcall(() => {
-      state = this.runCommand(
-        { name: "update-world", task: this, world },
-        state
-      );
+        task.transform.update();
+        const worlds = { ...state.worlds };
+        const newWorld = (worlds[task.guid] ??= createF32Mat4());
+        mat4.mul(newWorld, world, task.transform.local);
+        world = newWorld;
+        state = { ...state, worlds };
+      }, debug.traceback);
 
-      this.transform.update();
-      const worlds = { ...state.worlds };
-      const newWorld = (worlds[this.guid] ??= createF32Mat4());
-      mat4.mul(newWorld, world, this.transform.local);
-      state = { ...state, worlds };
-    }, debug.traceback);
+      if (!ok) {
+        logger.error("%s", err);
+      }
+    });
 
-    if (!ok) {
-      logger.error("%s", err);
-    }
-    const updatedWorld = state.worlds[this.guid];
-    assertIsNotNull(updatedWorld);
-    for (const task of this.children) {
-      state = task.updateWorld(state, updatedWorld);
-    }
     return state;
   },
   render(state) {
-    if (!this.enabled) {
-      return state;
-    }
+    this.traverse(
+      (task) => {
+        if (!task.enabled) {
+          return false;
+        }
 
-    let ok: boolean;
-    let err: unknown;
+        const [ok, err] = xpcall(() => {
+          state = task.runCommand({ name: "prerender", task }, state);
+        }, debug.traceback);
 
-    [ok, err] = xpcall(() => {
-      state = this.runCommand({ name: "prerender", task: this }, state);
-    }, debug.traceback);
+        if (!ok) {
+          logger.error("%s", err);
+        }
+      },
+      (task) => {
+        const [ok, err] = xpcall(() => {
+          state = task.runCommand({ name: "render", task }, state);
+        }, debug.traceback);
 
-    if (!ok) {
-      logger.error("%s", err);
-    }
-
-    for (const task of this.children) {
-      state = task.render(state);
-    }
-
-    [ok, err] = xpcall(() => {
-      state = this.runCommand({ name: "render", task: this }, state);
-    }, debug.traceback);
-
-    if (!ok) {
-      logger.error("%s", err);
-    }
+        if (!ok) {
+          logger.error("%s", err);
+        }
+      }
+    );
     return state;
   },
   addChild(task) {
@@ -303,9 +290,10 @@ export interface NodeTaskField<
   name: string;
   enabled: boolean;
   tags: string[];
-  ref: TaskRef<T> | null;
   transform: Transform;
   children: NodeTaskType[];
+  tasks: NodeTaskType[];
+  ref: TaskRef<T> | null;
 }
 
 export interface NodeTaskRunner<T extends NodeTaskType = NodeTaskType> {
@@ -376,6 +364,7 @@ export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 type NodeTaskTypeOptionalField =
   | "name"
   | "children"
+  | "tasks"
   | "enabled"
   | "tags"
   | "transform"
@@ -424,6 +413,7 @@ export function createTask<
     isTask: true,
     tags: [],
     children: [],
+    tasks: [],
     ref: null,
   };
 

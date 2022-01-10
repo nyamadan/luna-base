@@ -7,6 +7,10 @@ function _imguiRenderNodes(this: void, task: NodeTaskType) {
   }
 
   if (imgui.treeNode(task.guid, task.name)) {
+    for (const t of task.tasks) {
+      imgui.text(t.name);
+    }
+
     for (const child of task.children) {
       _imguiRenderNodes(child);
     }

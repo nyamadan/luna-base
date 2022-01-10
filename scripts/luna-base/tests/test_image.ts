@@ -21,10 +21,10 @@ test("Test_Image", {
   },
 
   test_loadImageTask() {
-    const node = createNullTask();
+    const task = createNullTask();
     const image = createImageTask({ path: "./assets/waterfall-512x512.png" });
-    node.addChild(image);
-    const state = node.setup(initCommandState(null));
+    task.addChild(image);
+    const state = task.setup(initCommandState(null));
 
     const img = state.images[image.guid];
     lu.assertNotNil(img);

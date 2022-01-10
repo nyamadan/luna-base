@@ -5,10 +5,10 @@ import { test } from "./utils";
 import mat4 from "../src/math/mat4";
 import {
   Command,
+  createNodeTaskPrototype,
   createNullTask,
   createTask,
   initCommandState,
-  nodeTaskPrototype,
 } from "../src/gl_renderer/node_task";
 
 let origPrint: (this: void, ...args: any[]) => void;
@@ -29,13 +29,12 @@ test("Test_Node", {
     const task = createTask(
       null,
       {},
-      {
+      createNodeTaskPrototype({
         run: function (_, state) {
           called++;
           return state;
         },
-        ...nodeTaskPrototype,
-      }
+      })
     );
     root.addChild(task);
     const state = root.update(initCommandState(null));
@@ -49,12 +48,11 @@ test("Test_Node", {
     const task = createTask(
       null,
       { name: "MyTaskName" },
-      {
+      createNodeTaskPrototype({
         run(_, state) {
           return state;
         },
-        ...nodeTaskPrototype,
-      }
+      })
     );
     lu.assertIs(task.name, "MyTaskName");
   },
@@ -65,13 +63,12 @@ test("Test_Node", {
       createTask(
         null,
         {},
-        {
+        createNodeTaskPrototype({
           run: function (command, state) {
             error("error");
             return state;
           },
-          ...nodeTaskPrototype,
-        }
+        })
       )
     );
     const state = root.update(initCommandState(null));
@@ -92,7 +89,7 @@ test("Test_Node", {
       createTask(
         null,
         {},
-        {
+        createNodeTaskPrototype({
           run: function (x, state) {
             switch (x.name) {
               case "update-world": {
@@ -105,8 +102,7 @@ test("Test_Node", {
               }
             }
           },
-          ...nodeTaskPrototype,
-        }
+        })
       )
     );
 

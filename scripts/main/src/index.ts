@@ -11,12 +11,9 @@ import {
   initCommandState,
   NodeTaskType,
 } from "luna-base/dist/gl_renderer/node_task";
-import { createGLRendererTask } from "luna-base/dist/gl_renderer/gl_renderer_task";
 
-const app = createApplicationTask();
-const root = createGLRendererTask();
-app.addChild(root);
-app.setup(initCommandState(null));
+const root = createApplicationTask();
+root.setup(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
 root.addChild(rotateImage);
@@ -27,22 +24,22 @@ root.addChild(imguiNode);
 const lunaxNode = createLunaXNode();
 root.addChild(lunaxNode);
 
-const nodes: { name: string; node: NodeTaskType }[] = [
+const tasks: { name: string; task: NodeTaskType }[] = [
   {
     name: "LunaX",
-    node: lunaxNode,
+    task: lunaxNode,
   },
   {
     name: "ImGui",
-    node: imguiNode,
+    task: imguiNode,
   },
   {
     name: "Rotate",
-    node: rotateImage,
+    task: rotateImage,
   },
 ];
-for (const [index, { node }] of nodes.entries()) {
-  node.enabled = index === 0;
+for (const [index, { task }] of tasks.entries()) {
+  task.enabled = index === 0;
 }
 
 const render = coroutine.create(function (this: void) {
@@ -53,17 +50,17 @@ const render = coroutine.create(function (this: void) {
 
   while (running) {
     if (imgui.begin("Examples")) {
-      for (let i = 0; i < nodes.length; i++) {
-        const { name } = nodes[i];
+      for (let i = 0; i < tasks.length; i++) {
+        const { name } = tasks[i];
         imgui.radioButton(name, e.buffer, i);
       }
     }
     imgui.end();
 
     const selected = e.getElement(0);
-    for (let i = 0; i < nodes.length; i++) {
-      const { node } = nodes[i];
-      node.enabled = selected === i;
+    for (let i = 0; i < tasks.length; i++) {
+      const { task } = tasks[i];
+      task.enabled = selected === i;
     }
 
     coroutine.yield();
