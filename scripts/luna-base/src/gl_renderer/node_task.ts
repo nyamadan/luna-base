@@ -176,6 +176,12 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
       results.push(this);
     }
 
+    for (const task of this.tasks) {
+      if (f(task)) {
+        results.push(task);
+      }
+    }
+
     if (maxDepth > 0) {
       for (const task of this.children) {
         results.push(...task.findTasks(f, maxDepth - 1));
@@ -207,6 +213,12 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
 
     if (f(this)) {
       return this;
+    }
+
+    for (const task of this.tasks) {
+      if (f(task)) {
+        return task;
+      }
     }
 
     if (maxDepth > 0) {
