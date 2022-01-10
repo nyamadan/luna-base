@@ -23,7 +23,7 @@ test("Test_Image", {
   test_loadImageTask() {
     const node = createNullTask();
     const image = createImageTask({ path: "./assets/waterfall-512x512.png" });
-    node.addTask(image);
+    node.addChild(image);
     const state = node.setup(initCommandState(null));
 
     const img = state.images[image.guid];

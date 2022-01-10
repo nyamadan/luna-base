@@ -14,9 +14,9 @@ namespace LunaX {
     const task = component(props);
     for (const child of children) {
       if (isNodeTask(child)) {
-        task.addTask(child);
+        task.addChild(child);
       } else if (typeof child === "string") {
-        task.addTask(createTextTask({ text: child }));
+        task.addChild(createTextTask({ text: child }));
       } else {
         safeUnreachable(child);
       }

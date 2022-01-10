@@ -40,7 +40,7 @@ export default function createRotateImageNode(this: void) {
   ) {
     const node0 = createNullTask({
       name: "SubMesh",
-      tasks: [
+      children: [
         createSubMeshTask({
           subMesh: createSubMesh({
             geometryTaskGuid: geometryTask.guid,
@@ -49,11 +49,11 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    task.addTask(node0);
+    task.addChild(node0);
 
     const node1 = createNullTask({
       name: "SubMesh",
-      tasks: [
+      children: [
         createSubMeshTask({
           subMesh: createSubMesh({
             geometryTaskGuid: geometryTask.guid,
@@ -62,7 +62,7 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    task.addTask(node1);
+    task.addChild(node1);
 
     let frame = 0;
     let running = true;
@@ -102,10 +102,10 @@ export default function createRotateImageNode(this: void) {
     ...nodeTaskPrototype,
   };
 
-  root.addTask(
+  root.addChild(
     createNullTask({
       name: "Script",
-      tasks: [createTask(null, { name: "Runner" }, runner)],
+      children: [createTask(null, { name: "Runner" }, runner)],
     })
   );
 

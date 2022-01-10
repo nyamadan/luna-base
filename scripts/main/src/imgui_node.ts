@@ -67,7 +67,7 @@ export default function createImguiNode(this: void) {
     }
   );
 
-  root.addTask(scriptTask);
+  root.addChild(scriptTask);
 
   return root;
 }

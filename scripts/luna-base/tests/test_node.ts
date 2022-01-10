@@ -37,7 +37,7 @@ test("Test_Node", {
         ...nodeTaskPrototype,
       }
     );
-    root.addTask(task);
+    root.addChild(task);
     const state = root.update(initCommandState(null));
     lu.assertIs(called, 0);
   },
@@ -61,7 +61,7 @@ test("Test_Node", {
   test_error: function () {
     type StateType = typeof state;
     const root = createNullTask();
-    root.addTask(
+    root.addChild(
       createTask(
         null,
         {},
@@ -88,7 +88,7 @@ test("Test_Node", {
 
     let command: Command | undefined;
     const child = createNullTask();
-    child.addTask(
+    child.addChild(
       createTask(
         null,
         {},
@@ -115,8 +115,8 @@ test("Test_Node", {
     vec3.set(trChild.position, 1, 1, 1);
     vec3.set(trChild.scale, 2, 2, 2);
 
-    root.addTask(parent);
-    parent.addTask(child);
+    root.addChild(parent);
+    parent.addChild(child);
 
     const state = root.updateWorld(initCommandState(null), mat4.create());
 

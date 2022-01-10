@@ -15,17 +15,17 @@ import { createGLRendererTask } from "luna-base/dist/gl_renderer/gl_renderer_tas
 
 const app = createApplicationTask();
 const root = createGLRendererTask();
-app.addTask(root);
+app.addChild(root);
 app.setup(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
-root.addTask(rotateImage);
+root.addChild(rotateImage);
 
 const imguiNode = createImguiNode();
-root.addTask(imguiNode);
+root.addChild(imguiNode);
 
 const lunaxNode = createLunaXNode();
-root.addTask(lunaxNode);
+root.addChild(lunaxNode);
 
 const nodes: { name: string; node: NodeTaskType }[] = [
   {
@@ -92,4 +92,4 @@ const scriptTask = createTask(
   }
 );
 
-root.addTask(scriptTask);
+root.addChild(scriptTask);

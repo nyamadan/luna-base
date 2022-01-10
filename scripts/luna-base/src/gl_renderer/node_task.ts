@@ -170,7 +170,7 @@ export const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
     }
     return state;
   },
-  addTask(task) {
+  addChild(task) {
     this.children.push(task);
   },
   findTasks<S extends NodeTaskType>(
@@ -321,7 +321,7 @@ export interface NodeTaskPrototype<T extends NodeTaskType = NodeTaskType>
     world: Mat4
   ): RunTaskResult;
   render(this: NodeTaskType, state: CommandState): RunTaskResult;
-  addTask(this: NodeTaskType, task: NodeTaskType): void;
+  addChild(this: NodeTaskType, task: NodeTaskType): void;
   findTasks<S extends NodeTaskType>(
     this: NodeTaskType,
     fn:
