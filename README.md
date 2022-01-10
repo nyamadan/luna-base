@@ -16,6 +16,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [ ] ShaderTaskを作成
  * [ ] ShaderProgramTaskを作成
  * [ ] MaterialTaskを作成
+ * [ ] Taskを継承してNodeを作る？
  * [ ] components多分いらない
  * [ ] Render IMGUIのタスクを作成
  * [ ] CIでテスト
