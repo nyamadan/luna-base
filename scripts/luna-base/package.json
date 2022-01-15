@@ -10,7 +10,10 @@
   "license": "MIT",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.9.1",
     "eslint": "^8.0.1",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.25.4",
     "lua-types": "^2.11.0",
     "main": "1.0.0",
     "typescript": "^4.4.4",
