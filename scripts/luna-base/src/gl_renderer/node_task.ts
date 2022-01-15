@@ -394,8 +394,12 @@ export type NodeTaskProps<
 
 export function pickOptionalField(
   this: void,
-  params: Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>
-) {
+  params?: Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>
+): Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>> {
+  if (params == null) {
+    return {};
+  }
+
   const { enabled, name, tags, ref } = params;
   return {
     name,

@@ -34,7 +34,7 @@ const prototype: ImageTaskPrototype = createNodeTaskPrototype({
         const images = { ...state.images };
 
         if (images[this.guid] == null) {
-          logger.debug(`ImageTask.load: ${this.path}`);
+          logger.debug(`ImageTask(${this.guid}).load: ${this.path}`);
           images[this.guid] = createImage(this.path);
         }
 

@@ -14,13 +14,14 @@ import "./test_msgpack";
 import "./test_image";
 import "./test_uuid";
 import "./test_lunax";
+import "./test_node";
+import "./test_texture_task";
+import "./test_shader_task";
 
 initGlfw();
 
 import "./test_gl_program";
 import "./test_gl_vertex_array";
-import "./test_node";
-import "./test_texture_task";
 import { logger } from "../src/logger";
 
 logger.setLevel("ERROR");

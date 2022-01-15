@@ -1,7 +1,6 @@
 import * as _gl from "gl";
 import { logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
-import { assertIsNotNull } from "../type_utils";
 import { isGeometryTask } from "./geometry_task";
 import { isMaterialTask } from "./material_task";
 import {
@@ -38,14 +37,20 @@ const prototype: SubMeshTaskPrototype = createNodeTaskPrototype({
         }
 
         const geometry = this.findTaskInChildren(isGeometryTask);
-        assertIsNotNull(geometry);
+        if (geometry == null) {
+          logger.info(`SubMeshTask(${this.guid}).geometry is missing.`);
+          return state;
+        }
         logger.debug(
-          `SubMeshTask.geometry = ${geometry.name}(${geometry.guid})`
+          `SubMeshTask(${this.guid}).geometry = ${geometry.guid}`
         );
 
         const material = this.findTaskInChildren(isMaterialTask)?.material;
-        assertIsNotNull(material);
-        logger.debug(`SubMeshTask.material = ${material.guid}`);
+        if (material == null) {
+          logger.info(`SubMeshTask(${this.guid}).material is missing.`);
+          return state;
+        }
+        logger.debug(`SubMeshTask(${this.guid}).material = ${material.guid}`);
 
         this.subMesh = createSubMesh({
           geometryTaskGuid: geometry.guid,
@@ -64,10 +69,10 @@ const prototype: SubMeshTaskPrototype = createNodeTaskPrototype({
 
 export function createSubMeshTask(
   this: void,
-  params: NodeTaskProps<SubMeshTaskField, never, "subMesh"> = {}
+  params?: NodeTaskProps<SubMeshTaskField, never, "subMesh">
 ): SubMeshTaskType {
   const field: Omit<SubMeshTaskField, keyof NodeTaskField> = {
-    subMesh: params.subMesh ?? null,
+    subMesh: params?.subMesh ?? null,
   };
   return createTask(
     TABLE_NAME,

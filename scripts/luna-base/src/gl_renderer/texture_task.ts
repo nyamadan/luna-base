@@ -49,9 +49,9 @@ const prototype: TextureTaskPrototype = createNodeTaskPrototype({
           return state;
         }
 
-        logger.debug(`createTexture: %s`, task.path);
         const texture = createTexture(task.guid);
         this.texture = texture;
+        logger.debug(`TextureTaskTask(${this.guid}).texture = ${texture.guid} `);
         this.onLoad?.(this);
         return state;
       }

@@ -1,7 +1,7 @@
 import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
 import { createBasicMaterial } from "./basic_shader_program";
-import { Material } from "./material";
+import { createMaterial, Material } from "./material";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -11,6 +11,7 @@ import {
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
+import { isShaderProgramTask } from "./shader_program_task";
 import { isTextureTask } from "./texture_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MATERIAL_TASK");
@@ -41,7 +42,17 @@ const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
           return state;
         }
 
-        this.material = createBasicMaterial(texture);
+        const program = this.findTaskInChildren(isShaderProgramTask)?.program;
+        if (program == null) {
+          return state;
+        }
+
+        this.material = createMaterial(program, {
+          uTexColor: {
+            type: "Texture",
+            texture: texture,
+          },
+        });
 
         return state;
       }
