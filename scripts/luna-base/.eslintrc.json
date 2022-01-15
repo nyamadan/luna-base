@@ -5,7 +5,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -25,13 +26,9 @@
   "rules": {
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
-    "indent": ["error", 2],
-    "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "double"],
     "no-unused-vars": "warn",
     "sort-imports": "off",
     "import/order": ["error", { "alphabetize": { "order": "asc" } }],
-    "no-duplicate-imports": "error",
-    "semi": ["error", "always"]
+    "no-duplicate-imports": "error"
   }
 }

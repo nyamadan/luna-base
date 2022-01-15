@@ -1,4 +1,6 @@
-import { createTexture, Texture } from "./texture";
+import { logger } from "../logger";
+import { allocTableName, getMetatableName } from "../tables";
+import { ImageTaskType, isImageTask } from "./image_task";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -7,11 +9,9 @@ import {
   NodeTaskProps,
   NodeTaskPrototype,
   pickOptionalField,
-  TaskRef,
+  TaskRef
 } from "./node_task";
-import { logger } from "../logger";
-import { allocTableName, getMetatableName } from "../tables";
-import { ImageTaskType, isImageTask } from "./image_task";
+import { createTexture, Texture } from "./texture";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_TEXTURE_IMAGE_TASK");
 
