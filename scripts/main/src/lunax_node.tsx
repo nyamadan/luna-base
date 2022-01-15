@@ -15,6 +15,7 @@ import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import SubMeshTask from "luna-base/dist/gl_renderer/components/sub_mesh_task";
 import TextureTask from "luna-base/dist/gl_renderer/components/texture_task";
 import MaterialTask from "luna-base/dist/gl_renderer/components/material_task";
+import ShaderTask from "luna-base/dist/gl_renderer/components/shader_task";
 
 const update = coroutine.create(function (
   this: void,
@@ -56,6 +57,41 @@ export default function createLunaXNode(this: void) {
       <SubMeshTask>
         <GeometryTask generator={createPlaneGeometryXY} />
         <MaterialTask>
+          <ShaderTask type="VERTEX_SHADER">
+            {`#version 300 es
+              in vec3 aPosition;
+              in vec2 aUv;
+              in vec4 aColor;
+
+              out vec4 vColor;
+              out vec2 vUv;
+
+              uniform mat4 uWorld;
+
+              void main() {
+                vColor = aColor;
+                vUv = aUv;
+                gl_Position = uWorld * vec4(aPosition, 1.0);
+              }
+            `}
+          </ShaderTask>
+          <ShaderTask type="FRAGMENT_SHADER">
+            {`#version 300 es
+              precision highp float;
+
+              uniform sampler2D uTexColor;
+              
+              in vec4 vColor;
+              in vec2 vUv;
+
+              out vec4 outColor;
+              
+              void main() {
+                outColor = texture(uTexColor, vUv) * vColor;
+              }
+          `}
+          </ShaderTask>
+
           <TextureTask name="color">
             <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
           </TextureTask>
