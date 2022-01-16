@@ -7,7 +7,7 @@ const TABLE_NAME = allocTableName("LUA_TYPE_MATERIAL");
 
 type MaterialId = string & { __material: never };
 
-type UniformValue = {
+export type UniformValue = {
   type: "Texture";
   texture: Texture;
 };
@@ -20,7 +20,7 @@ interface MaterialFields {
 
 interface MaterialPrototype {}
 
-export type Material = MaterialPrototype & MaterialFields;
+export type Material = MaterialFields & MaterialPrototype;
 
 const prototype: MaterialPrototype = {};
 

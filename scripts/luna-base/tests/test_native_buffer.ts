@@ -1,12 +1,11 @@
-import * as lu from "./lib/luaunit/luaunit";
-
 import {
   copy_buffer,
   new_buffer,
   set_buffer_pointer,
   SIZE_OF_BOOL,
-  SIZE_OF_POINTER,
+  SIZE_OF_POINTER
 } from "native_buffer";
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
 test("Test_Buffer", {

@@ -1,5 +1,5 @@
-import * as lu from "./lib/luaunit/luaunit";
 import { createF32Array, F32Array } from "../src/buffers/f32array";
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
 test("Test_F32Array", {

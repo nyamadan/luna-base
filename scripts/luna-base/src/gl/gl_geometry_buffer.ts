@@ -16,11 +16,11 @@ interface GLGeometryBufferFields {
 }
 
 interface GLGeometryBufferMethods {
-  getNumComponents: (this: GLGeometryBuffer) => null | number;
-  getIndicesType: (this: GLGeometryBuffer) => null | number;
+  getNumComponents: (this: GLGeometryBuffer) => number | null;
+  getIndicesType: (this: GLGeometryBuffer) => number | null;
 }
 
-export type GLGeometryBuffer = GLGeometryBufferMethods & GLGeometryBufferFields;
+export type GLGeometryBuffer = GLGeometryBufferFields & GLGeometryBufferMethods;
 
 const glGeometryBufferMethods: GLGeometryBufferMethods = {
   getIndicesType: function () {
@@ -38,7 +38,7 @@ const glGeometryBufferMetatable = {
 
 export function createGLGeometryBuffer(
   this: void,
-  arrays: Record<string, number[] | NativeArray | GLBuffer>,
+  arrays: Record<string, GLBuffer | NativeArray | number[]>,
   {
     mode,
     usage,

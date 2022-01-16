@@ -8,7 +8,7 @@ const TABLE_NAME = allocTableName("LUA_TYPE_GL_PROGRAM");
 function loadShader(
   this: void,
   shaderSource: string,
-  shaderType: typeof _gl.VERTEX_SHADER | typeof _gl.FRAGMENT_SHADER
+  shaderType: typeof _gl.FRAGMENT_SHADER | typeof _gl.VERTEX_SHADER
 ) {
   const shader = _gl.createShader(shaderType);
 
@@ -61,7 +61,7 @@ interface ProgramUniformTexture extends ProgramAttributeOrUniform {
   texUnit: number;
 }
 
-type ProgramUniform = ProgramUniformTexture | ProgramUniformNotTexture;
+type ProgramUniform = ProgramUniformNotTexture | ProgramUniformTexture;
 
 interface ProgramFields {
   program: number | null;
@@ -76,7 +76,7 @@ interface ProgramMethods {
   getWorld(this: GLProgram): ProgramUniform | null;
 }
 
-export type GLProgram = ProgramMethods & ProgramFields;
+export type GLProgram = ProgramFields & ProgramMethods;
 
 const prototype: ProgramMethods = {
   use() {

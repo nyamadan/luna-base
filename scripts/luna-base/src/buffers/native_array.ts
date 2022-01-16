@@ -19,8 +19,8 @@ interface NativeArrayPrototype {
   getElement(this: NativeArray, idx: number): number;
 }
 
-export type NativeArray = NativeArrayPrototype &
-  NativeArrayProperties &
+export type NativeArray = NativeArrayProperties &
+  NativeArrayPrototype &
   number[];
 
 type NativeArrayMetatable = LuaMetatable<NativeArray> & {
@@ -72,7 +72,7 @@ export function generateTypedNativeArrayFactory(
   };
 
   function constructor(
-    ...args: [number] | [ReadonlyArray<number>] | [NativeBuffer, number, number]
+    ...args: [NativeBuffer, number, number] | [number] | [ReadonlyArray<number>]
   ) {
     const offset = isNativeBuffer(args[0])
       ? (args[2] || 0) * prototype.byteSizePerElement

@@ -1,11 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../types/index.d.ts" />
 import { setErrorLogger } from "utils";
-import { logger } from "./logger";
-setErrorLogger(function (this: void, msg: string) {
-  logger.error("%s", msg);
-});
-
 import "./buffers/f32array";
 import "./buffers/i16array";
 import "./buffers/i32array";
@@ -32,6 +27,7 @@ import "./gl_renderer/components/shader_task";
 import "./gl_renderer/components/sub_mesh_task";
 import "./gl_renderer/components/task_component";
 import "./gl_renderer/components/texture_task";
+import "./gl_renderer/components/vec4_task";
 import "./gl_renderer/geometry";
 import "./gl_renderer/gl_renderer";
 import "./gl_renderer/gl_renderer_task";
@@ -50,8 +46,10 @@ import "./gl_renderer/sub_mesh";
 import "./gl_renderer/sub_mesh_task";
 import "./gl_renderer/texture";
 import "./gl_renderer/transform";
+import "./gl_renderer/vec4_task";
 import "./images/png_image";
 import "./lib/inspect/inspect";
+import { logger } from "./logger";
 import "./math/mat4";
 import "./math/math_common";
 import "./math/vec3";
@@ -61,3 +59,6 @@ import "./tables";
 import "./tprint";
 import "./type_utils";
 import "./uuid";
+setErrorLogger(function (this: void, msg: string) {
+  logger.error("%s", msg);
+});

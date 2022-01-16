@@ -9,7 +9,7 @@ import {
   NodeTaskProps,
   NodeTaskPrototype,
   pickOptionalField,
-  TaskRef
+  TaskRef,
 } from "./node_task";
 import { createTexture, Texture } from "./texture";
 
@@ -27,7 +27,7 @@ export interface TextureTaskField
 export interface TextureTaskPrototype
   extends NodeTaskPrototype<TextureTaskType> {}
 
-export type TextureTaskType = TextureTaskPrototype & TextureTaskField;
+export type TextureTaskType = TextureTaskField & TextureTaskPrototype;
 
 const prototype: TextureTaskPrototype = createNodeTaskPrototype({
   run(command, state) {
@@ -51,7 +51,9 @@ const prototype: TextureTaskPrototype = createNodeTaskPrototype({
 
         const texture = createTexture(task.guid);
         this.texture = texture;
-        logger.debug(`TextureTaskTask(${this.guid}).texture = ${texture.guid} `);
+        logger.debug(
+          `TextureTaskTask(${this.guid}).texture = ${texture.guid} `
+        );
         this.onLoad?.(this);
         return state;
       }
@@ -67,7 +69,7 @@ export function createTextureTask(
   params: NodeTaskProps<
     TextureTaskField,
     never,
-    "onLoad" | "texture" | "imageTaskRef"
+    "imageTaskRef" | "onLoad" | "texture"
   > = {}
 ): TextureTaskType {
   const field: Omit<TextureTaskField, keyof NodeTaskField> = {

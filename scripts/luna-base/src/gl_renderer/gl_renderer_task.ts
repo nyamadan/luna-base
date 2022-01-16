@@ -20,7 +20,7 @@ interface GLRendererTaskField extends NodeTaskField {
 interface GLRendererTaskPrototype
   extends NodeTaskPrototype<GLRendererTaskType> {}
 
-export type GLRendererTaskType = GLRendererTaskPrototype & GLRendererTaskField;
+export type GLRendererTaskType = GLRendererTaskField & GLRendererTaskPrototype;
 
 const prototype: GLRendererTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {

@@ -11,7 +11,7 @@ namespace LunaX {
     props?: Parameters<Component>[0],
     ...children: ReadonlyArray<TaskOrString>
   ): NodeTaskType {
-    const task = component(props);
+    const task = component(props ?? {});
     for (const child of children) {
       if (isNodeTask(child)) {
         task.addChild(child);

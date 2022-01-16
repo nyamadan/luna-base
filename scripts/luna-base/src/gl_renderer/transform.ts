@@ -17,7 +17,7 @@ interface TransformPrototype {
   update: (this: TransformFields) => void;
 }
 
-export type Transform = TransformPrototype & TransformFields;
+export type Transform = TransformFields & TransformPrototype;
 
 const prototype: TransformPrototype = {
   update: function () {

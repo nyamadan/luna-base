@@ -21,7 +21,7 @@ interface GLVertexArrayMethods {
   free: (this: GLVertexArray) => void;
 }
 
-export type GLVertexArray = GLVertexArrayMethods & GLVertexArrayFields;
+export type GLVertexArray = GLVertexArrayFields & GLVertexArrayMethods;
 
 const prototype: GLVertexArrayMethods = {
   getGeometryMode: function () {

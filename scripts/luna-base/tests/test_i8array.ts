@@ -1,7 +1,7 @@
-import * as lu from "./lib/luaunit/luaunit";
 import { createI8Array, I8Array } from "../src/buffers/i8array";
-
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
+
 
 test("Test_I8Array", {
   buf: undefined as ReturnType<typeof createI8Array> | undefined,

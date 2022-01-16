@@ -1,6 +1,5 @@
-import * as lu from "./lib/luaunit/luaunit";
 import { createU16Array, U16Array } from "../src/buffers/u16array";
-
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
 test("Test_U16Array", {
@@ -38,7 +37,7 @@ test("Test_U16Array", {
     lu.assertEquals(tostring(this.buf), "LUA_TYPE_U16ARRAY: [10, 20]");
   },
   test_new_with_array: function () {
-    let buf: U16Array | null = createU16Array([100, 200, 300]);
+    const buf: U16Array | null = createU16Array([100, 200, 300]);
     lu.assertEquals(buf.length, 3);
     lu.assertEquals(buf[0], 100);
     lu.assertEquals(buf[1], 200);

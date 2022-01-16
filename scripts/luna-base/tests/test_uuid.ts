@@ -1,6 +1,5 @@
-import * as lu from "./lib/luaunit/luaunit";
 import { uuid } from "../src/uuid";
-
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
 test("Test_UUID", {

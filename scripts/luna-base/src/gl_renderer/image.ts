@@ -6,7 +6,7 @@ const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE");
 
 interface ImageFieldBase {
   path?: string;
-  status: "ready" | "progress" | "complete" | "error";
+  status: "complete" | "error" | "progress" | "ready";
 }
 
 interface UnknownImageField extends ImageFieldBase {
@@ -30,7 +30,7 @@ interface ImagePrototype {
   getBitDepth(this: Image): number | null;
 }
 
-export type Image = ImagePrototype & ImageField;
+export type Image = ImageField & ImagePrototype;
 
 const prototype: ImagePrototype = {
   setup() {

@@ -95,7 +95,7 @@ export default function createLunaXNode(this: void) {
             </ShaderTask>
           </ShaderProgramTask>
 
-          <TextureTask name="color">
+          <TextureTask name="uTexColor">
             <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
           </TextureTask>
         </MaterialTask>

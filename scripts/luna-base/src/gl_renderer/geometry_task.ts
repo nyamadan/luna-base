@@ -22,7 +22,7 @@ export interface GeometryTaskField
 export interface GeometryTaskPrototype
   extends NodeTaskPrototype<GeometryTaskType> {}
 
-export type GeometryTaskType = GeometryTaskPrototype & GeometryTaskField;
+export type GeometryTaskType = GeometryTaskField & GeometryTaskPrototype;
 
 const prototype: GeometryTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {

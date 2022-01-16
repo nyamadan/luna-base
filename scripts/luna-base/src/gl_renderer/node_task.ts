@@ -34,11 +34,11 @@ interface RenderCommand extends CommandInterface {
 }
 
 export type Command =
+  | PreRenderCommand
+  | RenderCommand
   | SetupCommand
   | UpdateCommand
-  | UpdateWorldCommand
-  | PreRenderCommand
-  | RenderCommand;
+  | UpdateWorldCommand;
 
 export interface CommandState {
   worlds: Record<NodeTaskId, F32Mat4 | undefined>;
@@ -163,8 +163,8 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
   findTasks<S extends NodeTaskType>(
     this: NodeTaskType,
     f:
-      | ((this: void, task: NodeTaskType) => task is S)
-      | ((this: void, task: NodeTaskType) => boolean),
+      | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S),
     maxDepth?: number
   ) {
     maxDepth = maxDepth ?? 0xffffffff;
@@ -192,8 +192,8 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
   findTasksInChildren<S extends NodeTaskType>(
     this: NodeTaskType,
     f:
-      | ((this: void, task: NodeTaskType) => task is S)
       | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S)
   ) {
     const results: S[] = [];
     for (const child of this.children) {
@@ -204,8 +204,8 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
   findTask<S extends NodeTaskType>(
     this: NodeTaskType,
     f:
-      | ((this: void, task: NodeTaskType) => task is S)
-      | ((this: void, task: NodeTaskType) => boolean),
+      | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S),
     maxDepth?: number
   ) {
     maxDepth = maxDepth ?? 0xffffffff;
@@ -235,8 +235,8 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
   findTaskInChildren<S extends NodeTaskType>(
     this: NodeTaskType,
     f:
-      | ((this: void, task: NodeTaskType) => task is S)
       | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S)
   ) {
     for (const child of this.children) {
       const task = child.findTask(f, 0);
@@ -273,8 +273,8 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
 };
 
 export function createNodeTaskPrototype<T extends NodeTaskType = NodeTaskType>(
-  params: Pick<T, keyof NodeTaskRunner<T>> &
-    Partial<Omit<T, keyof NodeTaskRunner<T>>>
+  params: Partial<Omit<T, keyof NodeTaskRunner<T>>> &
+    Pick<T, keyof NodeTaskRunner<T>>
 ): NodeTaskPrototype<T> {
   return { ...nodeTaskPrototype, ...params };
 }
@@ -332,28 +332,28 @@ export interface NodeTaskPrototype<T extends NodeTaskType = NodeTaskType>
   findTasks<S extends NodeTaskType>(
     this: NodeTaskType,
     fn:
-      | ((this: void, task: NodeTaskType) => task is S)
-      | ((this: void, task: NodeTaskType) => boolean),
+      | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S),
     maxDepth?: number
   ): S[];
   findTasksInChildren<S extends NodeTaskType>(
     this: NodeTaskType,
     fn:
-      | ((this: void, task: NodeTaskType) => task is S)
       | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S)
   ): S[];
   findTask<S extends NodeTaskType>(
     this: NodeTaskType,
     fn:
-      | ((this: void, task: NodeTaskType) => task is S)
-      | ((this: void, task: NodeTaskType) => boolean),
+      | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S),
     maxDepth?: number
   ): S | null;
   findTaskInChildren<S extends NodeTaskType>(
     this: NodeTaskType,
     fn:
-      | ((this: void, task: NodeTaskType) => task is S)
       | ((this: void, task: NodeTaskType) => boolean)
+      | ((this: void, task: NodeTaskType) => task is S)
   ): S | null;
   traverse(
     this: NodeTaskType,
@@ -361,7 +361,7 @@ export interface NodeTaskPrototype<T extends NodeTaskType = NodeTaskType>
       this: void,
       task: NodeTaskType,
       parent: NodeTaskType | null
-    ) => void | boolean,
+    ) => boolean | void,
     leave?: (
       this: void,
       task: NodeTaskType,
@@ -374,13 +374,13 @@ export interface NodeTaskPrototype<T extends NodeTaskType = NodeTaskType>
 export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
 
 type NodeTaskTypeOptionalField =
-  | "name"
   | "children"
-  | "tasks"
   | "enabled"
+  | "name"
+  | "ref"
   | "tags"
-  | "transform"
-  | "ref";
+  | "tasks"
+  | "transform";
 
 type NodeTaskTypeAutoField = "guid" | "isTask";
 
@@ -388,9 +388,9 @@ export type NodeTaskProps<
   T extends NodeTaskField,
   M extends keyof Omit<T, keyof NodeTaskField>,
   O extends keyof Omit<T, keyof NodeTaskField>
-> = Partial<Pick<T, NodeTaskTypeOptionalField>> &
-  Pick<Omit<T, keyof NodeTaskField>, M> &
-  Partial<Pick<Omit<T, keyof NodeTaskField>, O>>;
+> = Partial<Pick<Omit<T, keyof NodeTaskField>, O>> &
+  Partial<Pick<T, NodeTaskTypeOptionalField>> &
+  Pick<Omit<T, keyof NodeTaskField>, M>;
 
 export function pickOptionalField(
   this: void,
@@ -437,7 +437,7 @@ export function createTask<
     tableName,
     { ...initial, ...fields } as T1 & typeof initial,
     prototype as T2
-  ) as (T1 & typeof initial) & T2;
+  ) as T1 & T2 & typeof initial;
 }
 
 const nullTaskPrototype: NodeTaskPrototype = {

@@ -15,7 +15,7 @@ interface SubMeshFields {
 
 interface SubMeshPrototype {}
 
-export type SubMesh = SubMeshPrototype & SubMeshFields;
+export type SubMesh = SubMeshFields & SubMeshPrototype;
 
 const prototype: SubMeshPrototype = {};
 

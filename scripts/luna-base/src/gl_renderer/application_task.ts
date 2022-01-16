@@ -24,7 +24,7 @@ interface ApplicationTaskField extends NodeTaskField {
 
 interface ApplicationTaskPrototype extends NodeTaskPrototype<ApplicationTask> {}
 
-export type ApplicationTask = ApplicationTaskPrototype & ApplicationTaskField;
+export type ApplicationTask = ApplicationTaskField & ApplicationTaskPrototype;
 
 const prototype: ApplicationTaskPrototype =
   createNodeTaskPrototype<ApplicationTask>({

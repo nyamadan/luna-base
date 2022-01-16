@@ -11,7 +11,7 @@ interface PngImageFields
 
 interface PngImagePrototype {}
 
-export type PngImage = PngImagePrototype & PngImageFields;
+export type PngImage = PngImageFields & PngImagePrototype;
 
 const prototype: PngImagePrototype = {};
 

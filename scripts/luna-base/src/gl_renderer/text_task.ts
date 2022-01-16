@@ -18,7 +18,7 @@ export interface TextTaskField extends NodeTaskField<TextTaskId, TextTaskType> {
 
 export interface TextTaskPrototype extends NodeTaskPrototype<TextTaskType> {}
 
-export type TextTaskType = TextTaskPrototype & TextTaskField;
+export type TextTaskType = TextTaskField & TextTaskPrototype;
 
 const prototype: TextTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {

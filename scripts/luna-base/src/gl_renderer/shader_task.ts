@@ -21,7 +21,7 @@ export interface ShaderTaskField extends NodeTaskField {
 }
 export interface ShaderTaskPrototype
   extends NodeTaskPrototype<ShaderTaskType> {}
-export type ShaderTaskType = ShaderTaskPrototype & ShaderTaskField;
+export type ShaderTaskType = ShaderTaskField & ShaderTaskPrototype;
 
 const prototype: ShaderTaskPrototype = createNodeTaskPrototype({
   run(command, state) {

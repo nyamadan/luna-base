@@ -1,6 +1,6 @@
 import { isApple, isEmscripten, isLinux, isWindows } from "utils";
 
-let osName: "Unknown" | "Windows" | "MacOS" | "Linux" | "Web" = "Unknown";
+let osName: "Linux" | "MacOS" | "Unknown" | "Web" | "Windows" = "Unknown";
 if (isWindows()) {
   osName = "Windows";
 } else if (isEmscripten()) {

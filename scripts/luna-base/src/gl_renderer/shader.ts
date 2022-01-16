@@ -5,7 +5,7 @@ const TABLE_NAME = allocTableName("LUA_TYPE_SHADER");
 
 export type ShaderId = string & { __shader_program: never };
 
-export type ShaderType = "VERTEX_SHADER" | "FRAGMENT_SHADER";
+export type ShaderType = "FRAGMENT_SHADER" | "VERTEX_SHADER";
 
 interface ShaderField<T extends ShaderType> {
   guid: ShaderId;
@@ -15,8 +15,8 @@ interface ShaderField<T extends ShaderType> {
 
 interface ShaderPrototype {}
 
-export type Shader<T extends ShaderType = ShaderType> = ShaderPrototype &
-  ShaderField<T>;
+export type Shader<T extends ShaderType = ShaderType> = ShaderField<T> &
+  ShaderPrototype;
 
 const prototype: ShaderPrototype = {};
 

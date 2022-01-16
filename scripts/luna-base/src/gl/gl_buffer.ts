@@ -16,20 +16,20 @@ interface GLBufferFields<T extends NativeArray> {
   numComponents: number;
   type:
     | typeof _gl.BYTE
-    | typeof _gl.UNSIGNED_BYTE
-    | typeof _gl.SHORT
-    | typeof _gl.UNSIGNED_SHORT
-    | typeof _gl.INT
-    | typeof _gl.UNSIGNED_INT
-    | typeof _gl.HALF_FLOAT
-    | typeof _gl.FLOAT
     | typeof _gl.FIXED
+    | typeof _gl.FLOAT
+    | typeof _gl.HALF_FLOAT
+    | typeof _gl.INT
     | typeof _gl.INT_2_10_10_10_REV
-    | typeof _gl.UNSIGNED_INT_2_10_10_10_REV;
+    | typeof _gl.SHORT
+    | typeof _gl.UNSIGNED_BYTE
+    | typeof _gl.UNSIGNED_INT
+    | typeof _gl.UNSIGNED_INT_2_10_10_10_REV
+    | typeof _gl.UNSIGNED_SHORT;
   normalized: boolean;
   stride: number;
   target: typeof _gl.ARRAY_BUFFER | typeof _gl.ELEMENT_ARRAY_BUFFER;
-  usage: typeof _gl.STATIC_DRAW | typeof _gl.DYNAMIC_DRAW;
+  usage: typeof _gl.DYNAMIC_DRAW | typeof _gl.STATIC_DRAW;
 }
 
 interface GLBufferMethods {
@@ -37,8 +37,8 @@ interface GLBufferMethods {
   free: (this: GLBuffer) => void;
 }
 
-export type GLBuffer<T extends NativeArray = NativeArray> = GLBufferMethods &
-  GLBufferFields<T>;
+export type GLBuffer<T extends NativeArray = NativeArray> = GLBufferFields<T> &
+  GLBufferMethods;
 
 const glBufferMethods: GLBufferMethods = {
   apply: function () {

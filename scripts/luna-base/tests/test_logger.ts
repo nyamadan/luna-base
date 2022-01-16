@@ -1,6 +1,6 @@
+import { logger } from "../src/logger";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
-import { logger } from "../src/logger";
 
 let origPrint: (this: void, ...messages: any[]) => void;
 test("Test_Logger", {

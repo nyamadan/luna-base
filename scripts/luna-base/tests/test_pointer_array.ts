@@ -1,8 +1,8 @@
-import * as lu from "./lib/luaunit/luaunit";
-
 import { createPointerArray, PointerArray } from "../src/buffers/pointer_array";
 import { createU8Array, U8Array } from "../src/buffers/u8array";
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
+
 
 test("test_PointerArray", {
   buf: undefined as ReturnType<typeof createPointerArray> | undefined,
@@ -25,7 +25,7 @@ test("test_PointerArray", {
       return;
     }
 
-    let buf = createU8Array(2);
+    const buf = createU8Array(2);
     this.buf.setPointer(0, buf.buffer, 0);
   },
   test_release: function () {

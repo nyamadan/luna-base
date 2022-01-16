@@ -1,5 +1,5 @@
-import * as lu from "./lib/luaunit/luaunit";
 import { createU8Array, U8Array } from "../src/buffers/u8array";
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
 test("Test_U8Array", {

@@ -1,6 +1,6 @@
 import { inspect } from "./lib/inspect/inspect";
 
-type Level = "OFF" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
+type Level = "DEBUG" | "ERROR" | "FATAL" | "INFO" | "OFF" | "WARN";
 type LogMsg = (this: Logger, level: Level, message: string) => boolean;
 
 interface Logger {

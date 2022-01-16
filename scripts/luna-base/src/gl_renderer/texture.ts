@@ -13,7 +13,7 @@ interface TextureFields {
 
 interface TexturePrototype {}
 
-export type Texture = TexturePrototype & TextureFields;
+export type Texture = TextureFields & TexturePrototype;
 
 const prototype: TexturePrototype = {};
 

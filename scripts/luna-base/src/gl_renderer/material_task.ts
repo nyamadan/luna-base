@@ -24,7 +24,7 @@ export interface MaterialTaskField
 export interface MaterialTaskPrototype
   extends NodeTaskPrototype<MaterialTaskType> {}
 
-export type MaterialTaskType = MaterialTaskPrototype & MaterialTaskField;
+export type MaterialTaskType = MaterialTaskField & MaterialTaskPrototype;
 
 const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
@@ -45,12 +45,18 @@ const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
           return state;
         }
 
-        this.material = createMaterial(program, {
-          uTexColor: {
-            type: "Texture",
-            texture: texture,
-          },
-        });
+        const uniforms: Parameters<typeof createMaterial>[1] = {};
+        for (const child of this.children) {
+          if (isTextureTask(child) && child.texture != null) {
+            uniforms[child.name] = {
+              type: "Texture",
+              texture: child.texture,
+            };
+            continue;
+          }
+        }
+
+        this.material = createMaterial(program, uniforms);
 
         return state;
       }

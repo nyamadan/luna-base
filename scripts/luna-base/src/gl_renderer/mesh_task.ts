@@ -14,7 +14,7 @@ export interface MeshTaskField extends NodeTaskField {
   onLoad?: (this: void, task: MeshTask) => void;
 }
 export interface MeshTaskPrototype extends NodeTaskPrototype<MeshTask> {}
-export type MeshTask = MeshTaskPrototype & MeshTaskField;
+export type MeshTask = MeshTaskField & MeshTaskPrototype;
 
 const prototype: MeshTaskPrototype = createNodeTaskPrototype({
   run(command, state) {

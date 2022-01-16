@@ -9,17 +9,17 @@ const TABLE_NAME = allocTableName("LUA_TYPE_GL_TEXTURE");
 interface GLTextureFields {
   target:
     | typeof _gl.TEXTURE_2D
-    | typeof _gl.TEXTURE_3D
     | typeof _gl.TEXTURE_2D_ARRAY
+    | typeof _gl.TEXTURE_3D
     | typeof _gl.TEXTURE_CUBE_MAP;
   level: number;
   tex: number | null;
-  min: typeof _gl.NEAREST | typeof _gl.LINEAR;
-  mag: typeof _gl.NEAREST | typeof _gl.LINEAR;
+  min: typeof _gl.LINEAR | typeof _gl.NEAREST;
+  mag: typeof _gl.LINEAR | typeof _gl.NEAREST;
   wrapS: typeof _gl.CLAMP_TO_EDGE | typeof _gl.REPEAT;
   wrapT: typeof _gl.CLAMP_TO_EDGE | typeof _gl.REPEAT;
-  internalFormat: typeof _gl.RGBA | typeof _gl.RGB;
-  format: typeof _gl.RGBA | typeof _gl.RGB;
+  internalFormat: typeof _gl.RGB | typeof _gl.RGBA;
+  format: typeof _gl.RGB | typeof _gl.RGBA;
   type: typeof _gl.UNSIGNED_BYTE;
   width: number;
   height: number;
@@ -31,7 +31,7 @@ interface GLTexturePrototype {
   free: (this: GLTexture) => void;
 }
 
-export type GLTexture = GLTexturePrototype & GLTextureFields;
+export type GLTexture = GLTextureFields & GLTexturePrototype;
 
 const prototype: GLTexturePrototype = {
   bind: function () {

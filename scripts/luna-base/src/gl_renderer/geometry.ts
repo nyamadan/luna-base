@@ -11,12 +11,12 @@ export interface GeometryFields {
   colors: F32Array | number[] | null;
   uv0s: F32Array | number[] | null;
   normals: F32Array | number[] | null;
-  indices: U16Array | number[] | null;
+  indices: number[] | U16Array | null;
 }
 
 export interface GeometryPrototype {}
 
-export type Geometry = GeometryPrototype & GeometryFields;
+export type Geometry = GeometryFields & GeometryPrototype;
 
 const prototype: GeometryPrototype = {};
 

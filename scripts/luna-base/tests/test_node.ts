@@ -1,15 +1,15 @@
-import * as lu from "./lib/luaunit/luaunit";
-
-import vec3 from "../src/math/vec3";
-import { test } from "./utils";
-import mat4 from "../src/math/mat4";
 import {
   Command,
   createNodeTaskPrototype,
   createNullTask,
   createTask,
-  initCommandState,
+  initCommandState
 } from "../src/gl_renderer/node_task";
+import mat4 from "../src/math/mat4";
+import vec3 from "../src/math/vec3";
+import * as lu from "./lib/luaunit/luaunit";
+import { test } from "./utils";
+
 
 let origPrint: (this: void, ...args: any[]) => void;
 
@@ -22,8 +22,6 @@ test("Test_Node", {
     _G["print"] = origPrint;
   },
   test_task_enabled: function () {
-    type StateType = typeof state;
-
     let called = 0;
     const root = createNullTask({ enabled: false });
     const task = createTask(
@@ -37,7 +35,7 @@ test("Test_Node", {
       })
     );
     root.addChild(task);
-    const state = root.update(initCommandState(null));
+    root.update(initCommandState(null));
     lu.assertIs(called, 0);
   },
   test_name: function () {
@@ -57,7 +55,6 @@ test("Test_Node", {
     lu.assertIs(task.name, "MyTaskName");
   },
   test_error: function () {
-    type StateType = typeof state;
     const root = createNullTask();
     root.addChild(
       createTask(
@@ -71,7 +68,7 @@ test("Test_Node", {
         })
       )
     );
-    const state = root.update(initCommandState(null));
+    root.update(initCommandState(null));
     lu.success();
   },
   test_transform: function () {

@@ -20,8 +20,8 @@ export interface ShaderProgramTaskField extends NodeTaskField {
 }
 export interface ShaderProgramTaskPrototype
   extends NodeTaskPrototype<ShaderProgramTaskType> {}
-export type ShaderProgramTaskType = ShaderProgramTaskPrototype &
-  ShaderProgramTaskField;
+export type ShaderProgramTaskType = ShaderProgramTaskField &
+  ShaderProgramTaskPrototype;
 
 const prototype: ShaderProgramTaskPrototype = createNodeTaskPrototype({
   run(command, state) {
@@ -37,7 +37,9 @@ const prototype: ShaderProgramTaskPrototype = createNodeTaskPrototype({
             isShaderTask(x) && x.type === "VERTEX_SHADER"
         );
         if (vs == null) {
-          logger.info(`ShaderProgramTask(${this.guid}).vertexShader is missing`);
+          logger.info(
+            `ShaderProgramTask(${this.guid}).vertexShader is missing`
+          );
           return state;
         }
 
@@ -46,7 +48,9 @@ const prototype: ShaderProgramTaskPrototype = createNodeTaskPrototype({
             isShaderTask(x) && x.type === "FRAGMENT_SHADER"
         );
         if (fs == null) {
-          logger.info(`ShaderProgramTask(${this.guid}).fragmentShader is missing.`);
+          logger.info(
+            `ShaderProgramTask(${this.guid}).fragmentShader is missing.`
+          );
           return state;
         }
 
@@ -55,7 +59,9 @@ const prototype: ShaderProgramTaskPrototype = createNodeTaskPrototype({
           fs.shader as Shader<"FRAGMENT_SHADER">
         );
 
-        logger.debug(`ShaderProgramTask(${this.guid}).program = ${this.program.guid}`);
+        logger.debug(
+          `ShaderProgramTask(${this.guid}).program = ${this.program.guid}`
+        );
 
         return state;
       }

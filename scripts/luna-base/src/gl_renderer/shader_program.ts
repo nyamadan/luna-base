@@ -14,7 +14,7 @@ interface ShaderProgramField {
 
 interface ShaderProgramPrototype {}
 
-export type ShaderProgram = ShaderProgramPrototype & ShaderProgramField;
+export type ShaderProgram = ShaderProgramField & ShaderProgramPrototype;
 
 const prototype: ShaderProgramPrototype = {};
 

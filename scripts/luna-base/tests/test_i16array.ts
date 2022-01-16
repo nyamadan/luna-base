@@ -1,7 +1,7 @@
-import * as lu from "./lib/luaunit/luaunit";
 import { createI16Array, I16Array } from "../src/buffers/i16array";
-
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
+
 
 test("Test_I16Array", {
   buf: undefined as ReturnType<typeof createI16Array> | undefined,

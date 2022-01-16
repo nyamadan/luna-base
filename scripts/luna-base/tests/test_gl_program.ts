@@ -1,10 +1,9 @@
-import * as lu from "./lib/luaunit/luaunit";
-import { test } from "./utils";
-
-import "luna-base";
 import * as _gl from "gl";
+import "luna-base";
 import { createGLProgram, isGLProgram } from "../src/gl/gl_program";
 import { inspect } from "../src/lib/inspect/inspect";
+import * as lu from "./lib/luaunit/luaunit";
+import { test } from "./utils";
 
 test("Test_Program", {
   setUp: function (this: void) {},

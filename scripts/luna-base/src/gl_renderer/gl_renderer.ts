@@ -25,7 +25,7 @@ interface GLRendererPrototype {
   render: (this: GLRenderer, state: CommandState, task: NodeTaskType) => void;
 }
 
-export type GLRenderer = GLRendererPrototype & GLRendererFields;
+export type GLRenderer = GLRendererFields & GLRendererPrototype;
 
 function renderSubMesh(
   this: void,

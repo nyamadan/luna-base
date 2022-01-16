@@ -1,5 +1,5 @@
-import * as lu from "./lib/luaunit/luaunit";
 import { new_msgpack_buffer } from "msgpack";
+import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
 test("Test_MsgPack", {

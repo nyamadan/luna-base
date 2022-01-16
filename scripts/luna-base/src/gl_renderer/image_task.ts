@@ -23,7 +23,7 @@ export interface ImageTaskField
 
 export interface ImageTaskPrototype extends NodeTaskPrototype<ImageTaskType> {}
 
-export type ImageTaskType = ImageTaskPrototype & ImageTaskField;
+export type ImageTaskType = ImageTaskField & ImageTaskPrototype;
 
 const prototype: ImageTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {

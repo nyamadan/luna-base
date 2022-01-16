@@ -12,24 +12,39 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "plugins": ["@typescript-eslint", "import"],
-  "settings": {
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "import/resolver": {
-      "typescript": {
-        "alwaysTryTypes": true // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
-      }
-    }
-  },
+  "plugins": [
+    "@typescript-eslint",
+    "import"
+  ],
   "rules": {
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "sort-imports": "off",
-    "import/order": ["error", { "alphabetize": { "order": "asc" } }],
-    "no-duplicate-imports": "error"
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/sort-type-union-intersection-members": "error",
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {
+          "order": "asc"
+        }
+      }
+    ],
+    "no-duplicate-imports": "error",
+    "sort-imports": "off"
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
   }
 }

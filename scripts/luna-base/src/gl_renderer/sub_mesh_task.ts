@@ -24,7 +24,7 @@ export interface SubMeshTaskField
 export interface SubMeshTaskPrototype
   extends NodeTaskPrototype<SubMeshTaskType> {}
 
-export type SubMeshTaskType = SubMeshTaskPrototype & SubMeshTaskField;
+export type SubMeshTaskType = SubMeshTaskField & SubMeshTaskPrototype;
 
 const prototype: SubMeshTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
@@ -40,9 +40,7 @@ const prototype: SubMeshTaskPrototype = createNodeTaskPrototype({
           logger.info(`SubMeshTask(${this.guid}).geometry is missing.`);
           return state;
         }
-        logger.debug(
-          `SubMeshTask(${this.guid}).geometry = ${geometry.guid}`
-        );
+        logger.debug(`SubMeshTask(${this.guid}).geometry = ${geometry.guid}`);
 
         const material = this.findTaskInChildren(isMaterialTask)?.material;
         if (material == null) {
