@@ -27,6 +27,8 @@ import "./gl_renderer/material";
 import "./gl_renderer/material_task";
 import "./gl_renderer/node_task";
 import "./gl_renderer/null_task";
+import "./gl_renderer/ortho_camera_task";
+import "./gl_renderer/perspective_camera";
 import "./gl_renderer/primitives";
 import "./gl_renderer/shader";
 import "./gl_renderer/shader_program";

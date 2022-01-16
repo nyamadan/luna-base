@@ -17,7 +17,7 @@
     "outDir": "./dist"
   },
   "includes": ["./src/**/*.ts"],
-  "exclude": ["./tests", "**/dist/**"],
+  "exclude": ["**/dist/**"],
   "tstl": {
     "luaLibImport": "require",
     "buildMode": "library",
