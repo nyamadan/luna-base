@@ -19,6 +19,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] MaterialTaskを作成
  * [x] NodeのUserdata Generics削除
  * [x] components多分いらない
+ * [x] testのワークスペースを分離
  * [ ] CameraTaskを作成
  * [ ] transform
  * [ ] Render IMGUIのタスクを作成
@@ -32,7 +33,6 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [ ] MessagePackをいったん消す
  * [ ] glslangを使う
  * [ ] generate_gl_bindingsを整理する
- * [ ] testのワークスペースを分離
  * [ ] mainのワークスペースをExampleに
  * [ ] 起動時引数で任意のExampleを起動できるようにする
  * [ ] add/removeのイベントを足す

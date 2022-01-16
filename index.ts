@@ -59,16 +59,17 @@ function runLuaCoreTests() {
 
   const Module = {
     canvas,
-    arguments: ["/scripts/luna-base/tests/index.lua"],
+    arguments: ["/scripts/luna-base-test/index.lua"],
     preRun: [
       function () {
         const { FS } = Module;
         FS.mkdir("/scripts");
         FS.mkdir("/scripts/luna-base-test");
+        FS.mkdir("/scripts/luna-base-test/dist");
         FS.createPreloadedFile(
-          "/scripts/luna-base-test",
+          "/scripts/luna-base-test/dist",
           "index.lua",
-          "/luna-base-test/index.lua",
+          "/luna-base-test/dist/index.lua",
           true,
           false
         );
