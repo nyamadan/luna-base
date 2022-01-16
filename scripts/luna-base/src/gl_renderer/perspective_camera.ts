@@ -24,12 +24,6 @@ const prototype: PerspectiveCameraTaskPrototype = createNodeTaskPrototype({
     switch (name) {
       case "update": {
         mat4.perspective(this.transform.local, 60.0, 1, 0.1, 100.0);
-        mat4.decompose(
-          this.transform.rotation,
-          this.transform.position,
-          this.transform.scale,
-          this.transform.local
-        );
         return state;
       }
       default: {

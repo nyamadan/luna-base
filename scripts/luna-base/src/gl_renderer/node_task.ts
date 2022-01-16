@@ -10,7 +10,7 @@ import { createTransform, Transform } from "./transform";
 interface CommandInterface {
   name: string;
   node: NodeTaskType;
-  root: NodeTaskType;
+  source: NodeTaskType;
 }
 
 interface SetupCommand extends CommandInterface {
@@ -78,7 +78,7 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
       },
       (node) => {
         const [ok, err] = xpcall(() => {
-          state = node.runCommand({ name: "setup", root: this, node }, state);
+          state = node.runCommand({ name: "setup", source: this, node }, state);
         }, debug.traceback);
 
         if (!ok) {
@@ -95,7 +95,7 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
       }
 
       const [ok, err] = xpcall(() => {
-        state = node.runCommand({ name: "update", root: this, node }, state);
+        state = node.runCommand({ name: "update", source: this, node }, state);
       }, debug.traceback);
 
       if (!ok) {
@@ -112,7 +112,7 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
 
       const [ok, err] = xpcall(() => {
         state = node.runCommand(
-          { name: "update-world", root: this, node, world },
+          { name: "update-world", source: this, node, world },
           state
         );
 
@@ -140,7 +140,7 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
 
         const [ok, err] = xpcall(() => {
           state = node.runCommand(
-            { name: "prerender", root: this, node },
+            { name: "prerender", source: this, node },
             state
           );
         }, debug.traceback);
@@ -151,7 +151,10 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
       },
       (node) => {
         const [ok, err] = xpcall(() => {
-          state = node.runCommand({ name: "render", root: this, node }, state);
+          state = node.runCommand(
+            { name: "render", source: this, node },
+            state
+          );
         }, debug.traceback);
 
         if (!ok) {

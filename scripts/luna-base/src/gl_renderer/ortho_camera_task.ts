@@ -24,12 +24,6 @@ const prototype: OrthoCameraTaskPrototype = createNodeTaskPrototype({
     switch (name) {
       case "update": {
         mat4.ortho(this.transform.local, -0.5, 0.5, -0.5, 0.5, 0.1, 100.0);
-        mat4.decompose(
-          this.transform.rotation,
-          this.transform.position,
-          this.transform.scale,
-          this.transform.local
-        );
         return state;
       }
       default: {
