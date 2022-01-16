@@ -3,7 +3,6 @@ import * as glfw from "glfw";
 import * as imgui from "imgui";
 import { isEmscripten } from "luna-base-utils";
 import mat4 from "../math/mat4";
-
 import { allocTableName, getMetatableName } from "../tables";
 import { createGLRendererTask } from "./gl_renderer_task";
 import {
@@ -11,14 +10,17 @@ import {
   createTask,
   initCommandState,
   NodeTaskField,
-  NodeTaskId,
+  NodeTaskProps,
   NodeTaskPrototype,
+  pickOptionalField,
 } from "./node_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_APPLICATION_TASK");
 
 interface ApplicationTaskField extends NodeTaskField {
-  guid: NodeTaskId;
+  readonly width: number;
+  readonly height: number;
+
   initialized: boolean;
 }
 
@@ -28,7 +30,7 @@ export type ApplicationTask = ApplicationTaskField & ApplicationTaskPrototype;
 
 const prototype: ApplicationTaskPrototype =
   createNodeTaskPrototype<ApplicationTask>({
-    run: function (command, state) {
+    run(command, state) {
       const { name } = command;
 
       switch (name) {
@@ -41,9 +43,6 @@ const prototype: ApplicationTaskPrototype =
             math.randomseed(math.floor(os.clock() * 1e11));
 
             this.tasks.push(createGLRendererTask());
-
-            const width = 1024;
-            const height = 768;
 
             let state = initCommandState(null);
 
@@ -64,10 +63,10 @@ const prototype: ApplicationTaskPrototype =
             glfw.windowHint(glfw.RESIZABLE, glfw.FALSE);
 
             glfw.start({
-              width,
-              height,
+              width: this.width,
+              height: this.height,
               start: () => {
-                _gl.viewport(0, 0, width, height);
+                _gl.viewport(0, 0, this.width, this.height);
                 _gl.clearColor(1.0, 0.0, 1.0, 1.0);
 
                 imgui.createContext();
@@ -96,12 +95,24 @@ const prototype: ApplicationTaskPrototype =
     },
   });
 
-export function createApplicationTask(this: void): ApplicationTask {
-  const field: Pick<ApplicationTaskField, "initialized" | "name"> = {
-    name: "Application",
+export function createApplicationTask(
+  this: void,
+  params: NodeTaskProps<ApplicationTaskField, never, "height" | "width">
+): ApplicationTask {
+  const fields: Omit<ApplicationTaskField, keyof NodeTaskField> = {
     initialized: false,
+    width: params.width ?? 1024,
+    height: params.height ?? 768,
   };
-  return createTask(TABLE_NAME, field, prototype);
+
+  return createTask(
+    TABLE_NAME,
+    {
+      ...pickOptionalField(params),
+      ...fields,
+    },
+    prototype
+  ) as ApplicationTask;
 }
 
 export function isApplicationTask(

@@ -4,7 +4,7 @@ import "luna-base";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
 import {
   createNodeTaskPrototype,
-  createTask
+  createTask,
 } from "luna-base/dist/gl_renderer/node_task";
 import { createNullTask } from "luna-base/dist/gl_renderer/null_task";
 import { logger } from "luna-base/dist/logger";
@@ -51,7 +51,7 @@ export default function createImguiNode(this: void) {
     null,
     {},
     createNodeTaskPrototype({
-      run: function (command, state) {
+      run(command, state) {
         const { name, task } = command;
         switch (name) {
           case "render": {

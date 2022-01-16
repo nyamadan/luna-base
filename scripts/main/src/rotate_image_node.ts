@@ -4,11 +4,11 @@ import { createGeometryTask } from "luna-base/dist/gl_renderer/geometry_task";
 import { createImageTask } from "luna-base/dist/gl_renderer/image_task";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import {
-  Command,
   CommandState,
   createNodeTaskPrototype,
   createTask,
-  NodeTaskPrototype
+  NodeTaskPrototype,
+  NodeTaskType,
 } from "luna-base/dist/gl_renderer/node_task";
 import { createNullTask } from "luna-base/dist/gl_renderer/null_task";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
@@ -35,7 +35,7 @@ export default function createRotateImageNode(this: void) {
 
   const update = coroutine.create(function (
     this: void,
-    task: Command["task"],
+    task: NodeTaskType,
     state: CommandState
   ) {
     const task0 = createNullTask({
@@ -74,7 +74,7 @@ export default function createRotateImageNode(this: void) {
       const scale = 0.25 * math.sin(rotation) + 0.75;
       vec3.set(task1Transform.scale, scale, scale, scale);
 
-      coroutine.yield() as LuaMultiReturn<[Command["task"]]>;
+      coroutine.yield();
       frame += 1;
     }
   });

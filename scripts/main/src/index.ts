@@ -6,13 +6,13 @@ import {
   createNodeTaskPrototype,
   createTask,
   initCommandState,
-  NodeTaskType
+  NodeTaskType,
 } from "luna-base/dist/gl_renderer/node_task";
 import createImguiNode from "./imgui_node";
 import createLunaXNode from "./lunax_node";
 import createRotateImageNode from "./rotate_image_node";
 
-const root = createApplicationTask();
+const root = createApplicationTask({ width: 1024, height: 768 });
 root.setup(initCommandState(null));
 
 const rotateImage = createRotateImageNode();
@@ -71,12 +71,12 @@ const scriptTask = createTask(
   null,
   {},
   createNodeTaskPrototype({
-    run: function (command, state) {
-      const { name, task } = command;
+    run(command, state) {
+      const { name } = command;
       switch (name) {
         case "render": {
           if (coroutine.status(render) === "suspended") {
-            coroutine.resume(render, task);
+            coroutine.resume(render, command.task);
           }
           return state;
         }

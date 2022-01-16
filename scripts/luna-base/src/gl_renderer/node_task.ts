@@ -392,20 +392,22 @@ export type NodeTaskProps<
   Partial<Pick<T, NodeTaskTypeOptionalField>> &
   Pick<Omit<T, keyof NodeTaskField>, M>;
 
+type Undefinable<T> = {
+  [P in keyof T]: T[P] | undefined;
+};
+
 export function pickOptionalField(
   this: void,
   params?: Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>
-): Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>> {
-  if (params == null) {
-    return {};
-  }
-
-  const { enabled, name, tags, ref } = params;
+): Undefinable<Pick<NodeTaskField, NodeTaskTypeOptionalField>> {
   return {
-    name,
-    enabled,
-    tags,
-    ref,
+    children: params?.children,
+    enabled: params?.enabled,
+    name: params?.name,
+    ref: params?.ref,
+    tags: params?.tags,
+    tasks: params?.tasks,
+    transform: params?.transform,
   };
 }
 

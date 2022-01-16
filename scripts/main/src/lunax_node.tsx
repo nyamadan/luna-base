@@ -6,8 +6,6 @@ import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes"
 import LunaX from "luna-base/dist/gl_renderer/lunax";
 import MaterialTask from "luna-base/dist/gl_renderer/material_task";
 import NodeTask, {
-  Command,
-  CommandState,
   createNodeTaskPrototype,
   createTask,
   NodeTaskPrototype,
@@ -15,22 +13,13 @@ import NodeTask, {
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import ShaderProgramTask from "luna-base/dist/gl_renderer/shader_program_task";
 import ShaderTask from "luna-base/dist/gl_renderer/shader_task";
-import SubMeshTask from "luna-base/dist/gl_renderer/sub_mesh_task";
+import SubMeshTask, {
+  isSubMeshTask,
+  SubMeshTaskType,
+} from "luna-base/dist/gl_renderer/sub_mesh_task";
 import TextureTask from "luna-base/dist/gl_renderer/texture_task";
 import Vec4Task from "luna-base/dist/gl_renderer/vec4_task";
-
-const update = coroutine.create(function (
-  this: void,
-  task: Command["task"],
-  state: CommandState
-) {
-  let frame = 0;
-  let running = true;
-  while (running) {
-    frame++;
-    coroutine.yield();
-  }
-});
+import vec3 from "luna-base/dist/math/vec3";
 
 export default function createLunaXNode(this: void) {
   const runner: NodeTaskPrototype = createNodeTaskPrototype({
@@ -38,9 +27,17 @@ export default function createLunaXNode(this: void) {
       const { name, task } = command;
       switch (name) {
         case "update": {
-          if (coroutine.status(update) === "suspended") {
-            coroutine.resume(update, task, state);
+          const task = this.findTask(
+            (x): x is SubMeshTaskType =>
+              isSubMeshTask(x) && x.name === "x-sub-mesh"
+          );
+
+          if (task == null) {
+            return state;
           }
+
+          const tr = task.transform;
+          vec3.set(tr.scale, 2, 2, 2);
           return state;
         }
         case "render": {
@@ -56,7 +53,7 @@ export default function createLunaXNode(this: void) {
 
   return (
     <NodeTask task={createTask(null, { name: "Root" }, runner)}>
-      <SubMeshTask>
+      <SubMeshTask name="x-sub-mesh">
         <GeometryTask generator={createPlaneGeometryXY} />
         <MaterialTask>
           <ShaderProgramTask>

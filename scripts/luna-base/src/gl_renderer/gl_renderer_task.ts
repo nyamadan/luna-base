@@ -23,7 +23,7 @@ interface GLRendererTaskPrototype
 export type GLRendererTaskType = GLRendererTaskField & GLRendererTaskPrototype;
 
 const prototype: GLRendererTaskPrototype = createNodeTaskPrototype({
-  run: function (command, state) {
+  run(command, state) {
     const { name } = command;
     switch (name) {
       case "prerender": {
