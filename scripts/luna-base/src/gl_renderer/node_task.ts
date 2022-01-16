@@ -23,7 +23,7 @@ interface UpdateCommand extends CommandInterface {
 
 interface UpdateWorldCommand extends CommandInterface {
   name: "update-world";
-  world: Mat4;
+  parent: Mat4;
 }
 
 interface PreRenderCommand extends CommandInterface {
@@ -104,7 +104,7 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
     });
     return state;
   },
-  updateWorld(state, world) {
+  updateWorld(state, parent) {
     this.traverse((node) => {
       if (!node.enabled) {
         return false;
@@ -112,15 +112,17 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
 
       const [ok, err] = xpcall(() => {
         state = node.runCommand(
-          { name: "update-world", source: this, node, world },
+          { name: "update-world", source: this, node, parent },
           state
         );
 
-        node.transform.update();
         const worlds = { ...state.worlds };
-        const newWorld = (worlds[node.guid] ??= createF32Mat4());
-        mat4.mul(newWorld, world, node.transform.local);
-        world = newWorld;
+        const world = (worlds[node.guid] ??= createF32Mat4());
+
+        node.transform.update();
+        mat4.mul(world, parent, node.transform.local);
+
+        parent = world;
         state = { ...state, worlds };
       }, debug.traceback);
 
@@ -332,7 +334,7 @@ export interface NodeTaskPrototype<T extends NodeTaskType = NodeTaskType>
   updateWorld(
     this: NodeTaskType,
     state: CommandState,
-    world: Mat4
+    parent: Mat4
   ): RunTaskResult;
   render(this: NodeTaskType, state: CommandState): RunTaskResult;
   addChild(this: NodeTaskType, task: NodeTaskType): void;

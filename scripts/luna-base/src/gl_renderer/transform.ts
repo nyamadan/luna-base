@@ -14,13 +14,13 @@ interface TransformFields {
 }
 
 interface TransformPrototype {
-  update: (this: TransformFields) => void;
+  update(this: Transform): void;
 }
 
 export type Transform = TransformFields & TransformPrototype;
 
 const prototype: TransformPrototype = {
-  update: function () {
+  update() {
     mat4.fromRotationTranslationScaleOrigin(
       this.local,
       this.rotation,

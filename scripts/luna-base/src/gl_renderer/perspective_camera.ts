@@ -9,6 +9,7 @@ import {
   NodeTaskType,
   pickOptionalField,
 } from "./node_task";
+import { createTransform, Transform } from "./transform";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_PERSPECTIVE_CAMERA_TASK");
 
@@ -22,7 +23,7 @@ const prototype: PerspectiveCameraTaskPrototype = createNodeTaskPrototype({
   run(command, state) {
     const { name } = command;
     switch (name) {
-      case "update": {
+      case "update-world": {
         mat4.perspective(this.transform.local, 60.0, 1, 0.1, 100.0);
         return state;
       }
@@ -35,9 +36,25 @@ const prototype: PerspectiveCameraTaskPrototype = createNodeTaskPrototype({
 
 export function createPerspectiveCameraTask(
   this: void,
-  params: NodeTaskProps<PerspectiveCameraTaskField, never, never>
+  params: Omit<
+    NodeTaskProps<PerspectiveCameraTaskField, never, never>,
+    "transform"
+  >
 ): PerspectiveCameraTaskType {
-  const field: Omit<PerspectiveCameraTaskField, keyof NodeTaskType> = {};
+  interface ExTransform extends Transform {
+    update(): void;
+    _update(): void;
+  }
+
+  const transform = createTransform() as ExTransform;
+  transform._update = transform.update;
+  transform.update = function (this: ExTransform) {};
+
+  const field: Omit<PerspectiveCameraTaskField, keyof NodeTaskType> &
+    Pick<NodeTaskType, "transform"> = {
+    transform,
+  };
+
   return createTask(
     TABLE_NAME,
     { ...pickOptionalField(params), ...field },

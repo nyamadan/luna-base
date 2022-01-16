@@ -9,6 +9,7 @@ import {
   NodeTaskType,
   pickOptionalField,
 } from "./node_task";
+import { createTransform, Transform } from "./transform";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_PERSPECTIVE_CAMERA_TASK");
 
@@ -35,9 +36,20 @@ const prototype: OrthoCameraTaskPrototype = createNodeTaskPrototype({
 
 export function createOrthoCameraTask(
   this: void,
-  params: NodeTaskProps<OrthoCameraTaskField, never, never>
+  params: Omit<NodeTaskProps<OrthoCameraTaskField, never, never>, "transform">
 ): OrthoCameraTaskType {
-  const field: Omit<OrthoCameraTaskField, keyof NodeTaskType> = {};
+  interface ExTransform extends Transform {
+    update(): void;
+    _update(): void;
+  }
+  const transform = createTransform() as ExTransform;
+  transform._update = transform.update;
+  transform.update = function (this: ExTransform) {};
+
+  const field: Omit<OrthoCameraTaskField, keyof NodeTaskType> &
+    Pick<NodeTaskType, "transform"> = {
+    transform: transform,
+  };
   return createTask(
     TABLE_NAME,
     { ...pickOptionalField(params), ...field },
