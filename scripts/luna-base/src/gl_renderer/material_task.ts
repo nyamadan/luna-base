@@ -39,6 +39,7 @@ const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
 
         const program = this.findTaskInChildren(isShaderProgramTask)?.program;
         if (program == null) {
+          logger.info(`MaterialTask(${this.guid}): program is missing.`);
           return state;
         }
 
@@ -67,6 +68,9 @@ const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
         }
 
         this.material = createMaterial(program, uniforms);
+        logger.debug(
+          `MaterialTask(${this.guid}).material = ${this.material.guid}`
+        );
 
         return state;
       }
