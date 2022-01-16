@@ -1,5 +1,6 @@
 import { NativeBuffer } from "native_buffer";
 import { createPngImage, isPngImage, PngImage } from "../images/png_image";
+import { logger } from "../logger";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE");
@@ -42,6 +43,7 @@ const prototype: ImagePrototype = {
     const result = createPngImage(this.path);
     if (!isPngImage(result)) {
       this.status = "error";
+      logger.error(`Image(PNG): Failed to Load ${this.path}`);
       return false;
     }
 
