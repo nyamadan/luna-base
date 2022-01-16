@@ -29,6 +29,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [ ] GLBを読めるようにする
  * [ ] Taskの重複登録防止
  * [ ] MessagePackをいったん消す
+ * [ ] glslangを使う
  * [ ] generate_gl_bindingsを整理する
  * [ ] testのワークスペースを分離
  * [ ] mainのワークスペースをExampleに

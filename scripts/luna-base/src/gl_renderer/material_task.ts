@@ -8,7 +8,7 @@ import {
   NodeTaskId,
   NodeTaskProps,
   NodeTaskPrototype,
-  pickOptionalField
+  pickOptionalField,
 } from "./node_task";
 import { isShaderProgramTask } from "./shader_program_task";
 import { isTextureTask } from "./texture_task";
@@ -62,7 +62,7 @@ const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
             continue;
           }
 
-          if(isVec4Task(child)) {
+          if (isVec4Task(child)) {
             uniforms[child.name] = {
               type: "Vec4",
               value: child.value,
