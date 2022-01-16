@@ -1,12 +1,13 @@
-import { createU16Array, U16Array } from "../src/buffers/u16array";
+import { createI32Array, I32Array } from "luna-base/dist/buffers/i32array";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
-test("Test_U16Array", {
-  buf: undefined as ReturnType<typeof createU16Array> | undefined,
+
+test("Test_I32Array", {
+  buf: undefined as ReturnType<typeof createI32Array> | undefined,
 
   setUp: function () {
-    this.buf = createU16Array(2);
+    this.buf = createI32Array(2);
   },
   tearDown: function () {},
   test_length: function () {
@@ -34,17 +35,10 @@ test("Test_U16Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(tostring(this.buf), "LUA_TYPE_U16ARRAY: [10, 20]");
-  },
-  test_new_with_array: function () {
-    const buf: U16Array | null = createU16Array([100, 200, 300]);
-    lu.assertEquals(buf.length, 3);
-    lu.assertEquals(buf[0], 100);
-    lu.assertEquals(buf[1], 200);
-    lu.assertEquals(buf[2], 300);
+    lu.assertEquals(tostring(this.buf), "LUA_TYPE_I32ARRAY: [10, 20]");
   },
   test_release: function () {
-    let buf: U16Array | null = createU16Array(2);
+    let buf: I32Array | null = createI32Array(2);
     const tbl = setmetatable({ buf: buf.buffer }, { __mode: "v" });
     buf = null;
     lu.assertNotIsNil(tbl.buf);

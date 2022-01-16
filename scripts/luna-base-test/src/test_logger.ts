@@ -1,4 +1,4 @@
-import { logger } from "../src/logger";
+import { logger } from "luna-base/dist/logger";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

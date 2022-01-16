@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import LunaX from "../src/gl_renderer/lunax";
+import LunaX from "luna-base/dist/gl_renderer/lunax";
 import NodeTask, {
   createNodeTaskPrototype,
   createTask,
@@ -7,9 +7,9 @@ import NodeTask, {
   initCommandState,
   NodeTaskType,
   TaskRef,
-} from "../src/gl_renderer/node_task";
-import NullTask from "../src/gl_renderer/null_task";
-import { isTextTask } from "../src/gl_renderer/text_task";
+} from "luna-base/dist/gl_renderer/node_task";
+import NullTask from "luna-base/dist/gl_renderer/null_task";
+import { isTextTask } from "luna-base/dist/gl_renderer/text_task";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

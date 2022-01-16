@@ -19,7 +19,7 @@
     "buildMode": "default",
     "luaBundle": "index.lua",
     "luaBundleEntry": "./src/index.ts",
-    "luaTarget": "5.3"
+    "luaTarget": "5.4"
   },
   "files": ["src/index.ts"],
   "exclude": ["./dist/**/*"]

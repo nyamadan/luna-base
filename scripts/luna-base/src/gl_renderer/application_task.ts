@@ -1,7 +1,7 @@
 import * as _gl from "gl";
 import * as glfw from "glfw";
 import * as imgui from "imgui";
-import { isEmscripten } from "utils";
+import { isEmscripten } from "luna-base-utils";
 import mat4 from "../math/mat4";
 
 import { allocTableName, getMetatableName } from "../tables";

@@ -10,7 +10,8 @@
     "lib": ["esnext"],
     "moduleResolution": "node",
     "types": ["lua-types/5.4"],
-    "strict": true
+    "strict": true,
+    "outDir": "./dist"
   },
   "tstl": {
     "luaLibImport": "require",
@@ -20,6 +21,5 @@
     "luaTarget": "5.4",
     "noResolvePaths": ["math"]
   },
-  "exclude": ["../dist/**"],
-  "include": ["./index.ts"]
+  "include": ["./src/index.ts"]
 }

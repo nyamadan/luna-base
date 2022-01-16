@@ -181,7 +181,7 @@ int print_table(lua_State *L) {
 }
 
 void lua_open_util_libs(lua_State *L) {
-  luaL_requiref(L, "utils", L_require, false);
+  luaL_requiref(L, "luna-base-utils", L_require, false);
 }
 
 int lua_docall(lua_State *L, int narg, int nres) {

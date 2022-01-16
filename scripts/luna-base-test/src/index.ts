@@ -1,4 +1,4 @@
-import { logger } from "../src/logger";
+import { logger } from "luna-base/dist/logger";
 import { LuaUnit } from "./lib/luaunit/luaunit";
 import "./test_f32array";
 import "./test_gl_program";

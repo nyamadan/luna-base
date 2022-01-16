@@ -21,8 +21,8 @@
       "stopOnEntry": false,
       "stopOnThreadEntry": true,
       "runtimeExecutable": "${workspaceFolder}/build/main.exe",
-      "cwd": "${workspaceFolder}/scripts/luna-base/tests",
-      "runtimeArgs": "${workspaceFolder}/scripts/luna-base/tests/index.lua",
+      "cwd": "${workspaceFolder}/scripts/luna-base-test",
+      "runtimeArgs": "${workspaceFolder}/scripts/luna-base-test/dist/index.lua",
       "consoleCoding": "utf8"
     },
     {

@@ -1,8 +1,8 @@
 import * as _gl from "gl";
 import * as glfw from "glfw";
-import { isEmscripten } from "utils";
-import { OS_NAME } from "../src/platform";
-import { assertIsNull } from "../src/type_utils";
+import { isEmscripten } from "luna-base-utils";
+import { OS_NAME } from "luna-base/dist/platform";
+import { assertIsNull } from "luna-base/dist/type_utils";
 
 export const test = function <
   T extends {

@@ -1,13 +1,13 @@
-import { createI32Array, I32Array } from "../src/buffers/i32array";
+import { createI8Array, I8Array } from "luna-base/dist/buffers/i8array";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
 
-test("Test_I32Array", {
-  buf: undefined as ReturnType<typeof createI32Array> | undefined,
+test("Test_I8Array", {
+  buf: undefined as ReturnType<typeof createI8Array> | undefined,
 
   setUp: function () {
-    this.buf = createI32Array(2);
+    this.buf = createI8Array(2);
   },
   tearDown: function () {},
   test_length: function () {
@@ -25,8 +25,8 @@ test("Test_I32Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(this.buf[0], 10);
-    lu.assertEquals(this.buf[1], 20);
+    lu.assertEquals(this.buf[0], 10)
+    lu.assertEquals(this.buf[1], 20)
   },
   test_index_tostring: function () {
     if (this.buf == null) {
@@ -35,10 +35,10 @@ test("Test_I32Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(tostring(this.buf), "LUA_TYPE_I32ARRAY: [10, 20]");
+    lu.assertEquals(tostring(this.buf), "LUA_TYPE_I8ARRAY: [10, 20]")
   },
   test_release: function () {
-    let buf: I32Array | null = createI32Array(2);
+    let buf: I8Array | null = createI8Array(2);
     const tbl = setmetatable({ buf: buf.buffer }, { __mode: "v" });
     buf = null;
     lu.assertNotIsNil(tbl.buf);

@@ -18,11 +18,12 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] Uniformまわりと何とかする
  * [x] MaterialTaskを作成
  * [x] NodeのUserdata Generics削除
+ * [x] components多分いらない
  * [ ] CameraTaskを作成
+ * [ ] transform
  * [ ] Render IMGUIのタスクを作成
  * [ ] SDLにさしかえ
  * [ ] キーボード入力を実装する
- * [ ] components多分いらない
  * [ ] CIでテスト
  * [ ] guid -> id
  * [ ] Taskを継承してNodeを作る？

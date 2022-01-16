@@ -1,9 +1,9 @@
 import "luna-base";
-import { createImage } from "../src/gl_renderer/image";
-import { createImageTask } from "../src/gl_renderer/image_task";
-import { initCommandState } from "../src/gl_renderer/node_task";
-import { createNullTask } from "../src/gl_renderer/null_task";
-import { createPngImage, isPngImage } from "../src/images/png_image";
+import { createImage } from "luna-base/dist/gl_renderer/image";
+import { createImageTask } from "luna-base/dist/gl_renderer/image_task";
+import { initCommandState } from "luna-base/dist/gl_renderer/node_task";
+import { createNullTask } from "luna-base/dist/gl_renderer/null_task";
+import { createPngImage, isPngImage } from "luna-base/dist/images/png_image";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

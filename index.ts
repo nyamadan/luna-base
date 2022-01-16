@@ -23,12 +23,12 @@ function runMain() {
         );
 
         FS.mkdir("/scripts/luna-base");
-        FS.mkdir("/scripts/luna-base/tests");
-        FS.mkdir("/scripts/luna-base/tests/assets");
+        FS.mkdir("/scripts/luna-base-test");
+        FS.mkdir("/scripts/luna-base-test/assets");
         FS.createPreloadedFile(
-          "/scripts/luna-base/tests/assets",
+          "/scripts/luna-base-test/assets",
           "waterfall-512x512.png",
-          "/luna-base/tests/assets/waterfall-512x512.png",
+          "/luna-base-test/assets/waterfall-512x512.png",
           true,
           false
         );
@@ -64,12 +64,11 @@ function runLuaCoreTests() {
       function () {
         const { FS } = Module;
         FS.mkdir("/scripts");
-        FS.mkdir("/scripts/luna-base");
-        FS.mkdir("/scripts/luna-base/tests");
+        FS.mkdir("/scripts/luna-base-test");
         FS.createPreloadedFile(
-          "/scripts/luna-base/tests",
+          "/scripts/luna-base-test",
           "index.lua",
-          "/luna-base/tests/index.lua",
+          "/luna-base-test/index.lua",
           true,
           false
         );
@@ -78,14 +77,14 @@ function runLuaCoreTests() {
         FS.createPreloadedFile(
           "/assets",
           "waterfall-512x512.png",
-          "/luna-base/tests/assets/waterfall-512x512.png",
+          "/luna-base-test/assets/waterfall-512x512.png",
           true,
           false
         );
         FS.createPreloadedFile(
           "/assets",
           "image.png",
-          "/luna-base/tests/assets/image.png",
+          "/luna-base-test/assets/image.png",
           true,
           false
         );

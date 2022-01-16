@@ -1,5 +1,5 @@
-import { createPointerArray, PointerArray } from "../src/buffers/pointer_array";
-import { createU8Array, U8Array } from "../src/buffers/u8array";
+import { createPointerArray, PointerArray } from "luna-base/dist/buffers/pointer_array";
+import { createU8Array, U8Array } from "luna-base/dist/buffers/u8array";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

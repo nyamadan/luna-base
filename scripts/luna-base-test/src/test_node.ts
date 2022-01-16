@@ -3,10 +3,10 @@ import {
   createNodeTaskPrototype,
   createTask,
   initCommandState,
-} from "../src/gl_renderer/node_task";
-import { createNullTask } from "../src/gl_renderer/null_task";
-import mat4 from "../src/math/mat4";
-import vec3 from "../src/math/vec3";
+} from "luna-base/dist/gl_renderer/node_task";
+import { createNullTask } from "luna-base/dist/gl_renderer/null_task";
+import mat4 from "luna-base/dist/math/mat4";
+import vec3 from "luna-base/dist/math/vec3";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

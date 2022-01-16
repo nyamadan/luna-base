@@ -1,4 +1,4 @@
-import { isApple, isEmscripten, isLinux, isWindows } from "utils";
+import { isApple, isEmscripten, isLinux, isWindows } from "luna-base-utils";
 
 let osName: "Linux" | "MacOS" | "Unknown" | "Web" | "Windows" = "Unknown";
 if (isWindows()) {

@@ -1,7 +1,6 @@
-import { createGLGeometryBuffer } from "../src/gl/gl_geometry_buffer";
-import { createGLProgram, isGLProgram } from "../src/gl/gl_program";
-import { createGLVertexArray } from "../src/gl/gl_vertex_array";
-import { inspect } from "../src/lib/inspect/inspect";
+import { createGLGeometryBuffer } from "luna-base/dist/gl/gl_geometry_buffer";
+import { createGLProgram, isGLProgram } from "luna-base/dist/gl/gl_program";
+import { createGLVertexArray } from "luna-base/dist/gl/gl_vertex_array";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
@@ -37,7 +36,7 @@ void main() {
 `;
     const program = createGLProgram(vs, fs);
     if (!isGLProgram(program)) {
-      lu.fail(inspect(program));
+      lu.fail(`failed to create program ${program}`);
     }
 
     const vao = createGLVertexArray(

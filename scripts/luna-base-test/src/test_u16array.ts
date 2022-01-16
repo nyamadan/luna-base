@@ -1,13 +1,12 @@
-import { createI8Array, I8Array } from "../src/buffers/i8array";
+import { createU16Array, U16Array } from "luna-base/dist/buffers/u16array";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
-
-test("Test_I8Array", {
-  buf: undefined as ReturnType<typeof createI8Array> | undefined,
+test("Test_U16Array", {
+  buf: undefined as ReturnType<typeof createU16Array> | undefined,
 
   setUp: function () {
-    this.buf = createI8Array(2);
+    this.buf = createU16Array(2);
   },
   tearDown: function () {},
   test_length: function () {
@@ -25,8 +24,8 @@ test("Test_I8Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(this.buf[0], 10)
-    lu.assertEquals(this.buf[1], 20)
+    lu.assertEquals(this.buf[0], 10);
+    lu.assertEquals(this.buf[1], 20);
   },
   test_index_tostring: function () {
     if (this.buf == null) {
@@ -35,10 +34,17 @@ test("Test_I8Array", {
     }
     this.buf[0] = 10;
     this.buf[1] = 20;
-    lu.assertEquals(tostring(this.buf), "LUA_TYPE_I8ARRAY: [10, 20]")
+    lu.assertEquals(tostring(this.buf), "LUA_TYPE_U16ARRAY: [10, 20]");
+  },
+  test_new_with_array: function () {
+    const buf: U16Array | null = createU16Array([100, 200, 300]);
+    lu.assertEquals(buf.length, 3);
+    lu.assertEquals(buf[0], 100);
+    lu.assertEquals(buf[1], 200);
+    lu.assertEquals(buf[2], 300);
   },
   test_release: function () {
-    let buf: I8Array | null = createI8Array(2);
+    let buf: U16Array | null = createU16Array(2);
     const tbl = setmetatable({ buf: buf.buffer }, { __mode: "v" });
     buf = null;
     lu.assertNotIsNil(tbl.buf);

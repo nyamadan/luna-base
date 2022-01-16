@@ -30,6 +30,7 @@
   "private": true,
   "workspaces": [
     "./scripts/luna-base",
+    "./scripts/luna-base-test",
     "./scripts/main"
   ]
 }

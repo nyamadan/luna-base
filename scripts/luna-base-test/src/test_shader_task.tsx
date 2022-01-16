@@ -1,14 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import LunaX from "../src/gl_renderer/lunax";
+import LunaX from "luna-base/dist/gl_renderer/lunax";
 import {
   createTaskRef,
   initCommandState,
   NodeTaskType,
-} from "../src/gl_renderer/node_task";
+} from "luna-base/dist/gl_renderer/node_task";
 import ShaderProgramTask, {
   ShaderProgramTaskType,
-} from "../src/gl_renderer/shader_program_task";
-import ShaderTask from "../src/gl_renderer/shader_task";
+} from "luna-base/dist/gl_renderer/shader_program_task";
+import ShaderTask from "luna-base/dist/gl_renderer/shader_task";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

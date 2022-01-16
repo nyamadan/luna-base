@@ -97,7 +97,7 @@ export default function createLunaXNode(this: void) {
             </ShaderTask>
           </ShaderProgramTask>
           <TextureTask name="uTexColor">
-            <ImageTask path="./scripts/luna-base/tests/assets/waterfall-512x512.png" />
+            <ImageTask path="./scripts/luna-base-test/assets/waterfall-512x512.png" />
           </TextureTask>
 
           <Vec4Task name="uColor" value={createF32Vec4([1, 1, 1, 1])} />

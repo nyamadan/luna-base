@@ -1,7 +1,7 @@
 /** @noSelfInFile */
 /** @noResolution */
 
-declare module "utils" {
+declare module "luna-base-utils" {
   export function isEmscripten(): boolean;
   export function isApple(): boolean;
   export function isWindows(): boolean;

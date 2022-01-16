@@ -1,4 +1,4 @@
-import { uuid } from "../src/uuid";
+import { uuid } from "luna-base/dist/uuid";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

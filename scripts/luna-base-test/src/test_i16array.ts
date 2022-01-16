@@ -1,4 +1,4 @@
-import { createI16Array, I16Array } from "../src/buffers/i16array";
+import { createI16Array, I16Array } from "luna-base/dist/buffers/i16array";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

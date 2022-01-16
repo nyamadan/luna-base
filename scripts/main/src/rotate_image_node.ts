@@ -21,7 +21,7 @@ import { assertIsNotNull } from "luna-base/dist/type_utils";
 
 export default function createRotateImageNode(this: void) {
   const imageTask = createImageTask({
-    path: "./scripts/luna-base/tests/assets/waterfall-512x512.png",
+    path: "./scripts/luna-base-test/assets/waterfall-512x512.png",
   });
 
   const geometryTask = createGeometryTask({

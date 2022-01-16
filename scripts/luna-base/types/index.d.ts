@@ -4,4 +4,4 @@
 /// <reference path="./msgpack.d.ts" />
 /// <reference path="./native_buffer.d.ts" />
 /// <reference path="./png.d.ts" />
-/// <reference path="./utils.d.ts" />
+/// <reference path="./luna-base-utils.d.ts" />

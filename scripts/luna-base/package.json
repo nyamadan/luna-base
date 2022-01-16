@@ -17,16 +17,12 @@
     "eslint-plugin-import": "^2.25.4",
     "prettier": "^2.5.1",
     "lua-types": "^2.11.0",
-    "main": "1.0.0",
     "typescript": "^4.4.4",
     "typescript-to-lua": "^1.0.1"
   },
   "scripts": {
     "build": "tstl -p ./tsconfig.json",
-    "dev": "tstl -p ./tsconfig.json --watch",
-    "watch:test": "cd ./tests && tstl --watch -p ./tsconfig.json",
-    "build:test": "cd ./tests && tstl -p ./tsconfig.json",
-    "test": "cd ./tests && ../../../build/main ./index.lua",
+    "watch": "tstl -p ./tsconfig.json --watch",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
     "format": "prettier --write ./src"
