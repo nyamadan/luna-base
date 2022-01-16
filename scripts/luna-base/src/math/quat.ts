@@ -5,11 +5,11 @@
  * @module quat
  */
 
-import vec3, { ReadonlyVec3, Vec3 } from "./vec3";
-import vec4 from "./vec4";
+import { safeUnreachable } from "../unreachable";
 import mat3, { ReadonlyMat3 } from "./mat3";
 import { EPSILON } from "./math_common";
-import { safeUnreachable } from "../unreachable";
+import vec3, { ReadonlyVec3, Vec3 } from "./vec3";
+import vec4 from "./vec4";
 
 export type Quat = [number, number, number, number];
 export type ReadonlyQuat = readonly [number, number, number, number];
@@ -53,7 +53,7 @@ namespace quat {
     rad: number
   ): T {
     rad = rad * 0.5;
-    let s = Math.sin(rad);
+    const s = Math.sin(rad);
     out[0] = s * axis[0];
     out[1] = s * axis[1];
     out[2] = s * axis[2];
@@ -75,8 +75,8 @@ namespace quat {
    * @return {Number}     Angle, in radians, of the rotation
    */
   export function getAxisAngle(out_axis: Vec3, q: ReadonlyQuat): number {
-    let rad = Math.acos(q[3]) * 2.0;
-    let s = Math.sin(rad / 2.0);
+    const rad = Math.acos(q[3]) * 2.0;
+    const s = Math.sin(rad / 2.0);
     if (s > EPSILON) {
       out_axis[0] = q[0] / s;
       out_axis[1] = q[1] / s;
@@ -98,7 +98,7 @@ namespace quat {
    * @return {Number}     Angle, in radians, between the two quaternions
    */
   export function getAngle(a: ReadonlyQuat, b: ReadonlyQuat): number {
-    let dotproduct = dot(a, b);
+    const dotproduct = dot(a, b);
 
     return Math.acos(2 * dotproduct * dotproduct - 1);
   }
@@ -116,11 +116,11 @@ namespace quat {
     a: ReadonlyQuat,
     b: ReadonlyQuat
   ): T {
-    let ax = a[0],
+    const ax = a[0],
       ay = a[1],
       az = a[2],
       aw = a[3];
-    let bx = b[0],
+    const bx = b[0],
       by = b[1],
       bz = b[2],
       bw = b[3];
@@ -147,11 +147,11 @@ namespace quat {
   ): T {
     rad *= 0.5;
 
-    let ax = a[0],
+    const ax = a[0],
       ay = a[1],
       az = a[2],
       aw = a[3];
-    let bx = Math.sin(rad),
+    const bx = Math.sin(rad),
       bw = Math.cos(rad);
 
     out[0] = ax * bw + aw * bx;
@@ -176,11 +176,11 @@ namespace quat {
   ): T {
     rad *= 0.5;
 
-    let ax = a[0],
+    const ax = a[0],
       ay = a[1],
       az = a[2],
       aw = a[3];
-    let by = Math.sin(rad),
+    const by = Math.sin(rad),
       bw = Math.cos(rad);
 
     out[0] = ax * bw - az * by;
@@ -205,11 +205,11 @@ namespace quat {
   ): T {
     rad *= 0.5;
 
-    let ax = a[0],
+    const ax = a[0],
       ay = a[1],
       az = a[2],
       aw = a[3];
-    let bz = Math.sin(rad),
+    const bz = Math.sin(rad),
       bw = Math.cos(rad);
 
     out[0] = ax * bw + ay * bz;
@@ -229,7 +229,7 @@ namespace quat {
    * @returns {quat} out
    */
   export function calculateW<T extends Quat>(out: T, a: ReadonlyQuat): T {
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2];
 
@@ -248,14 +248,14 @@ namespace quat {
    * @returns {quat} out
    */
   export function exp<T extends Quat>(out: T, a: ReadonlyQuat): T {
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2],
       w = a[3];
 
-    let r = Math.sqrt(x * x + y * y + z * z);
-    let et = Math.exp(w);
-    let s = r > 0 ? (et * Math.sin(r)) / r : 0;
+    const r = Math.sqrt(x * x + y * y + z * z);
+    const et = Math.exp(w);
+    const s = r > 0 ? (et * Math.sin(r)) / r : 0;
 
     out[0] = x * s;
     out[1] = y * s;
@@ -273,13 +273,13 @@ namespace quat {
    * @returns {quat} out
    */
   export function ln<T extends Quat>(out: T, a: ReadonlyQuat): T {
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2],
       w = a[3];
 
-    let r = Math.sqrt(x * x + y * y + z * z);
-    let t = r > 0 ? Math.atan2(r, w) / r : 0;
+    const r = Math.sqrt(x * x + y * y + z * z);
+    const t = r > 0 ? Math.atan2(r, w) / r : 0;
 
     out[0] = x * t;
     out[1] = y * t;
@@ -321,7 +321,7 @@ namespace quat {
   ): T {
     // benchmarks:
     //    http://jsperf.com/quaternion-slerp-implementations
-    let ax = a[0],
+    const ax = a[0],
       ay = a[1],
       az = a[2],
       aw = a[3];
@@ -373,12 +373,12 @@ namespace quat {
   export function random<T extends Quat>(out: T): T {
     // Implementation of http://planning.cs.uiuc.edu/node198.html
     // TODO: Calling random 3 times is probably not the fastest solution
-    let u1 = Math.random();
-    let u2 = Math.random();
-    let u3 = Math.random();
+    const u1 = Math.random();
+    const u2 = Math.random();
+    const u3 = Math.random();
 
-    let sqrt1MinusU1 = Math.sqrt(1 - u1);
-    let sqrtU1 = Math.sqrt(u1);
+    const sqrt1MinusU1 = Math.sqrt(1 - u1);
+    const sqrtU1 = Math.sqrt(u1);
 
     out[0] = sqrt1MinusU1 * Math.sin(2.0 * Math.PI * u2);
     out[1] = sqrt1MinusU1 * Math.cos(2.0 * Math.PI * u2);
@@ -395,12 +395,12 @@ namespace quat {
    * @returns {quat} out
    */
   export function invert<T extends Quat>(out: T, a: ReadonlyQuat): T {
-    let a0 = a[0],
+    const a0 = a[0],
       a1 = a[1],
       a2 = a[2],
       a3 = a[3];
-    let dot = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
-    let invDot = dot ? 1.0 / dot : 0;
+    const dot = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
+    const invDot = dot ? 1.0 / dot : 0;
 
     // TODO: Would be faster to return [0,0,0,0] immediately if dot == 0
 
@@ -441,7 +441,7 @@ namespace quat {
   export function fromMat3<T extends Quat>(out: T, m: ReadonlyMat3): T {
     // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
     // article "Quaternion Calculus and Fast Animation".
-    let fTrace = m[0] + m[4] + m[8];
+    const fTrace = m[0] + m[4] + m[8];
     let fRoot;
 
     if (fTrace > 0.0) {
@@ -457,8 +457,8 @@ namespace quat {
       let i = 0;
       if (m[4] > m[0]) i = 1;
       if (m[8] > m[i * 3 + i]) i = 2;
-      let j = (i + 1) % 3;
-      let k = (i + 2) % 3;
+      const j = (i + 1) % 3;
+      const k = (i + 2) % 3;
 
       fRoot = Math.sqrt(m[i * 3 + i] - m[j * 3 + j] - m[k * 3 + k] + 1.0);
       out[i] = 0.5 * fRoot;
@@ -489,17 +489,17 @@ namespace quat {
     z: number,
     order: "xyz" | "xzy" | "yxz" | "yzx" | "zxy" | "zyx" = "zyx"
   ): T {
-    let halfToRad = Math.PI / 360;
+    const halfToRad = Math.PI / 360;
     x *= halfToRad;
     z *= halfToRad;
     y *= halfToRad;
 
-    let sx = Math.sin(x);
-    let cx = Math.cos(x);
-    let sy = Math.sin(y);
-    let cy = Math.cos(y);
-    let sz = Math.sin(z);
-    let cz = Math.cos(z);
+    const sx = Math.sin(x);
+    const cx = Math.cos(x);
+    const sy = Math.sin(y);
+    const cy = Math.cos(y);
+    const sz = Math.sin(z);
+    const cz = Math.cos(z);
 
     switch (order) {
       case "xyz":
@@ -728,16 +728,16 @@ namespace quat {
    * @returns {quat} out
    */
   export const rotationTo = (function () {
-    let tmpvec3 = vec3.create();
-    let xUnitVec3 = vec3.fromValues(1, 0, 0);
-    let yUnitVec3 = vec3.fromValues(0, 1, 0);
+    const tmpvec3 = vec3.create();
+    const xUnitVec3 = vec3.fromValues(1, 0, 0);
+    const yUnitVec3 = vec3.fromValues(0, 1, 0);
 
     return function <T extends Quat>(
       out: T,
       a: ReadonlyVec3,
       b: ReadonlyVec3
     ): T {
-      let dot = vec3.dot(a, b);
+      const dot = vec3.dot(a, b);
       if (dot < -0.999999) {
         vec3.cross(tmpvec3, xUnitVec3, a);
         if (vec3.len(tmpvec3) < 0.000001) vec3.cross(tmpvec3, yUnitVec3, a);
@@ -773,8 +773,8 @@ namespace quat {
    * @returns {quat} out
    */
   export const sqlerp = (function () {
-    let temp1 = create();
-    let temp2 = create();
+    const temp1 = create();
+    const temp2 = create();
 
     return function <T extends Quat>(
       out: T,
@@ -803,7 +803,7 @@ namespace quat {
    * @returns {quat} out
    */
   export const setAxes = (function () {
-    let matr = mat3.create();
+    const matr = mat3.create();
 
     return function <T extends Quat>(
       out: T,

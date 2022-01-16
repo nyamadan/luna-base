@@ -25,6 +25,8 @@
     "dev": "tstl -p ./tsconfig.json --watch",
     "watch:test": "cd ./tests && tstl --watch -p ./tsconfig.json",
     "build:test": "cd ./tests && tstl -p ./tsconfig.json",
-    "test": "cd ./tests && ../../../build/main ./index.lua"
+    "test": "cd ./tests && ../../../build/main ./index.lua",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint --fix ./src"
   }
 }

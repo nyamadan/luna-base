@@ -17,6 +17,7 @@ interface Logging {
   new: (this: void, logMsg: LogMsg) => Logger;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const logging: Logging = require("./lib/lualogging/logging");
 
 export const logger = logging["new"](function (level, message) {

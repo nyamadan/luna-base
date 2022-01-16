@@ -1,4 +1,3 @@
-import * as _gl from "gl";
 import { NativeBuffer } from "native_buffer";
 import { createPngImage, isPngImage, PngImage } from "../images/png_image";
 import { allocTableName, createTable, getMetatableName } from "../tables";

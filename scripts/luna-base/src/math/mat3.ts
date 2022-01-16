@@ -40,7 +40,7 @@ namespace mat3 {
    * @returns {mat3} a new 3x3 matrix
    */
   export function create(): Mat3 {
-    let out: Mat3 = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const out: Mat3 = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     out[0] = 1;
     out[4] = 1;
     out[8] = 1;
@@ -74,7 +74,7 @@ namespace mat3 {
    * @returns {mat3} a new 3x3 matrix
    */
   export function clone(a: ReadonlyMat3): Mat3 {
-    let out: Mat3 = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const out: Mat3 = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     out[0] = a[0];
     out[1] = a[1];
     out[2] = a[2];
@@ -132,7 +132,7 @@ namespace mat3 {
     m21: number,
     m22: number
   ): Mat3 {
-    let out: Mat3 = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const out: Mat3 = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     out[0] = m00;
     out[1] = m01;
     out[2] = m02;
@@ -213,7 +213,7 @@ namespace mat3 {
   export function transpose<T extends Mat3>(out: T, a: ReadonlyMat3): T {
     // If we are transposing ourselves we can skip a few steps but have to cache some values
     if (out === a) {
-      let a01 = a[1],
+      const a01 = a[1],
         a02 = a[2],
         a12 = a[5];
       out[1] = a[3];
@@ -245,19 +245,19 @@ namespace mat3 {
    * @returns {mat3} out
    */
   export function invert<T extends Mat3>(out: T, a: ReadonlyMat3): T | null {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2];
-    let a10 = a[3],
+    const a10 = a[3],
       a11 = a[4],
       a12 = a[5];
-    let a20 = a[6],
+    const a20 = a[6],
       a21 = a[7],
       a22 = a[8];
 
-    let b01 = a22 * a11 - a12 * a21;
-    let b11 = -a22 * a10 + a12 * a20;
-    let b21 = a21 * a10 - a11 * a20;
+    const b01 = a22 * a11 - a12 * a21;
+    const b11 = -a22 * a10 + a12 * a20;
+    const b21 = a21 * a10 - a11 * a20;
 
     // Calculate the determinant
     let det = a00 * b01 + a01 * b11 + a02 * b21;
@@ -287,13 +287,13 @@ namespace mat3 {
    * @returns {mat3} out
    */
   export function adjoint<T extends Mat3>(out: T, a: ReadonlyMat3): T {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2];
-    let a10 = a[3],
+    const a10 = a[3],
       a11 = a[4],
       a12 = a[5];
-    let a20 = a[6],
+    const a20 = a[6],
       a21 = a[7],
       a22 = a[8];
 
@@ -316,13 +316,13 @@ namespace mat3 {
    * @returns {Number} determinant of a
    */
   export function determinant(a: ReadonlyMat3): number {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2];
-    let a10 = a[3],
+    const a10 = a[3],
       a11 = a[4],
       a12 = a[5];
-    let a20 = a[6],
+    const a20 = a[6],
       a21 = a[7],
       a22 = a[8];
 
@@ -346,23 +346,23 @@ namespace mat3 {
     a: ReadonlyMat3,
     b: ReadonlyMat3
   ): T {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2];
-    let a10 = a[3],
+    const a10 = a[3],
       a11 = a[4],
       a12 = a[5];
-    let a20 = a[6],
+    const a20 = a[6],
       a21 = a[7],
       a22 = a[8];
 
-    let b00 = b[0],
+    const b00 = b[0],
       b01 = b[1],
       b02 = b[2];
-    let b10 = b[3],
+    const b10 = b[3],
       b11 = b[4],
       b12 = b[5];
-    let b20 = b[6],
+    const b20 = b[6],
       b21 = b[7],
       b22 = b[8];
 
@@ -393,7 +393,7 @@ namespace mat3 {
     a: ReadonlyMat3,
     v: ReadonlyVec2
   ): T {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2],
       a10 = a[3],
@@ -432,7 +432,7 @@ namespace mat3 {
     a: ReadonlyMat3,
     rad: number
   ): T {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2],
       a10 = a[3],
@@ -471,7 +471,7 @@ namespace mat3 {
     a: ReadonlyMat3,
     v: ReadonlyVec2
   ): T {
-    let x = v[0],
+    const x = v[0],
       y = v[1];
 
     out[0] = x * a[0];
@@ -524,7 +524,7 @@ namespace mat3 {
    * @returns {mat3} out
    */
   export function fromRotation<T extends Mat3>(out: T, rad: number): T {
-    let s = Math.sin(rad),
+    const s = Math.sin(rad),
       c = Math.cos(rad);
 
     out[0] = c;
@@ -598,23 +598,23 @@ namespace mat3 {
    * @returns {mat3} out
    */
   export function fromQuat<T extends Mat3>(out: T, q: ReadonlyQuat): T {
-    let x = q[0],
+    const x = q[0],
       y = q[1],
       z = q[2],
       w = q[3];
-    let x2 = x + x;
-    let y2 = y + y;
-    let z2 = z + z;
+    const x2 = x + x;
+    const y2 = y + y;
+    const z2 = z + z;
 
-    let xx = x * x2;
-    let yx = y * x2;
-    let yy = y * y2;
-    let zx = z * x2;
-    let zy = z * y2;
-    let zz = z * z2;
-    let wx = w * x2;
-    let wy = w * y2;
-    let wz = w * z2;
+    const xx = x * x2;
+    const yx = y * x2;
+    const yy = y * y2;
+    const zx = z * x2;
+    const zy = z * y2;
+    const zz = z * z2;
+    const wx = w * x2;
+    const wy = w * y2;
+    const wz = w * z2;
 
     out[0] = 1 - yy - zz;
     out[3] = yx - wz;
@@ -643,35 +643,35 @@ namespace mat3 {
     out: T,
     a: ReadonlyMat4
   ): T | null {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2],
       a03 = a[3];
-    let a10 = a[4],
+    const a10 = a[4],
       a11 = a[5],
       a12 = a[6],
       a13 = a[7];
-    let a20 = a[8],
+    const a20 = a[8],
       a21 = a[9],
       a22 = a[10],
       a23 = a[11];
-    let a30 = a[12],
+    const a30 = a[12],
       a31 = a[13],
       a32 = a[14],
       a33 = a[15];
 
-    let b00 = a00 * a11 - a01 * a10;
-    let b01 = a00 * a12 - a02 * a10;
-    let b02 = a00 * a13 - a03 * a10;
-    let b03 = a01 * a12 - a02 * a11;
-    let b04 = a01 * a13 - a03 * a11;
-    let b05 = a02 * a13 - a03 * a12;
-    let b06 = a20 * a31 - a21 * a30;
-    let b07 = a20 * a32 - a22 * a30;
-    let b08 = a20 * a33 - a23 * a30;
-    let b09 = a21 * a32 - a22 * a31;
-    let b10 = a21 * a33 - a23 * a31;
-    let b11 = a22 * a33 - a23 * a32;
+    const b00 = a00 * a11 - a01 * a10;
+    const b01 = a00 * a12 - a02 * a10;
+    const b02 = a00 * a13 - a03 * a10;
+    const b03 = a01 * a12 - a02 * a11;
+    const b04 = a01 * a13 - a03 * a11;
+    const b05 = a02 * a13 - a03 * a12;
+    const b06 = a20 * a31 - a21 * a30;
+    const b07 = a20 * a32 - a22 * a30;
+    const b08 = a20 * a33 - a23 * a30;
+    const b09 = a21 * a32 - a22 * a31;
+    const b10 = a21 * a33 - a23 * a31;
+    const b11 = a22 * a33 - a23 * a32;
 
     // Calculate the determinant
     let det =
@@ -893,7 +893,7 @@ namespace mat3 {
    * @returns {Boolean} True if the matrices are equal, false otherwise.
    */
   export function equals(a: ReadonlyMat3, b: ReadonlyMat3): boolean {
-    let a0 = a[0],
+    const a0 = a[0],
       a1 = a[1],
       a2 = a[2],
       a3 = a[3],
@@ -902,7 +902,7 @@ namespace mat3 {
       a6 = a[6],
       a7 = a[7],
       a8 = a[8];
-    let b0 = b[0],
+    const b0 = b[0],
       b1 = b[1],
       b2 = b[2],
       b3 = b[3],

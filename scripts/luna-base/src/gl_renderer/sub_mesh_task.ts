@@ -1,4 +1,3 @@
-import * as _gl from "gl";
 import { logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
 import { isGeometryTask } from "./geometry_task";

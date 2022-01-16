@@ -1,4 +1,3 @@
-import * as _gl from "gl";
 import { allocTableName, createTable } from "../tables";
 import { uuid } from "../uuid";
 import { ShaderProgram } from "./shader_program";

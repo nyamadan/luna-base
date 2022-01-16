@@ -1,6 +1,4 @@
-import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
-import { createBasicMaterial } from "./basic_shader_program";
 import { createMaterial, Material } from "./material";
 import {
   createNodeTaskPrototype,

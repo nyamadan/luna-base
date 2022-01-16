@@ -1,3 +1,4 @@
+import { allocTableName, getMetatableName } from "../tables";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -6,7 +7,6 @@ import {
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
-import { allocTableName, getMetatableName } from "../tables";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MESH_TASK");
 

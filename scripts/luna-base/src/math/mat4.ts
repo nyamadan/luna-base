@@ -6,8 +6,8 @@
  */
 
 import { EPSILON, hypot, ReadonlyQuat2 } from "./math_common";
-import { ReadonlyVec3, Vec3 } from "./vec3";
 import { Quat, ReadonlyQuat } from "./quat";
+import { ReadonlyVec3, Vec3 } from "./vec3";
 
 export type Mat4 = [
   number,
@@ -282,12 +282,12 @@ namespace mat4 {
   export function transpose<T extends Mat4>(out: T, a: ReadonlyMat4): T {
     // If we are transposing ourselves we can skip a few steps but have to cache some values
     if (out === a) {
-      let a01 = a[1],
+      const a01 = a[1],
         a02 = a[2],
         a03 = a[3];
-      let a12 = a[6],
+      const a12 = a[6],
         a13 = a[7];
-      let a23 = a[11];
+      const a23 = a[11];
 
       out[1] = a[4];
       out[2] = a[8];
@@ -331,35 +331,35 @@ namespace mat4 {
    * @returns {Mat4} out
    */
   export function invert<T extends Mat4>(out: T, a: ReadonlyMat4): T | null {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2],
       a03 = a[3];
-    let a10 = a[4],
+    const a10 = a[4],
       a11 = a[5],
       a12 = a[6],
       a13 = a[7];
-    let a20 = a[8],
+    const a20 = a[8],
       a21 = a[9],
       a22 = a[10],
       a23 = a[11];
-    let a30 = a[12],
+    const a30 = a[12],
       a31 = a[13],
       a32 = a[14],
       a33 = a[15];
 
-    let b00 = a00 * a11 - a01 * a10;
-    let b01 = a00 * a12 - a02 * a10;
-    let b02 = a00 * a13 - a03 * a10;
-    let b03 = a01 * a12 - a02 * a11;
-    let b04 = a01 * a13 - a03 * a11;
-    let b05 = a02 * a13 - a03 * a12;
-    let b06 = a20 * a31 - a21 * a30;
-    let b07 = a20 * a32 - a22 * a30;
-    let b08 = a20 * a33 - a23 * a30;
-    let b09 = a21 * a32 - a22 * a31;
-    let b10 = a21 * a33 - a23 * a31;
-    let b11 = a22 * a33 - a23 * a32;
+    const b00 = a00 * a11 - a01 * a10;
+    const b01 = a00 * a12 - a02 * a10;
+    const b02 = a00 * a13 - a03 * a10;
+    const b03 = a01 * a12 - a02 * a11;
+    const b04 = a01 * a13 - a03 * a11;
+    const b05 = a02 * a13 - a03 * a12;
+    const b06 = a20 * a31 - a21 * a30;
+    const b07 = a20 * a32 - a22 * a30;
+    const b08 = a20 * a33 - a23 * a30;
+    const b09 = a21 * a32 - a22 * a31;
+    const b10 = a21 * a33 - a23 * a31;
+    const b11 = a22 * a33 - a23 * a32;
 
     // Calculate the determinant
     let det =
@@ -398,35 +398,35 @@ namespace mat4 {
    * @returns {Mat4} out
    */
   export function adjoint<T extends Mat4>(out: T, a: ReadonlyMat4): T {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2],
       a03 = a[3];
-    let a10 = a[4],
+    const a10 = a[4],
       a11 = a[5],
       a12 = a[6],
       a13 = a[7];
-    let a20 = a[8],
+    const a20 = a[8],
       a21 = a[9],
       a22 = a[10],
       a23 = a[11];
-    let a30 = a[12],
+    const a30 = a[12],
       a31 = a[13],
       a32 = a[14],
       a33 = a[15];
 
-    let b00 = a00 * a11 - a01 * a10;
-    let b01 = a00 * a12 - a02 * a10;
-    let b02 = a00 * a13 - a03 * a10;
-    let b03 = a01 * a12 - a02 * a11;
-    let b04 = a01 * a13 - a03 * a11;
-    let b05 = a02 * a13 - a03 * a12;
-    let b06 = a20 * a31 - a21 * a30;
-    let b07 = a20 * a32 - a22 * a30;
-    let b08 = a20 * a33 - a23 * a30;
-    let b09 = a21 * a32 - a22 * a31;
-    let b10 = a21 * a33 - a23 * a31;
-    let b11 = a22 * a33 - a23 * a32;
+    const b00 = a00 * a11 - a01 * a10;
+    const b01 = a00 * a12 - a02 * a10;
+    const b02 = a00 * a13 - a03 * a10;
+    const b03 = a01 * a12 - a02 * a11;
+    const b04 = a01 * a13 - a03 * a11;
+    const b05 = a02 * a13 - a03 * a12;
+    const b06 = a20 * a31 - a21 * a30;
+    const b07 = a20 * a32 - a22 * a30;
+    const b08 = a20 * a33 - a23 * a30;
+    const b09 = a21 * a32 - a22 * a31;
+    const b10 = a21 * a33 - a23 * a31;
+    const b11 = a22 * a33 - a23 * a32;
 
     out[0] = a11 * b11 - a12 * b10 + a13 * b09;
     out[1] = a02 * b10 - a01 * b11 - a03 * b09;
@@ -454,33 +454,33 @@ namespace mat4 {
    * @returns {Number} determinant of a
    */
   export function determinant(a: ReadonlyMat4): number {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2],
       a03 = a[3];
-    let a10 = a[4],
+    const a10 = a[4],
       a11 = a[5],
       a12 = a[6],
       a13 = a[7];
-    let a20 = a[8],
+    const a20 = a[8],
       a21 = a[9],
       a22 = a[10],
       a23 = a[11];
-    let a30 = a[12],
+    const a30 = a[12],
       a31 = a[13],
       a32 = a[14],
       a33 = a[15];
 
-    let b0 = a00 * a11 - a01 * a10;
-    let b1 = a00 * a12 - a02 * a10;
-    let b2 = a01 * a12 - a02 * a11;
-    let b3 = a20 * a31 - a21 * a30;
-    let b4 = a20 * a32 - a22 * a30;
-    let b5 = a21 * a32 - a22 * a31;
-    let b6 = a00 * b5 - a01 * b4 + a02 * b3;
-    let b7 = a10 * b5 - a11 * b4 + a12 * b3;
-    let b8 = a20 * b2 - a21 * b1 + a22 * b0;
-    let b9 = a30 * b2 - a31 * b1 + a32 * b0;
+    const b0 = a00 * a11 - a01 * a10;
+    const b1 = a00 * a12 - a02 * a10;
+    const b2 = a01 * a12 - a02 * a11;
+    const b3 = a20 * a31 - a21 * a30;
+    const b4 = a20 * a32 - a22 * a30;
+    const b5 = a21 * a32 - a22 * a31;
+    const b6 = a00 * b5 - a01 * b4 + a02 * b3;
+    const b7 = a10 * b5 - a11 * b4 + a12 * b3;
+    const b8 = a20 * b2 - a21 * b1 + a22 * b0;
+    const b9 = a30 * b2 - a31 * b1 + a32 * b0;
 
     // Calculate the determinant
     return a13 * b6 - a03 * b7 + a33 * b8 - a23 * b9;
@@ -499,19 +499,19 @@ namespace mat4 {
     a: ReadonlyMat4,
     b: ReadonlyMat4
   ): T {
-    let a00 = a[0],
+    const a00 = a[0],
       a01 = a[1],
       a02 = a[2],
       a03 = a[3];
-    let a10 = a[4],
+    const a10 = a[4],
       a11 = a[5],
       a12 = a[6],
       a13 = a[7];
-    let a20 = a[8],
+    const a20 = a[8],
       a21 = a[9],
       a22 = a[10],
       a23 = a[11];
-    let a30 = a[12],
+    const a30 = a[12],
       a31 = a[13],
       a32 = a[14],
       a33 = a[15];
@@ -568,7 +568,7 @@ namespace mat4 {
     a: ReadonlyMat4,
     v: ReadonlyVec3
   ): T {
-    let x = v[0],
+    const x = v[0],
       y = v[1],
       z = v[2];
     let a00, a01, a02, a03;
@@ -629,7 +629,7 @@ namespace mat4 {
     a: ReadonlyMat4,
     v: ReadonlyVec3
   ): T {
-    let x = v[0],
+    const x = v[0],
       y = v[1],
       z = v[2];
 
@@ -671,13 +671,6 @@ namespace mat4 {
       y = axis[1],
       z = axis[2];
     let len = hypot(x, y, z);
-    let s, c, t;
-    let a00, a01, a02, a03;
-    let a10, a11, a12, a13;
-    let a20, a21, a22, a23;
-    let b00, b01, b02;
-    let b10, b11, b12;
-    let b20, b21, b22;
 
     if (len < EPSILON) {
       return null;
@@ -688,33 +681,33 @@ namespace mat4 {
     y *= len;
     z *= len;
 
-    s = Math.sin(rad);
-    c = Math.cos(rad);
-    t = 1 - c;
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
+    const t = 1 - c;
 
-    a00 = a[0];
-    a01 = a[1];
-    a02 = a[2];
-    a03 = a[3];
-    a10 = a[4];
-    a11 = a[5];
-    a12 = a[6];
-    a13 = a[7];
-    a20 = a[8];
-    a21 = a[9];
-    a22 = a[10];
-    a23 = a[11];
+    const a00 = a[0];
+    const a01 = a[1];
+    const a02 = a[2];
+    const a03 = a[3];
+    const a10 = a[4];
+    const a11 = a[5];
+    const a12 = a[6];
+    const a13 = a[7];
+    const a20 = a[8];
+    const a21 = a[9];
+    const a22 = a[10];
+    const a23 = a[11];
 
     // Construct the elements of the rotation matrix
-    b00 = x * x * t + c;
-    b01 = y * x * t + z * s;
-    b02 = z * x * t - y * s;
-    b10 = x * y * t - z * s;
-    b11 = y * y * t + c;
-    b12 = z * y * t + x * s;
-    b20 = x * z * t + y * s;
-    b21 = y * z * t - x * s;
-    b22 = z * z * t + c;
+    const b00 = x * x * t + c;
+    const b01 = y * x * t + z * s;
+    const b02 = z * x * t - y * s;
+    const b10 = x * y * t - z * s;
+    const b11 = y * y * t + c;
+    const b12 = z * y * t + x * s;
+    const b20 = x * z * t + y * s;
+    const b21 = y * z * t - x * s;
+    const b22 = z * z * t + c;
 
     // Perform rotation-specific matrix multiplication
     out[0] = a00 * b00 + a10 * b01 + a20 * b02;
@@ -753,16 +746,16 @@ namespace mat4 {
     a: ReadonlyMat4,
     rad: number
   ): T {
-    let s = Math.sin(rad);
-    let c = Math.cos(rad);
-    let a10 = a[4];
-    let a11 = a[5];
-    let a12 = a[6];
-    let a13 = a[7];
-    let a20 = a[8];
-    let a21 = a[9];
-    let a22 = a[10];
-    let a23 = a[11];
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
+    const a10 = a[4];
+    const a11 = a[5];
+    const a12 = a[6];
+    const a13 = a[7];
+    const a20 = a[8];
+    const a21 = a[9];
+    const a22 = a[10];
+    const a23 = a[11];
 
     if (a !== out) {
       // If the source and destination differ, copy the unchanged rows
@@ -801,16 +794,16 @@ namespace mat4 {
     a: ReadonlyMat4,
     rad: number
   ): T {
-    let s = Math.sin(rad);
-    let c = Math.cos(rad);
-    let a00 = a[0];
-    let a01 = a[1];
-    let a02 = a[2];
-    let a03 = a[3];
-    let a20 = a[8];
-    let a21 = a[9];
-    let a22 = a[10];
-    let a23 = a[11];
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
+    const a00 = a[0];
+    const a01 = a[1];
+    const a02 = a[2];
+    const a03 = a[3];
+    const a20 = a[8];
+    const a21 = a[9];
+    const a22 = a[10];
+    const a23 = a[11];
 
     if (a !== out) {
       // If the source and destination differ, copy the unchanged rows
@@ -849,16 +842,16 @@ namespace mat4 {
     a: ReadonlyMat4,
     rad: number
   ): T {
-    let s = Math.sin(rad);
-    let c = Math.cos(rad);
-    let a00 = a[0];
-    let a01 = a[1];
-    let a02 = a[2];
-    let a03 = a[3];
-    let a10 = a[4];
-    let a11 = a[5];
-    let a12 = a[6];
-    let a13 = a[7];
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
+    const a00 = a[0];
+    const a01 = a[1];
+    const a02 = a[2];
+    const a03 = a[3];
+    const a10 = a[4];
+    const a11 = a[5];
+    const a12 = a[6];
+    const a13 = a[7];
 
     if (a !== out) {
       // If the source and destination differ, copy the unchanged last row
@@ -967,7 +960,6 @@ namespace mat4 {
       y = axis[1],
       z = axis[2];
     let len = hypot(x, y, z);
-    let s, c, t;
 
     if (len < EPSILON) {
       return null;
@@ -978,9 +970,9 @@ namespace mat4 {
     y *= len;
     z *= len;
 
-    s = Math.sin(rad);
-    c = Math.cos(rad);
-    t = 1 - c;
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
+    const t = 1 - c;
 
     // Perform rotation-specific matrix multiplication
     out[0] = x * x * t + c;
@@ -1014,8 +1006,8 @@ namespace mat4 {
    * @returns {Mat4} out
    */
   export function fromXRotation<T extends Mat4>(out: T, rad: number): T {
-    let s = Math.sin(rad);
-    let c = Math.cos(rad);
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
 
     // Perform axis-specific matrix multiplication
     out[0] = 1;
@@ -1049,8 +1041,8 @@ namespace mat4 {
    * @returns {Mat4} out
    */
   export function fromYRotation<T extends Mat4>(out: T, rad: number): T {
-    let s = Math.sin(rad);
-    let c = Math.cos(rad);
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
 
     // Perform axis-specific matrix multiplication
     out[0] = c;
@@ -1084,8 +1076,8 @@ namespace mat4 {
    * @returns {Mat4} out
    */
   export function fromZRotation(out: Mat4, rad: number): Mat4 {
-    let s = Math.sin(rad);
-    let c = Math.cos(rad);
+    const s = Math.sin(rad);
+    const c = Math.cos(rad);
 
     // Perform axis-specific matrix multiplication
     out[0] = c;
@@ -1128,23 +1120,23 @@ namespace mat4 {
     v: ReadonlyVec3
   ): Mat4 {
     // Quaternion math
-    let x = q[0],
+    const x = q[0],
       y = q[1],
       z = q[2],
       w = q[3];
-    let x2 = x + x;
-    let y2 = y + y;
-    let z2 = z + z;
+    const x2 = x + x;
+    const y2 = y + y;
+    const z2 = z + z;
 
-    let xx = x * x2;
-    let xy = x * y2;
-    let xz = x * z2;
-    let yy = y * y2;
-    let yz = y * z2;
-    let zz = z * z2;
-    let wx = w * x2;
-    let wy = w * y2;
-    let wz = w * z2;
+    const xx = x * x2;
+    const xy = x * y2;
+    const xz = x * z2;
+    const yy = y * y2;
+    const yz = y * z2;
+    const zz = z * z2;
+    const wx = w * x2;
+    const wy = w * y2;
+    const wz = w * z2;
 
     out[0] = 1 - (yy + zz);
     out[1] = xy + wz;
@@ -1175,7 +1167,7 @@ namespace mat4 {
    */
   export function fromQuat2(out: Mat4, a: ReadonlyQuat2) {
     const translation: Vec3 = [0, 0, 0];
-    let bx = -a[0],
+    const bx = -a[0],
       by = -a[1],
       bz = -a[2],
       bw = a[3],
@@ -1184,7 +1176,7 @@ namespace mat4 {
       az = a[6],
       aw = a[7];
 
-    let magnitude = bx * bx + by * by + bz * bz + bw * bw;
+    const magnitude = bx * bx + by * by + bz * bz + bw * bw;
     //Only scale if it makes sense
     if (magnitude > 0) {
       translation[0] =
@@ -1230,15 +1222,15 @@ namespace mat4 {
    * @return {Vec3} out
    */
   export function getScaling(out: Vec3, mat: ReadonlyMat4): Vec3 {
-    let m11 = mat[0];
-    let m12 = mat[1];
-    let m13 = mat[2];
-    let m21 = mat[4];
-    let m22 = mat[5];
-    let m23 = mat[6];
-    let m31 = mat[8];
-    let m32 = mat[9];
-    let m33 = mat[10];
+    const m11 = mat[0];
+    const m12 = mat[1];
+    const m13 = mat[2];
+    const m21 = mat[4];
+    const m22 = mat[5];
+    const m23 = mat[6];
+    const m31 = mat[8];
+    const m32 = mat[9];
+    const m33 = mat[10];
 
     out[0] = hypot(m11, m12, m13);
     out[1] = hypot(m21, m22, m23);
@@ -1257,24 +1249,24 @@ namespace mat4 {
    * @return {Quat} out
    */
   export function getRotation(out: Quat, mat: ReadonlyMat4) {
-    let scaling: Vec3 = [0, 0, 0];
+    const scaling: Vec3 = [0, 0, 0];
     getScaling(scaling, mat);
 
-    let is1 = 1 / scaling[0];
-    let is2 = 1 / scaling[1];
-    let is3 = 1 / scaling[2];
+    const is1 = 1 / scaling[0];
+    const is2 = 1 / scaling[1];
+    const is3 = 1 / scaling[2];
 
-    let sm11 = mat[0] * is1;
-    let sm12 = mat[1] * is2;
-    let sm13 = mat[2] * is3;
-    let sm21 = mat[4] * is1;
-    let sm22 = mat[5] * is2;
-    let sm23 = mat[6] * is3;
-    let sm31 = mat[8] * is1;
-    let sm32 = mat[9] * is2;
-    let sm33 = mat[10] * is3;
+    const sm11 = mat[0] * is1;
+    const sm12 = mat[1] * is2;
+    const sm13 = mat[2] * is3;
+    const sm21 = mat[4] * is1;
+    const sm22 = mat[5] * is2;
+    const sm23 = mat[6] * is3;
+    const sm31 = mat[8] * is1;
+    const sm32 = mat[9] * is2;
+    const sm33 = mat[10] * is3;
 
-    let trace = sm11 + sm22 + sm33;
+    const trace = sm11 + sm22 + sm33;
     let S = 0;
 
     if (trace > 0) {
@@ -1325,35 +1317,35 @@ namespace mat4 {
     out_t[1] = mat[13];
     out_t[2] = mat[14];
 
-    let m11 = mat[0];
-    let m12 = mat[1];
-    let m13 = mat[2];
-    let m21 = mat[4];
-    let m22 = mat[5];
-    let m23 = mat[6];
-    let m31 = mat[8];
-    let m32 = mat[9];
-    let m33 = mat[10];
+    const m11 = mat[0];
+    const m12 = mat[1];
+    const m13 = mat[2];
+    const m21 = mat[4];
+    const m22 = mat[5];
+    const m23 = mat[6];
+    const m31 = mat[8];
+    const m32 = mat[9];
+    const m33 = mat[10];
 
     out_s[0] = hypot(m11, m12, m13);
     out_s[1] = hypot(m21, m22, m23);
     out_s[2] = hypot(m31, m32, m33);
 
-    let is1 = 1 / out_s[0];
-    let is2 = 1 / out_s[1];
-    let is3 = 1 / out_s[2];
+    const is1 = 1 / out_s[0];
+    const is2 = 1 / out_s[1];
+    const is3 = 1 / out_s[2];
 
-    let sm11 = m11 * is1;
-    let sm12 = m12 * is2;
-    let sm13 = m13 * is3;
-    let sm21 = m21 * is1;
-    let sm22 = m22 * is2;
-    let sm23 = m23 * is3;
-    let sm31 = m31 * is1;
-    let sm32 = m32 * is2;
-    let sm33 = m33 * is3;
+    const sm11 = m11 * is1;
+    const sm12 = m12 * is2;
+    const sm13 = m13 * is3;
+    const sm21 = m21 * is1;
+    const sm22 = m22 * is2;
+    const sm23 = m23 * is3;
+    const sm31 = m31 * is1;
+    const sm32 = m32 * is2;
+    const sm33 = m33 * is3;
 
-    let trace = sm11 + sm22 + sm33;
+    const trace = sm11 + sm22 + sm33;
     let S = 0;
 
     if (trace > 0) {
@@ -1409,26 +1401,26 @@ namespace mat4 {
     s: ReadonlyVec3
   ): Mat4 {
     // Quaternion math
-    let x = q[0],
+    const x = q[0],
       y = q[1],
       z = q[2],
       w = q[3];
-    let x2 = x + x;
-    let y2 = y + y;
-    let z2 = z + z;
+    const x2 = x + x;
+    const y2 = y + y;
+    const z2 = z + z;
 
-    let xx = x * x2;
-    let xy = x * y2;
-    let xz = x * z2;
-    let yy = y * y2;
-    let yz = y * z2;
-    let zz = z * z2;
-    let wx = w * x2;
-    let wy = w * y2;
-    let wz = w * z2;
-    let sx = s[0];
-    let sy = s[1];
-    let sz = s[2];
+    const xx = x * x2;
+    const xy = x * y2;
+    const xz = x * z2;
+    const yy = y * y2;
+    const yz = y * z2;
+    const zz = z * z2;
+    const wx = w * x2;
+    const wy = w * y2;
+    const wz = w * z2;
+    const sx = s[0];
+    const sy = s[1];
+    const sz = s[2];
 
     out[0] = (1 - (yy + zz)) * sx;
     out[1] = (xy + wz) * sx;
@@ -1478,41 +1470,41 @@ namespace mat4 {
     o: ReadonlyVec3
   ): Mat4 {
     // Quaternion math
-    let x = q[0],
+    const x = q[0],
       y = q[1],
       z = q[2],
       w = q[3];
-    let x2 = x + x;
-    let y2 = y + y;
-    let z2 = z + z;
+    const x2 = x + x;
+    const y2 = y + y;
+    const z2 = z + z;
 
-    let xx = x * x2;
-    let xy = x * y2;
-    let xz = x * z2;
-    let yy = y * y2;
-    let yz = y * z2;
-    let zz = z * z2;
-    let wx = w * x2;
-    let wy = w * y2;
-    let wz = w * z2;
+    const xx = x * x2;
+    const xy = x * y2;
+    const xz = x * z2;
+    const yy = y * y2;
+    const yz = y * z2;
+    const zz = z * z2;
+    const wx = w * x2;
+    const wy = w * y2;
+    const wz = w * z2;
 
-    let sx = s[0];
-    let sy = s[1];
-    let sz = s[2];
+    const sx = s[0];
+    const sy = s[1];
+    const sz = s[2];
 
-    let ox = o[0];
-    let oy = o[1];
-    let oz = o[2];
+    const ox = o[0];
+    const oy = o[1];
+    const oz = o[2];
 
-    let out0 = (1 - (yy + zz)) * sx;
-    let out1 = (xy + wz) * sx;
-    let out2 = (xz - wy) * sx;
-    let out4 = (xy - wz) * sy;
-    let out5 = (1 - (xx + zz)) * sy;
-    let out6 = (yz + wx) * sy;
-    let out8 = (xz + wy) * sz;
-    let out9 = (yz - wx) * sz;
-    let out10 = (1 - (xx + yy)) * sz;
+    const out0 = (1 - (yy + zz)) * sx;
+    const out1 = (xy + wz) * sx;
+    const out2 = (xz - wy) * sx;
+    const out4 = (xy - wz) * sy;
+    const out5 = (1 - (xx + zz)) * sy;
+    const out6 = (yz + wx) * sy;
+    const out8 = (xz + wy) * sz;
+    const out9 = (yz - wx) * sz;
+    const out10 = (1 - (xx + yy)) * sz;
 
     out[0] = out0;
     out[1] = out1;
@@ -1543,23 +1535,23 @@ namespace mat4 {
    * @returns {Mat4} out
    */
   export function fromQuat(out: Mat4, q: ReadonlyQuat): Mat4 {
-    let x = q[0],
+    const x = q[0],
       y = q[1],
       z = q[2],
       w = q[3];
-    let x2 = x + x;
-    let y2 = y + y;
-    let z2 = z + z;
+    const x2 = x + x;
+    const y2 = y + y;
+    const z2 = z + z;
 
-    let xx = x * x2;
-    let yx = y * x2;
-    let yy = y * y2;
-    let zx = z * x2;
-    let zy = z * y2;
-    let zz = z * z2;
-    let wx = w * x2;
-    let wy = w * y2;
-    let wz = w * z2;
+    const xx = x * x2;
+    const yx = y * x2;
+    const yy = y * y2;
+    const zx = z * x2;
+    const zy = z * y2;
+    const zz = z * z2;
+    const wx = w * x2;
+    const wy = w * y2;
+    const wz = w * z2;
 
     out[0] = 1 - yy - zz;
     out[1] = yx + wz;
@@ -1605,9 +1597,9 @@ namespace mat4 {
     near: number,
     far: number
   ): Mat4 {
-    let rl = 1 / (right - left);
-    let tb = 1 / (top - bottom);
-    let nf = 1 / (near - far);
+    const rl = 1 / (right - left);
+    const tb = 1 / (top - bottom);
+    const nf = 1 / (near - far);
     out[0] = near * 2 * rl;
     out[1] = 0;
     out[2] = 0;
@@ -1747,12 +1739,12 @@ namespace mat4 {
     near: number,
     far: number
   ): Mat4 {
-    let upTan = Math.tan((fov.upDegrees * Math.PI) / 180.0);
-    let downTan = Math.tan((fov.downDegrees * Math.PI) / 180.0);
-    let leftTan = Math.tan((fov.leftDegrees * Math.PI) / 180.0);
-    let rightTan = Math.tan((fov.rightDegrees * Math.PI) / 180.0);
-    let xScale = 2.0 / (leftTan + rightTan);
-    let yScale = 2.0 / (upTan + downTan);
+    const upTan = Math.tan((fov.upDegrees * Math.PI) / 180.0);
+    const downTan = Math.tan((fov.downDegrees * Math.PI) / 180.0);
+    const leftTan = Math.tan((fov.leftDegrees * Math.PI) / 180.0);
+    const rightTan = Math.tan((fov.rightDegrees * Math.PI) / 180.0);
+    const xScale = 2.0 / (leftTan + rightTan);
+    const yScale = 2.0 / (upTan + downTan);
 
     out[0] = xScale;
     out[1] = 0.0;
@@ -1886,15 +1878,15 @@ namespace mat4 {
     up: ReadonlyVec3
   ): Mat4 {
     let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
-    let eyex = eye[0];
-    let eyey = eye[1];
-    let eyez = eye[2];
-    let upx = up[0];
-    let upy = up[1];
-    let upz = up[2];
-    let centerx = center[0];
-    let centery = center[1];
-    let centerz = center[2];
+    const eyex = eye[0];
+    const eyey = eye[1];
+    const eyez = eye[2];
+    const upx = up[0];
+    const upy = up[1];
+    const upz = up[2];
+    const centerx = center[0];
+    const centery = center[1];
+    const centerz = center[2];
 
     if (
       Math.abs(eyex - centerx) < EPSILON &&
@@ -1979,7 +1971,7 @@ namespace mat4 {
     target: ReadonlyVec3,
     up: ReadonlyVec3
   ): Mat4 {
-    let eyex = eye[0],
+    const eyex = eye[0],
       eyey = eye[1],
       eyez = eye[2],
       upx = up[0],
@@ -2254,36 +2246,36 @@ namespace mat4 {
    * @returns {Boolean} True if the matrices are equal, false otherwise.
    */
   export function equals(a: ReadonlyMat4, b: ReadonlyMat4): boolean {
-    let a0 = a[0],
+    const a0 = a[0],
       a1 = a[1],
       a2 = a[2],
       a3 = a[3];
-    let a4 = a[4],
+    const a4 = a[4],
       a5 = a[5],
       a6 = a[6],
       a7 = a[7];
-    let a8 = a[8],
+    const a8 = a[8],
       a9 = a[9],
       a10 = a[10],
       a11 = a[11];
-    let a12 = a[12],
+    const a12 = a[12],
       a13 = a[13],
       a14 = a[14],
       a15 = a[15];
 
-    let b0 = b[0],
+    const b0 = b[0],
       b1 = b[1],
       b2 = b[2],
       b3 = b[3];
-    let b4 = b[4],
+    const b4 = b[4],
       b5 = b[5],
       b6 = b[6],
       b7 = b[7];
-    let b8 = b[8],
+    const b8 = b[8],
       b9 = b[9],
       b10 = b[10],
       b11 = b[11];
-    let b12 = b[12],
+    const b12 = b[12],
       b13 = b[13],
       b14 = b[14],
       b15 = b[15];

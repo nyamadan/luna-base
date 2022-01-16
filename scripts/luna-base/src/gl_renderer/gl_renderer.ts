@@ -152,12 +152,11 @@ const prototype: GLRendererPrototype = {
     });
 
     for (const task of tasks) {
-      tasks.forEach((task) => {
-        if (isSubMeshTask(task)) {
-          renderSubMesh(this, state, task);
-          return;
-        }
-      });
+      if (!isSubMeshTask(task)) {
+        continue;
+      }
+
+      renderSubMesh(this, state, task);
     }
   },
 };

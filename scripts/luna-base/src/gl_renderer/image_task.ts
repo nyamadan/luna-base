@@ -1,4 +1,4 @@
-import * as _gl from "gl";
+import { logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
 import { createImage, Image } from "./image";
 import {
@@ -11,7 +11,6 @@ import {
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
-import { logger } from "../logger";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_IMAGE_TASK");
 

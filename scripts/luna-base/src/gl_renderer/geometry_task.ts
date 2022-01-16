@@ -1,4 +1,3 @@
-import * as _gl from "gl";
 import { allocTableName, getMetatableName } from "../tables";
 import { Geometry } from "./geometry";
 import {

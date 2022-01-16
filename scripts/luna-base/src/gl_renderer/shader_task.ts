@@ -1,3 +1,5 @@
+import { logger } from "../logger";
+import { allocTableName, getMetatableName } from "../tables";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -7,10 +9,8 @@ import {
   NodeTaskType,
   pickOptionalField,
 } from "./node_task";
-import { allocTableName, getMetatableName } from "../tables";
-import { isTextTask } from "./text_task";
 import { createShader, Shader, ShaderType } from "./shader";
-import { logger } from "../logger";
+import { isTextTask } from "./text_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SHADER_TASK");
 

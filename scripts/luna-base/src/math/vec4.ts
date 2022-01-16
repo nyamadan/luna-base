@@ -5,9 +5,9 @@
  * @module vec4
  */
 
-import { ReadonlyQuat } from "./quat";
 import { ReadonlyMat4 } from "./mat4";
 import { EPSILON, hypot } from "./math_common";
+import { ReadonlyQuat } from "./quat";
 
 export type Vec4 = [number, number, number, number];
 export type ReadonlyVec4 = readonly [number, number, number, number];
@@ -29,7 +29,7 @@ namespace vec4 {
    * @returns {vec4} a new 4D vector
    */
   export function clone(a: ReadonlyVec4): Vec4 {
-    let out: Vec4 = [0, 0, 0, 0];
+    const out: Vec4 = [0, 0, 0, 0];
     out[0] = a[0];
     out[1] = a[1];
     out[2] = a[2];
@@ -47,7 +47,7 @@ namespace vec4 {
    * @returns {vec4} a new 4D vector
    */
   export function fromValues(x: number, y: number, z: number, w: number): Vec4 {
-    let out: Vec4 = [0, 0, 0, 0];
+    const out: Vec4 = [0, 0, 0, 0];
     out[0] = x;
     out[1] = y;
     out[2] = z;
@@ -305,10 +305,10 @@ namespace vec4 {
    * @returns {Number} distance between a and b
    */
   export function distance(a: ReadonlyVec4, b: ReadonlyVec4): number {
-    let x = b[0] - a[0];
-    let y = b[1] - a[1];
-    let z = b[2] - a[2];
-    let w = b[3] - a[3];
+    const x = b[0] - a[0];
+    const y = b[1] - a[1];
+    const z = b[2] - a[2];
+    const w = b[3] - a[3];
     return hypot(x, y, z, w);
   }
 
@@ -320,10 +320,10 @@ namespace vec4 {
    * @returns {Number} squared distance between a and b
    */
   export function squaredDistance(a: ReadonlyVec4, b: ReadonlyVec4): number {
-    let x = b[0] - a[0];
-    let y = b[1] - a[1];
-    let z = b[2] - a[2];
-    let w = b[3] - a[3];
+    const x = b[0] - a[0];
+    const y = b[1] - a[1];
+    const z = b[2] - a[2];
+    const w = b[3] - a[3];
     return x * x + y * y + z * z + w * w;
   }
 
@@ -334,10 +334,10 @@ namespace vec4 {
    * @returns {Number} length of a
    */
   export function length(a: ReadonlyVec4): number {
-    let x = a[0];
-    let y = a[1];
-    let z = a[2];
-    let w = a[3];
+    const x = a[0];
+    const y = a[1];
+    const z = a[2];
+    const w = a[3];
     return hypot(x, y, z, w);
   }
 
@@ -348,10 +348,10 @@ namespace vec4 {
    * @returns {Number} squared length of a
    */
   export function squaredLength(a: ReadonlyVec4): number {
-    let x = a[0];
-    let y = a[1];
-    let z = a[2];
-    let w = a[3];
+    const x = a[0];
+    const y = a[1];
+    const z = a[2];
+    const w = a[3];
     return x * x + y * y + z * z + w * w;
   }
 
@@ -393,10 +393,10 @@ namespace vec4 {
    * @returns {vec4} out
    */
   export function normalize<T extends Vec4>(out: T, a: ReadonlyVec4): T {
-    let x = a[0];
-    let y = a[1];
-    let z = a[2];
-    let w = a[3];
+    const x = a[0];
+    const y = a[1];
+    const z = a[2];
+    const w = a[3];
     let len = x * x + y * y + z * z + w * w;
     if (len > 0) {
       len = 1 / Math.sqrt(len);
@@ -434,16 +434,16 @@ namespace vec4 {
     v: ReadonlyVec4,
     w: ReadonlyVec4
   ): T {
-    let A = v[0] * w[1] - v[1] * w[0],
+    const A = v[0] * w[1] - v[1] * w[0],
       B = v[0] * w[2] - v[2] * w[0],
       C = v[0] * w[3] - v[3] * w[0],
       D = v[1] * w[2] - v[2] * w[1],
       E = v[1] * w[3] - v[3] * w[1],
       F = v[2] * w[3] - v[3] * w[2];
-    let G = u[0];
-    let H = u[1];
-    let I = u[2];
-    let J = u[3];
+    const G = u[0];
+    const H = u[1];
+    const I = u[2];
+    const J = u[3];
 
     out[0] = H * F - I * E + J * D;
     out[1] = -(G * F) + I * C - J * B;
@@ -468,10 +468,10 @@ namespace vec4 {
     b: ReadonlyVec4,
     t: number
   ): T {
-    let ax = a[0];
-    let ay = a[1];
-    let az = a[2];
-    let aw = a[3];
+    const ax = a[0];
+    const ay = a[1];
+    const az = a[2];
+    const aw = a[3];
     out[0] = ax + t * (b[0] - ax);
     out[1] = ay + t * (b[1] - ay);
     out[2] = az + t * (b[2] - az);
@@ -505,7 +505,7 @@ namespace vec4 {
       s2 = v3 * v3 + v4 * v4;
     } while (s2 >= 1);
 
-    let d = Math.sqrt((1 - s1) / s2);
+    const d = Math.sqrt((1 - s1) / s2);
     out[0] = scale * v1;
     out[1] = scale * v2;
     out[2] = scale * v3 * d;
@@ -526,7 +526,7 @@ namespace vec4 {
     a: ReadonlyVec4,
     m: ReadonlyMat4
   ): T {
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2],
       w = a[3];
@@ -550,19 +550,19 @@ namespace vec4 {
     a: ReadonlyVec4,
     q: ReadonlyQuat
   ) {
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2];
-    let qx = q[0],
+    const qx = q[0],
       qy = q[1],
       qz = q[2],
       qw = q[3];
 
     // calculate quat * vec
-    let ix = qw * x + qy * z - qz * y;
-    let iy = qw * y + qz * x - qx * z;
-    let iz = qw * z + qx * y - qy * x;
-    let iw = -qx * x - qy * y - qz * z;
+    const ix = qw * x + qy * z - qz * y;
+    const iy = qw * y + qz * x - qx * z;
+    const iz = qw * z + qx * y - qy * x;
+    const iw = -qx * x - qy * y - qz * z;
 
     // calculate result * inverse quat
     out[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy;
@@ -615,11 +615,11 @@ namespace vec4 {
    * @returns {Boolean} True if the vectors are equal, false otherwise.
    */
   export function equals(a: ReadonlyVec4, b: ReadonlyVec4) {
-    let a0 = a[0],
+    const a0 = a[0],
       a1 = a[1],
       a2 = a[2],
       a3 = a[3];
-    let b0 = b[0],
+    const b0 = b[0],
       b1 = b[1],
       b2 = b[2],
       b3 = b[3];
@@ -689,9 +689,9 @@ namespace vec4 {
    * @function
    */
   export const forEach = (function () {
-    let vec = create();
+    const vec = create();
 
-    return function <T extends number[], U extends any>(
+    return function <T extends number[], U>(
       a: T,
       stride: number,
       offset: number,

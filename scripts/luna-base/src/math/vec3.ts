@@ -5,10 +5,10 @@
  * @module vec3
  */
 
-import { ReadonlyMat4 } from "./mat4";
-import { ReadonlyQuat } from "./quat";
 import { ReadonlyMat3 } from "./mat3";
+import { ReadonlyMat4 } from "./mat4";
 import { EPSILON, hypot } from "./math_common";
+import { ReadonlyQuat } from "./quat";
 
 export type Vec3 = [number, number, number];
 export type ReadonlyVec3 = readonly [number, number, number];
@@ -268,9 +268,9 @@ namespace vec3 {
    * @returns {Number} distance between a and b
    */
   export function distance(a: ReadonlyVec3, b: ReadonlyVec3): number {
-    let x = b[0] - a[0];
-    let y = b[1] - a[1];
-    let z = b[2] - a[2];
+    const x = b[0] - a[0];
+    const y = b[1] - a[1];
+    const z = b[2] - a[2];
     return hypot(x, y, z);
   }
 
@@ -282,9 +282,9 @@ namespace vec3 {
    * @returns {Number} squared distance between a and b
    */
   export function squaredDistance(a: ReadonlyVec3, b: ReadonlyVec3): number {
-    let x = b[0] - a[0];
-    let y = b[1] - a[1];
-    let z = b[2] - a[2];
+    const x = b[0] - a[0];
+    const y = b[1] - a[1];
+    const z = b[2] - a[2];
     return x * x + y * y + z * z;
   }
 
@@ -295,9 +295,9 @@ namespace vec3 {
    * @returns {Number} squared length of a
    */
   export function squaredLength(a: ReadonlyVec3): number {
-    let x = a[0];
-    let y = a[1];
-    let z = a[2];
+    const x = a[0];
+    const y = a[1];
+    const z = a[2];
     return x * x + y * y + z * z;
   }
 
@@ -337,9 +337,9 @@ namespace vec3 {
    * @returns {Vec3} out
    */
   export function normalize(out: Vec3, a: ReadonlyVec3): Vec3 {
-    let x = a[0];
-    let y = a[1];
-    let z = a[2];
+    const x = a[0];
+    const y = a[1];
+    const z = a[2];
     let len = x * x + y * y + z * z;
     if (len > 0) {
       //TODO: evaluate use of glm_invsqrt here?
@@ -371,10 +371,10 @@ namespace vec3 {
    * @returns {Vec3} out
    */
   export function cross(out: Vec3, a: ReadonlyVec3, b: ReadonlyVec3) {
-    let ax = a[0],
+    const ax = a[0],
       ay = a[1],
       az = a[2];
-    let bx = b[0],
+    const bx = b[0],
       by = b[1],
       bz = b[2];
 
@@ -399,9 +399,9 @@ namespace vec3 {
     b: ReadonlyVec3,
     t: number
   ): Vec3 {
-    let ax = a[0];
-    let ay = a[1];
-    let az = a[2];
+    const ax = a[0];
+    const ay = a[1];
+    const az = a[2];
     out[0] = ax + t * (b[0] - ax);
     out[1] = ay + t * (b[1] - ay);
     out[2] = az + t * (b[2] - az);
@@ -423,11 +423,11 @@ namespace vec3 {
     b: ReadonlyVec3,
     t: number
   ): Vec3 {
-    let angle = Math.acos(Math.min(Math.max(dot(a, b), -1), 1));
-    let sinTotal = Math.sin(angle);
+    const angle = Math.acos(Math.min(Math.max(dot(a, b), -1), 1));
+    const sinTotal = Math.sin(angle);
 
-    let ratioA = Math.sin((1 - t) * angle) / sinTotal;
-    let ratioB = Math.sin(t * angle) / sinTotal;
+    const ratioA = Math.sin((1 - t) * angle) / sinTotal;
+    const ratioB = Math.sin(t * angle) / sinTotal;
     out[0] = ratioA * a[0] + ratioB * b[0];
     out[1] = ratioA * a[1] + ratioB * b[1];
     out[2] = ratioA * a[2] + ratioB * b[2];
@@ -454,11 +454,11 @@ namespace vec3 {
     d: ReadonlyVec3,
     t: number
   ): Vec3 {
-    let factorTimes2 = t * t;
-    let factor1 = factorTimes2 * (2 * t - 3) + 1;
-    let factor2 = factorTimes2 * (t - 2) + t;
-    let factor3 = factorTimes2 * (t - 1);
-    let factor4 = factorTimes2 * (3 - 2 * t);
+    const factorTimes2 = t * t;
+    const factor1 = factorTimes2 * (2 * t - 3) + 1;
+    const factor2 = factorTimes2 * (t - 2) + t;
+    const factor3 = factorTimes2 * (t - 1);
+    const factor4 = factorTimes2 * (3 - 2 * t);
 
     out[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
     out[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
@@ -486,13 +486,13 @@ namespace vec3 {
     d: ReadonlyVec3,
     t: number
   ): Vec3 {
-    let inverseFactor = 1 - t;
-    let inverseFactorTimesTwo = inverseFactor * inverseFactor;
-    let factorTimes2 = t * t;
-    let factor1 = inverseFactorTimesTwo * inverseFactor;
-    let factor2 = 3 * t * inverseFactorTimesTwo;
-    let factor3 = 3 * factorTimes2 * inverseFactor;
-    let factor4 = factorTimes2 * t;
+    const inverseFactor = 1 - t;
+    const inverseFactorTimesTwo = inverseFactor * inverseFactor;
+    const factorTimes2 = t * t;
+    const factor1 = inverseFactorTimesTwo * inverseFactor;
+    const factor2 = 3 * t * inverseFactorTimesTwo;
+    const factor3 = 3 * factorTimes2 * inverseFactor;
+    const factor4 = factorTimes2 * t;
 
     out[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
     out[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
@@ -511,9 +511,9 @@ namespace vec3 {
   export function random(out: Vec3, scale: number): Vec3 {
     scale = scale === undefined ? 1.0 : scale;
 
-    let r = Math.random() * 2.0 * Math.PI;
-    let z = Math.random() * 2.0 - 1.0;
-    let zScale = Math.sqrt(1.0 - z * z) * scale;
+    const r = Math.random() * 2.0 * Math.PI;
+    const z = Math.random() * 2.0 - 1.0;
+    const zScale = Math.sqrt(1.0 - z * z) * scale;
 
     out[0] = Math.cos(r) * zScale;
     out[1] = Math.sin(r) * zScale;
@@ -531,7 +531,7 @@ namespace vec3 {
    * @returns {Vec3} out
    */
   export function transformMat4(out: Vec3, a: ReadonlyVec3, m: ReadonlyMat4) {
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2];
     let w = m[3] * x + m[7] * y + m[11] * z + m[15];
@@ -555,7 +555,7 @@ namespace vec3 {
     a: ReadonlyVec3,
     m: ReadonlyMat3
   ): Vec3 {
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2];
     out[0] = x * m[0] + y * m[3] + z * m[6];
@@ -579,11 +579,11 @@ namespace vec3 {
     q: ReadonlyQuat
   ): Vec3 {
     // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
-    let qx = q[0],
+    const qx = q[0],
       qy = q[1],
       qz = q[2],
       qw = q[3];
-    let x = a[0],
+    const x = a[0],
       y = a[1],
       z = a[2];
     // var qvec = [qx, qy, qz];
@@ -596,7 +596,7 @@ namespace vec3 {
       uuvy = qz * uvx - qx * uvz,
       uuvz = qx * uvy - qy * uvx;
     // vec3.scale(uv, uv, 2 * w);
-    let w2 = qw * 2;
+    const w2 = qw * 2;
     uvx *= w2;
     uvy *= w2;
     uvz *= w2;
@@ -625,7 +625,7 @@ namespace vec3 {
     b: ReadonlyVec3,
     rad: number
   ): Vec3 {
-    let p = [],
+    const p = [],
       r = [];
     //Translate point to the origin
     p[0] = a[0] - b[0];
@@ -659,7 +659,7 @@ namespace vec3 {
     b: ReadonlyVec3,
     rad: number
   ): Vec3 {
-    let p = [],
+    const p = [],
       r = [];
     //Translate point to the origin
     p[0] = a[0] - b[0];
@@ -693,7 +693,7 @@ namespace vec3 {
     b: ReadonlyVec3,
     rad: number
   ): Vec3 {
-    let p = [],
+    const p = [],
       r = [];
     //Translate point to the origin
     p[0] = a[0] - b[0];
@@ -720,7 +720,7 @@ namespace vec3 {
    * @returns {Number} The angle in radians
    */
   export function angle(a: ReadonlyVec3, b: ReadonlyVec3): number {
-    let ax = a[0],
+    const ax = a[0],
       ay = a[1],
       az = a[2],
       bx = b[0],
@@ -775,10 +775,10 @@ namespace vec3 {
    * @returns {Boolean} True if the vectors are equal, false otherwise.
    */
   export function equals(a: ReadonlyVec3, b: ReadonlyVec3): boolean {
-    let a0 = a[0],
+    const a0 = a[0],
       a1 = a[1],
       a2 = a[2];
-    let b0 = b[0],
+    const b0 = b[0],
       b1 = b[1],
       b2 = b[2];
     return (
@@ -845,7 +845,7 @@ namespace vec3 {
    * @function
    */
   export const forEach = (function () {
-    let vec = create();
+    const vec = create();
 
     return function (
       a: any[],

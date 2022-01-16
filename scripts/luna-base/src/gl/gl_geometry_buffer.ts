@@ -1,14 +1,14 @@
 import * as _gl from "gl";
 import { createF32Array, isF32Array } from "../buffers/f32array";
+import { isNativeArray, NativeArray } from "../buffers/native_array";
+import { createU16Array, isU16Array } from "../buffers/u16array";
+import { floorDivisionNumber } from "../op_utils";
 import {
   createGLF32ArrayBuffer,
   createGLU16ArrayBuffer,
   isGlBuffer,
   GLBuffer,
 } from "./gl_buffer";
-import { isNativeArray, NativeArray } from "../buffers/native_array";
-import { floorDivisionNumber } from "../op_utils";
-import { createU16Array, isU16Array } from "../buffers/u16array";
 
 interface GLGeometryBufferFields {
   mode: typeof _gl.TRIANGLES;

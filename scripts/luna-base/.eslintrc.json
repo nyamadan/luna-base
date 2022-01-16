@@ -26,7 +26,8 @@
   "rules": {
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
-    "no-unused-vars": "warn",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "sort-imports": "off",
     "import/order": ["error", { "alphabetize": { "order": "asc" } }],
     "no-duplicate-imports": "error"

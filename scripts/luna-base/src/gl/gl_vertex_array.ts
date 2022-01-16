@@ -1,9 +1,9 @@
 import * as _gl from "gl";
 import { new_buffer, NULL } from "native_buffer";
+import { allocTableName, createTable, getMetatableName } from "../tables";
+import { assertIsNotNull, assertIsNumber } from "../type_utils";
 import { GLGeometryBuffer } from "./gl_geometry_buffer";
 import { GLProgram } from "./gl_program";
-import { assertIsNotNull, assertIsNumber } from "../type_utils";
-import { allocTableName, createTable, getMetatableName } from "../tables";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_VERTEX_ARRAY");
 
