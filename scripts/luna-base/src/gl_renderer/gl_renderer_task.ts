@@ -24,7 +24,7 @@ export type GLRendererTaskType = GLRendererTaskField & GLRendererTaskPrototype;
 
 const prototype: GLRendererTaskPrototype = createNodeTaskPrototype({
   run(command, state) {
-    const { name } = command;
+    const { name, node } = command;
     switch (name) {
       case "prerender": {
         imgui.implOpenGL3_NewFrame();
@@ -34,7 +34,7 @@ const prototype: GLRendererTaskPrototype = createNodeTaskPrototype({
       }
       case "render": {
         imgui.render();
-        this.renderer.render(state, command.task);
+        this.renderer.render(state, node);
         imgui.implOpenGL3_RenderDrawData();
         collectgarbage("collect");
         return state;

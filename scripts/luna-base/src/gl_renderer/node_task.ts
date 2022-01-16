@@ -9,7 +9,8 @@ import { createTransform, Transform } from "./transform";
 
 interface CommandInterface {
   name: string;
-  task: NodeTaskType;
+  node: NodeTaskType;
+  root: NodeTaskType;
 }
 
 interface SetupCommand extends CommandInterface {
@@ -75,9 +76,9 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
       (task) => {
         return task.enabled;
       },
-      (task) => {
+      (node) => {
         const [ok, err] = xpcall(() => {
-          state = task.runCommand({ name: "setup", task }, state);
+          state = node.runCommand({ name: "setup", root: this, node }, state);
         }, debug.traceback);
 
         if (!ok) {
@@ -88,13 +89,13 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
     return state;
   },
   update(state) {
-    this.traverse((task) => {
-      if (!task.enabled) {
+    this.traverse((node) => {
+      if (!node.enabled) {
         return false;
       }
 
       const [ok, err] = xpcall(() => {
-        state = task.runCommand({ name: "update", task }, state);
+        state = node.runCommand({ name: "update", root: this, node }, state);
       }, debug.traceback);
 
       if (!ok) {
@@ -104,21 +105,21 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
     return state;
   },
   updateWorld(state, world) {
-    this.traverse((task) => {
-      if (!task.enabled) {
+    this.traverse((node) => {
+      if (!node.enabled) {
         return false;
       }
 
       const [ok, err] = xpcall(() => {
-        state = task.runCommand(
-          { name: "update-world", task: task, world },
+        state = node.runCommand(
+          { name: "update-world", root: this, node, world },
           state
         );
 
-        task.transform.update();
+        node.transform.update();
         const worlds = { ...state.worlds };
-        const newWorld = (worlds[task.guid] ??= createF32Mat4());
-        mat4.mul(newWorld, world, task.transform.local);
+        const newWorld = (worlds[node.guid] ??= createF32Mat4());
+        mat4.mul(newWorld, world, node.transform.local);
         world = newWorld;
         state = { ...state, worlds };
       }, debug.traceback);
@@ -132,22 +133,25 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
   },
   render(state) {
     this.traverse(
-      (task) => {
-        if (!task.enabled) {
+      (node) => {
+        if (!node.enabled) {
           return false;
         }
 
         const [ok, err] = xpcall(() => {
-          state = task.runCommand({ name: "prerender", task }, state);
+          state = node.runCommand(
+            { name: "prerender", root: this, node },
+            state
+          );
         }, debug.traceback);
 
         if (!ok) {
           logger.error("%s", err);
         }
       },
-      (task) => {
+      (node) => {
         const [ok, err] = xpcall(() => {
-          state = task.runCommand({ name: "render", task }, state);
+          state = node.runCommand({ name: "render", root: this, node }, state);
         }, debug.traceback);
 
         if (!ok) {

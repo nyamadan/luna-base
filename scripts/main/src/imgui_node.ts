@@ -52,10 +52,10 @@ export default function createImguiNode(this: void) {
     {},
     createNodeTaskPrototype({
       run(command, state) {
-        const { name, task } = command;
+        const { name, node } = command;
         switch (name) {
           case "render": {
-            coroutine.resume(render, task);
+            coroutine.resume(render, node);
             return state;
           }
           default: {

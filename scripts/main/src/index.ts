@@ -76,7 +76,7 @@ const scriptTask = createTask(
       switch (name) {
         case "render": {
           if (coroutine.status(render) === "suspended") {
-            coroutine.resume(render, command.task);
+            coroutine.resume(render, command.node);
           }
           return state;
         }

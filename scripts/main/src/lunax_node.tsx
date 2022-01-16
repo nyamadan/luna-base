@@ -1,5 +1,6 @@
 import "luna-base";
 import { createF32Vec4 } from "luna-base/dist/buffers/f32array";
+import { isApplicationTask } from "luna-base/dist/gl_renderer/application_task";
 import GeometryTask from "luna-base/dist/gl_renderer/geometry_task";
 import ImageTask from "luna-base/dist/gl_renderer/image_task";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
@@ -24,24 +25,29 @@ import vec3 from "luna-base/dist/math/vec3";
 export default function createLunaXNode(this: void) {
   const runner: NodeTaskPrototype = createNodeTaskPrototype({
     run(command, state) {
-      const { name, task } = command;
+      const { name, node, root } = command;
       switch (name) {
         case "update": {
-          const task = this.findTask(
+          const appTask = root.findTask(isApplicationTask);
+          if (appTask == null) {
+            return state;
+          }
+
+          const subMeshTask = this.findTask(
             (x): x is SubMeshTaskType =>
               isSubMeshTask(x) && x.name === "x-sub-mesh"
           );
 
-          if (task == null) {
+          if (subMeshTask == null) {
             return state;
           }
 
-          const tr = task.transform;
+          const tr = subMeshTask.transform;
           vec3.set(tr.scale, 2, 2, 2);
           return state;
         }
         case "render": {
-          imguiRenderNodes(task);
+          imguiRenderNodes(node);
           return state;
         }
         default: {

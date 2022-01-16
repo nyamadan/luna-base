@@ -35,7 +35,7 @@ export default function createRotateImageNode(this: void) {
 
   const update = coroutine.create(function (
     this: void,
-    task: NodeTaskType,
+    node: NodeTaskType,
     state: CommandState
   ) {
     const task0 = createNullTask({
@@ -49,7 +49,7 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    task.addChild(task0);
+    node.addChild(task0);
 
     const task1 = createNullTask({
       name: "SubMesh",
@@ -62,7 +62,7 @@ export default function createRotateImageNode(this: void) {
         }),
       ],
     });
-    task.addChild(task1);
+    node.addChild(task1);
 
     let frame = 0;
     let running = true;
@@ -81,11 +81,11 @@ export default function createRotateImageNode(this: void) {
 
   const runner: NodeTaskPrototype = createNodeTaskPrototype({
     run(command, state) {
-      const { name, task } = command;
+      const { name, node } = command;
       switch (name) {
         case "update": {
           if (coroutine.status(update) === "suspended") {
-            coroutine.resume(update, task, state);
+            coroutine.resume(update, node, state);
           }
 
           return state;

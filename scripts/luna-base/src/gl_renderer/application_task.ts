@@ -24,12 +24,14 @@ interface ApplicationTaskField extends NodeTaskField {
   initialized: boolean;
 }
 
-interface ApplicationTaskPrototype extends NodeTaskPrototype<ApplicationTask> {}
+interface ApplicationTaskPrototype
+  extends NodeTaskPrototype<ApplicationTaskType> {}
 
-export type ApplicationTask = ApplicationTaskField & ApplicationTaskPrototype;
+export type ApplicationTaskType = ApplicationTaskField &
+  ApplicationTaskPrototype;
 
 const prototype: ApplicationTaskPrototype =
-  createNodeTaskPrototype<ApplicationTask>({
+  createNodeTaskPrototype<ApplicationTaskType>({
     run(command, state) {
       const { name } = command;
 
@@ -98,7 +100,7 @@ const prototype: ApplicationTaskPrototype =
 export function createApplicationTask(
   this: void,
   params: NodeTaskProps<ApplicationTaskField, never, "height" | "width">
-): ApplicationTask {
+): ApplicationTaskType {
   const fields: Omit<ApplicationTaskField, keyof NodeTaskField> = {
     initialized: false,
     width: params.width ?? 1024,
@@ -112,12 +114,12 @@ export function createApplicationTask(
       ...fields,
     },
     prototype
-  ) as ApplicationTask;
+  ) as ApplicationTaskType;
 }
 
 export function isApplicationTask(
   this: void,
   x: unknown
-): x is ApplicationTask {
+): x is ApplicationTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
