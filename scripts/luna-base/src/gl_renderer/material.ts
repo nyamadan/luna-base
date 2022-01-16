@@ -1,3 +1,4 @@
+import { F32Vec4 } from "../buffers/f32array";
 import { allocTableName, createTable } from "../tables";
 import { uuid } from "../uuid";
 import { ShaderProgram } from "./shader_program";
@@ -7,10 +8,17 @@ const TABLE_NAME = allocTableName("LUA_TYPE_MATERIAL");
 
 type MaterialId = string & { __material: never };
 
-export type UniformValue = {
+interface TextureUniformType {
   type: "Texture";
   texture: Texture;
-};
+}
+
+interface Vec4UniformType {
+  type: "Vec4";
+  value: F32Vec4;
+}
+
+export type UniformValue = TextureUniformType | Vec4UniformType;
 
 interface MaterialFields {
   guid: MaterialId;

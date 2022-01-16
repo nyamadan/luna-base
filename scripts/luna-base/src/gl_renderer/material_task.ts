@@ -1,3 +1,4 @@
+import { logger } from "../logger";
 import { allocTableName, getMetatableName } from "../tables";
 import { createMaterial, Material } from "./material";
 import {
@@ -7,10 +8,11 @@ import {
   NodeTaskId,
   NodeTaskProps,
   NodeTaskPrototype,
-  pickOptionalField,
+  pickOptionalField
 } from "./node_task";
 import { isShaderProgramTask } from "./shader_program_task";
 import { isTextureTask } from "./texture_task";
+import { isVec4Task } from "./vec4_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_MATERIAL_TASK");
 
@@ -48,9 +50,22 @@ const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
         const uniforms: Parameters<typeof createMaterial>[1] = {};
         for (const child of this.children) {
           if (isTextureTask(child) && child.texture != null) {
+            if (uniforms[child.name] != null) {
+              logger.warn(
+                `MaterialTask(${this.guid}): duplicated uniform name: ${child.name}`
+              );
+            }
             uniforms[child.name] = {
               type: "Texture",
               texture: child.texture,
+            };
+            continue;
+          }
+
+          if(isVec4Task(child)) {
+            uniforms[child.name] = {
+              type: "Vec4",
+              value: child.value,
             };
             continue;
           }
