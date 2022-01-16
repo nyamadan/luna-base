@@ -1,5 +1,3 @@
-import ShaderProgramTask from "../src/gl_renderer/components/shader_program_task";
-import ShaderTask from "../src/gl_renderer/components/shader_task";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import LunaX from "../src/gl_renderer/lunax";
 import {
@@ -7,7 +5,10 @@ import {
   initCommandState,
   NodeTaskType,
 } from "../src/gl_renderer/node_task";
-import { ShaderProgramTaskType } from "../src/gl_renderer/shader_program_task";
+import ShaderProgramTask, {
+  ShaderProgramTaskType,
+} from "../src/gl_renderer/shader_program_task";
+import ShaderTask from "../src/gl_renderer/shader_task";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

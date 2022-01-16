@@ -84,3 +84,10 @@ export function createSubMeshTask(
 export function isSubMeshTask(this: void, x: unknown): x is SubMeshTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function SubMeshTask(
+  this: void,
+  ...params: Parameters<typeof createSubMeshTask>
+): SubMeshTaskType {
+  return createSubMeshTask(...params);
+}

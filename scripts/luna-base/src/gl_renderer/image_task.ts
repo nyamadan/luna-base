@@ -84,3 +84,10 @@ export function createImageTask(
 export function isImageTask(this: void, x: unknown): x is ImageTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function ImageTask(
+  this: void,
+  ...params: Parameters<typeof createImageTask>
+) {
+  return createImageTask(...params);
+}

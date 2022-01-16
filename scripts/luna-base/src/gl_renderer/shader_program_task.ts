@@ -92,3 +92,10 @@ export function isShaderProgramTask(
 ): x is ShaderProgramTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function ShaderProgramTask(
+  this: void,
+  ...params: Parameters<typeof createShaderProgramTask>
+) {
+  return createShaderProgramTask(...params);
+}

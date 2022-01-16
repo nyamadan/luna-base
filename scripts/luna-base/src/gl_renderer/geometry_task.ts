@@ -60,3 +60,10 @@ export function createGeometryTask(
 export function isGeometryTask(this: void, x: unknown): x is GeometryTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function GeometryTask(
+  this: void,
+  ...params: Parameters<typeof createGeometryTask>
+) {
+  return createGeometryTask(...params);
+}

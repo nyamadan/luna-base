@@ -45,3 +45,10 @@ export function createMeshTask(
 export function isMeshTask(this: void, x: unknown): x is MeshTask {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function MeshTask(
+  this: void,
+  ...params: Parameters<typeof createMeshTask>
+) {
+  return createMeshTask(...params);
+}

@@ -127,7 +127,7 @@ function renderSubMesh(
       case "Vec4": {
         const uVec4 = program.uniforms.find((x) => x.name === name);
         if (uVec4 != null) {
-          _gl.uniform4fv(uVec4.location, 4, value.value.buffer);
+          _gl.uniform4fv(uVec4.location, 1, value.value.buffer);
         }
         break;
       }

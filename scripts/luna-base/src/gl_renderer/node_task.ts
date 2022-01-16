@@ -276,7 +276,7 @@ export function createNodeTaskPrototype<T extends NodeTaskType = NodeTaskType>(
   params: Partial<Omit<T, keyof NodeTaskRunner<T>>> &
     Pick<T, keyof NodeTaskRunner<T>>
 ): NodeTaskPrototype<T> {
-  return { ...nodeTaskPrototype, ...params };
+  return createTable("LUA_TYPE_NODE_TASK", params, nodeTaskPrototype);
 }
 
 export type NodeTaskId = string & { __task_task: never };
@@ -440,17 +440,17 @@ export function createTask<
   ) as T1 & T2 & typeof initial;
 }
 
-const nullTaskPrototype: NodeTaskPrototype = {
-  run: (_, state) => state,
-  ...nodeTaskPrototype,
-};
-
-export function createNullTask<
-  T extends Partial<Pick<NodeTaskField, NodeTaskTypeOptionalField>>
->(params?: T) {
-  return createTask(null, params ?? {}, nullTaskPrototype);
-}
-
 export function isNodeTask(this: void, x: unknown): x is NodeTaskType {
   return (x as any)?.isTask === true;
+}
+
+export default function NodeTask(
+  this: void,
+  {
+    task,
+  }: {
+    task: NodeTaskType;
+  }
+) {
+  return task;
 }

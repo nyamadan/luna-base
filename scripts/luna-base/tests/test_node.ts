@@ -1,15 +1,14 @@
 import {
   Command,
   createNodeTaskPrototype,
-  createNullTask,
   createTask,
-  initCommandState
+  initCommandState,
 } from "../src/gl_renderer/node_task";
+import { createNullTask } from "../src/gl_renderer/null_task";
 import mat4 from "../src/math/mat4";
 import vec3 from "../src/math/vec3";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
-
 
 let origPrint: (this: void, ...args: any[]) => void;
 

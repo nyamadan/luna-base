@@ -15,17 +15,17 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] JSX画像表示
  * [x] ShaderTaskを作成
  * [x] ShaderProgramTaskを作成
- * [ ] Uniformまわりと何とかする
- * [ ] MaterialTaskを作成
+ * [x] Uniformまわりと何とかする
+ * [x] MaterialTaskを作成
+ * [x] NodeのUserdata Generics削除
  * [ ] CameraTaskを作成
- * [ ] Taskを継承してNodeを作る？
- * [ ] components多分いらない
  * [ ] Render IMGUIのタスクを作成
- * [ ] CIでテスト
- * [ ] NodeのUserdata Generics削除
- * [ ] guid -> id
  * [ ] SDLにさしかえ
  * [ ] キーボード入力を実装する
+ * [ ] components多分いらない
+ * [ ] CIでテスト
+ * [ ] guid -> id
+ * [ ] Taskを継承してNodeを作る？
  * [ ] GLBを読めるようにする
  * [ ] Taskの重複登録防止
  * [ ] MessagePackをいったん消す

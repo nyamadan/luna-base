@@ -101,3 +101,10 @@ export function createMaterialTask(
 export function isMaterialTask(this: void, x: unknown): x is MaterialTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function MaterialTask(
+  this: void,
+  ...params: Parameters<typeof createMaterialTask>
+) {
+  return createMaterialTask(...params);
+}

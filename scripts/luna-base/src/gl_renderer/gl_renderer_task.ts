@@ -66,3 +66,10 @@ export function isGLRendererTask(
 ): x is GLRendererTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function GLRendererTask(
+  this: void,
+  ...params: Parameters<typeof createGLRendererTask>
+) {
+  return createGLRendererTask(...params);
+}

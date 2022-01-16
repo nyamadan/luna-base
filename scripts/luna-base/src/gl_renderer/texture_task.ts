@@ -98,3 +98,10 @@ export function assertTextureTask(
 ): asserts x is TextureTaskType {
   assert(isTextureTask(x));
 }
+
+export default function TextureTask(
+  this: void,
+  ...params: Parameters<typeof createTextureTask>
+): TextureTaskType {
+  return createTextureTask(...params);
+}

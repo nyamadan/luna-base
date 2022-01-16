@@ -74,3 +74,10 @@ export function createShaderTask(
 export function isShaderTask(this: void, x: unknown): x is ShaderTaskType {
   return getMetatableName(x) === TABLE_NAME;
 }
+
+export default function ShaderTask(
+  this: void,
+  ...params: Parameters<typeof createShaderTask>
+) {
+  return createShaderTask(...params);
+}

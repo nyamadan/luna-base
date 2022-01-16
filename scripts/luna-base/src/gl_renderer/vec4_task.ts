@@ -62,3 +62,10 @@ export function assertVec4Task(
 ): asserts x is Vec4TaskType {
   assert(isVec4Task(x));
 }
+
+export default function Vec4Task(
+  this: void,
+  ...params: Parameters<typeof createVec4Task>
+): Vec4TaskType {
+  return createVec4Task(...params);
+}
