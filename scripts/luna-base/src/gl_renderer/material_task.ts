@@ -37,11 +37,6 @@ const prototype: MaterialTaskPrototype = createNodeTaskPrototype({
           return state;
         }
 
-        const texture = this.findTaskInChildren(isTextureTask)?.texture;
-        if (texture == null) {
-          return state;
-        }
-
         const program = this.findTaskInChildren(isShaderProgramTask)?.program;
         if (program == null) {
           return state;
