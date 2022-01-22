@@ -1,4 +1,5 @@
 import mat4, { Mat4 } from "../math/mat4";
+import { ReadonlyVec3 } from "../math/vec3";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { TransformFields, TransformPrototype } from "./transform";
 
@@ -18,6 +19,12 @@ interface OrthoCameraTransformFields extends TransformFields {
 
 interface OrthoCameraTransformPrototype extends TransformPrototype {
   update(this: OrthoCameraTransformType): void;
+  lookAt(
+    this: OrthoCameraTransformType,
+    eye: ReadonlyVec3,
+    center: ReadonlyVec3,
+    up: ReadonlyVec3
+  ): void;
 }
 
 export interface OrthoCameraTransformType
@@ -37,6 +44,9 @@ const prototype: OrthoCameraTransformPrototype = {
     );
 
     mat4.mul(this.matrix, this.proj, this.view);
+  },
+  lookAt(eye, center, up) {
+    mat4.lookAt(this.view, eye, center, up);
   },
 };
 

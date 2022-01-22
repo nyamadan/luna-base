@@ -130,7 +130,7 @@ test("Test_Node", {
     lu.assertEquals(x, [7, 11, 15]);
     lu.assertEquals(command?.name, "update-world");
   },
-  test_ortho_camera_transform1() {
+  test_ortho_camera_transform() {
     const root = createNullTask();
 
     const parent = createNullTask({ transform: createOrthoCameraTransform() });
@@ -150,6 +150,35 @@ test("Test_Node", {
     lu.assertNotNil(world);
     const v = vec3.set(vec3.create(), 1, 2, 0);
     vec3.transformMat4(v, v, world);
-    lu.assertEquals([v[0], v[1]], [4, 6]);
+    lu.assertEquals(v.slice(0, 2), [4, 6]);
+  },
+  test_ortho_camera_lookAt() {
+    const root = createNullTask();
+
+    const parent = createNullTask({
+      transform: createOrthoCameraTransform({
+        top: 1.0,
+        bottom: -1.0,
+        left: -1.0,
+        right: 1.0,
+      }),
+    });
+    const trParent = parent.transform;
+    assertOrthoCameraTransform(trParent);
+    trParent.lookAt([1, 2, 1], [1, 2, 0], [0, 1, 0]);
+
+    const child = createNullTask();
+    const trChild = child.transform;
+    assertBasicTransform(trChild);
+
+    root.addChild(parent);
+    parent.addChild(child);
+
+    const state = root.updateWorld(initCommandState(null), mat4.create());
+    const world = state.worlds[child.guid];
+    lu.assertNotNil(world);
+    const v = vec3.set(vec3.create(), 1, 2, 0);
+    vec3.transformMat4(v, v, world);
+    lu.assertEquals(v.slice(0, 2), [0, 0]);
   },
 });
