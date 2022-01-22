@@ -1,6 +1,6 @@
-import mat4, { Mat4 } from "../math/mat4";
-import { ReadonlyVec3 } from "../math/vec3";
-import { allocTableName, createTable, getMetatableName } from "../tables";
+import mat4, { Mat4 } from "../../math/mat4";
+import { ReadonlyVec3 } from "../../math/vec3";
+import { allocTableName, createTable, getMetatableName } from "../../tables";
 import { TransformFields, TransformPrototype } from "./transform";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_ORTHO_CAMERA_TRANSFORM");

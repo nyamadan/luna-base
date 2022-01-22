@@ -1,7 +1,7 @@
 import * as imgui from "imgui";
 
-import { allocTableName, getMetatableName } from "../tables";
-import { createGLRenderer, GLRenderer } from "./gl_renderer";
+import { allocTableName, getMetatableName } from "../../tables";
+import { createGLRenderer, GLRenderer } from "../gl_renderer";
 import {
   createNodeTaskPrototype,
   createTask,

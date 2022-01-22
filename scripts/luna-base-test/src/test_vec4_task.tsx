@@ -5,8 +5,10 @@ import {
   createTaskRef,
   initCommandState,
   NodeTaskType,
-} from "luna-base/dist/gl_renderer/node_task";
-import Vec4Task, { Vec4TaskType } from "luna-base/dist/gl_renderer/vec4_task";
+} from "luna-base/dist/gl_renderer/tasks/node_task";
+import Vec4Task, {
+  Vec4TaskType,
+} from "luna-base/dist/gl_renderer/tasks/vec4_task";
 import vec4 from "luna-base/dist/math/vec4";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";

@@ -1,5 +1,5 @@
-import { createF32Vec4, F32Vec4 } from "../buffers/f32array";
-import { allocTableName, getMetatableName } from "../tables";
+import { createF32Vec4, F32Vec4 } from "../../buffers/f32array";
+import { allocTableName, getMetatableName } from "../../tables";
 import {
   createNodeTaskPrototype,
   createTask,

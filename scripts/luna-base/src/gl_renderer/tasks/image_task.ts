@@ -1,6 +1,6 @@
-import { logger } from "../logger";
-import { allocTableName, getMetatableName } from "../tables";
-import { createImage, Image } from "./image";
+import { logger } from "../../logger";
+import { allocTableName, getMetatableName } from "../../tables";
+import { createImage, Image } from "../image";
 import {
   CommandState,
   createNodeTaskPrototype,

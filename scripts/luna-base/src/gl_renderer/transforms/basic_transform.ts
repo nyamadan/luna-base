@@ -1,7 +1,7 @@
-import mat4 from "../math/mat4";
-import quat, { Quat } from "../math/quat";
-import vec3, { Vec3 } from "../math/vec3";
-import { allocTableName, createTable, getMetatableName } from "../tables";
+import mat4 from "../../math/mat4";
+import quat, { Quat } from "../../math/quat";
+import vec3, { Vec3 } from "../../math/vec3";
+import { allocTableName, createTable, getMetatableName } from "../../tables";
 import { TransformFields, TransformPrototype } from "./transform";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_BASIC_TRANSFORM");

@@ -1,7 +1,7 @@
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
-import { GeometryTaskType } from "./geometry_task";
 import { Material } from "./material";
+import { GeometryTaskType } from "./tasks/geometry_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH");
 

@@ -1,16 +1,15 @@
-import { assertBasicTransform } from "luna-base/dist/gl_renderer/basic_transform";
 import {
   Command,
   createNodeTaskPrototype,
   createTask,
   initCommandState,
-} from "luna-base/dist/gl_renderer/node_task";
-import { createNullTask } from "luna-base/dist/gl_renderer/null_task";
+} from "luna-base/dist/gl_renderer/tasks/node_task";
+import { createNullTask } from "luna-base/dist/gl_renderer/tasks/null_task";
+import { assertBasicTransform } from "luna-base/dist/gl_renderer/transforms/basic_transform";
 import {
   assertOrthoCameraTransform,
   createOrthoCameraTransform,
-} from "luna-base/dist/gl_renderer/ortho_camera_transform";
-import mat3 from "luna-base/dist/math/mat3";
+} from "luna-base/dist/gl_renderer/transforms/ortho_camera_transform";
 import mat4 from "luna-base/dist/math/mat4";
 import vec3 from "luna-base/dist/math/vec3";
 import * as lu from "./lib/luaunit/luaunit";

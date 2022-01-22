@@ -7,9 +7,9 @@ import NodeTask, {
   initCommandState,
   NodeTaskType,
   TaskRef,
-} from "luna-base/dist/gl_renderer/node_task";
-import NullTask from "luna-base/dist/gl_renderer/null_task";
-import { isTextTask } from "luna-base/dist/gl_renderer/text_task";
+} from "luna-base/dist/gl_renderer/tasks/node_task";
+import NullTask from "luna-base/dist/gl_renderer/tasks/null_task";
+import { isTextTask } from "luna-base/dist/gl_renderer/tasks/text_task";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

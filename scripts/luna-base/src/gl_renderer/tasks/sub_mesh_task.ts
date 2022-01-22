@@ -1,5 +1,6 @@
-import { logger } from "../logger";
-import { allocTableName, getMetatableName } from "../tables";
+import { logger } from "../../logger";
+import { allocTableName, getMetatableName } from "../../tables";
+import { createSubMesh, SubMesh } from "../sub_mesh";
 import { isGeometryTask } from "./geometry_task";
 import { isMaterialTask } from "./material_task";
 import {
@@ -11,7 +12,6 @@ import {
   NodeTaskPrototype,
   pickOptionalField,
 } from "./node_task";
-import { createSubMesh, SubMesh } from "./sub_mesh";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_SUB_MESH_TASK");
 

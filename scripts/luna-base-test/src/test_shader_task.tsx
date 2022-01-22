@@ -4,11 +4,11 @@ import {
   createTaskRef,
   initCommandState,
   NodeTaskType,
-} from "luna-base/dist/gl_renderer/node_task";
+} from "luna-base/dist/gl_renderer/tasks/node_task";
 import ShaderProgramTask, {
   ShaderProgramTaskType,
-} from "luna-base/dist/gl_renderer/shader_program_task";
-import ShaderTask from "luna-base/dist/gl_renderer/shader_task";
+} from "luna-base/dist/gl_renderer/tasks/shader_program_task";
+import ShaderTask from "luna-base/dist/gl_renderer/tasks/shader_task";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

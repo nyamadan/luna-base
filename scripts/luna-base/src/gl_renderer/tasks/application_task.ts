@@ -2,8 +2,8 @@ import * as _gl from "gl";
 import * as glfw from "glfw";
 import * as imgui from "imgui";
 import { isEmscripten } from "luna-base-utils";
-import mat4 from "../math/mat4";
-import { allocTableName, getMetatableName } from "../tables";
+import mat4 from "../../math/mat4";
+import { allocTableName, getMetatableName } from "../../tables";
 import { createGLRendererTask } from "./gl_renderer_task";
 import {
   createNodeTaskPrototype,

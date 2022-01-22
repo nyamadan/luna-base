@@ -1,6 +1,6 @@
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { uuid } from "../uuid";
-import { ImageTaskType } from "./image_task";
+import { ImageTaskType } from "./tasks/image_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_TEXTURE");
 

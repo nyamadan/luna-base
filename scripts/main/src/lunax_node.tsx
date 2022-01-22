@@ -1,31 +1,30 @@
 import "luna-base";
 import { createF32Vec4 } from "luna-base/dist/buffers/f32array";
-import { isApplicationTask } from "luna-base/dist/gl_renderer/application_task";
-import { assertBasicTransform } from "luna-base/dist/gl_renderer/basic_transform";
-import GeometryTask from "luna-base/dist/gl_renderer/geometry_task";
-import ImageTask from "luna-base/dist/gl_renderer/image_task";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import LunaX from "luna-base/dist/gl_renderer/lunax";
-import MaterialTask from "luna-base/dist/gl_renderer/material_task";
+import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
+import { isApplicationTask } from "luna-base/dist/gl_renderer/tasks/application_task";
+import GeometryTask from "luna-base/dist/gl_renderer/tasks/geometry_task";
+import ImageTask from "luna-base/dist/gl_renderer/tasks/image_task";
+import MaterialTask from "luna-base/dist/gl_renderer/tasks/material_task";
 import NodeTask, {
   createNodeTaskPrototype,
   createTask,
   NodeTaskPrototype,
-} from "luna-base/dist/gl_renderer/node_task";
-import {
-  assertOrthoCameraTransform,
-  createOrthoCameraTransform,
-} from "luna-base/dist/gl_renderer/ortho_camera_transform";
-import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
-import ShaderProgramTask from "luna-base/dist/gl_renderer/shader_program_task";
-import ShaderTask from "luna-base/dist/gl_renderer/shader_task";
+} from "luna-base/dist/gl_renderer/tasks/node_task";
+import ShaderProgramTask from "luna-base/dist/gl_renderer/tasks/shader_program_task";
+import ShaderTask from "luna-base/dist/gl_renderer/tasks/shader_task";
 import SubMeshTask, {
   isSubMeshTask,
   SubMeshTaskType,
-} from "luna-base/dist/gl_renderer/sub_mesh_task";
-import TextureTask from "luna-base/dist/gl_renderer/texture_task";
-import Vec4Task from "luna-base/dist/gl_renderer/vec4_task";
-import vec3 from "luna-base/dist/math/vec3";
+} from "luna-base/dist/gl_renderer/tasks/sub_mesh_task";
+import TextureTask from "luna-base/dist/gl_renderer/tasks/texture_task";
+import Vec4Task from "luna-base/dist/gl_renderer/tasks/vec4_task";
+import { assertBasicTransform } from "luna-base/dist/gl_renderer/transforms/basic_transform";
+import {
+  assertOrthoCameraTransform,
+  createOrthoCameraTransform,
+} from "luna-base/dist/gl_renderer/transforms/ortho_camera_transform";
 
 export default function createLunaXNode(this: void) {
   const runner: NodeTaskPrototype = createNodeTaskPrototype({

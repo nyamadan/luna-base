@@ -1,5 +1,5 @@
 import * as imgui from "imgui";
-import { NodeTaskType } from "./node_task";
+import { NodeTaskType } from "./tasks/node_task";
 
 function _imguiRenderNodes(this: void, task: NodeTaskType) {
   if (!task.enabled) {

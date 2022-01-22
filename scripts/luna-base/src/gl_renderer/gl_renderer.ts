@@ -9,9 +9,9 @@ import { logger } from "../logger";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { safeUnreachable } from "../unreachable";
-import { CommandState, NodeTaskType } from "./node_task";
 import { ShaderProgramId } from "./shader_program";
-import { isSubMeshTask, SubMeshTaskType } from "./sub_mesh_task";
+import { CommandState, NodeTaskType } from "./tasks/node_task";
+import { isSubMeshTask, SubMeshTaskType } from "./tasks/sub_mesh_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_RENDERER");
 

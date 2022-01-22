@@ -1,13 +1,13 @@
 import * as imgui from "imgui";
 import "luna-base";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
-import { createApplicationTask } from "luna-base/dist/gl_renderer/application_task";
+import { createApplicationTask } from "luna-base/dist/gl_renderer/tasks/application_task";
 import {
   createNodeTaskPrototype,
   createTask,
   initCommandState,
   NodeTaskType,
-} from "luna-base/dist/gl_renderer/node_task";
+} from "luna-base/dist/gl_renderer/tasks/node_task";
 import createImguiNode from "./imgui_node";
 import createLunaXNode from "./lunax_node";
 import createRotateImageNode from "./rotate_image_node";

@@ -1,6 +1,6 @@
 import { safeUnreachable } from "../../unreachable";
-import { isNodeTask, NodeTaskType } from "../node_task";
-import { createTextTask } from "../text_task";
+import { isNodeTask, NodeTaskType } from "../tasks/node_task";
+import { createTextTask } from "../tasks/text_task";
 
 type TaskOrString = NodeTaskType | string;
 type Component = (this: void, props: any) => NodeTaskType;

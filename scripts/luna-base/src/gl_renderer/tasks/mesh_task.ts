@@ -1,4 +1,4 @@
-import { allocTableName, getMetatableName } from "../tables";
+import { allocTableName, getMetatableName } from "../../tables";
 import {
   createNodeTaskPrototype,
   createTask,

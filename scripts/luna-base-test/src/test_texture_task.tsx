@@ -1,13 +1,13 @@
-import ImageTask, { ImageTaskType } from "luna-base/dist/gl_renderer/image_task";
+import ImageTask, { ImageTaskType } from "luna-base/dist/gl_renderer/tasks/image_task";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import LunaX from "luna-base/dist/gl_renderer/lunax";
 import {
   createTaskRef,
   initCommandState,
   NodeTaskType
-} from "luna-base/dist/gl_renderer/node_task";
-import NullTask from "luna-base/dist/gl_renderer/null_task";
-import TextureTask, { TextureTaskType } from "luna-base/dist/gl_renderer/texture_task";
+} from "luna-base/dist/gl_renderer/tasks/node_task";
+import NullTask from "luna-base/dist/gl_renderer/tasks/null_task";
+import TextureTask, { TextureTaskType } from "luna-base/dist/gl_renderer/tasks/texture_task";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 

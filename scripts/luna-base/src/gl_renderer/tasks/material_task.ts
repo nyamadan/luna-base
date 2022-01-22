@@ -1,6 +1,6 @@
-import { logger } from "../logger";
-import { allocTableName, getMetatableName } from "../tables";
-import { createMaterial, Material } from "./material";
+import { logger } from "../../logger";
+import { allocTableName, getMetatableName } from "../../tables";
+import { createMaterial, Material } from "../material";
 import {
   createNodeTaskPrototype,
   createTask,

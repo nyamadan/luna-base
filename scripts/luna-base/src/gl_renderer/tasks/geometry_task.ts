@@ -1,5 +1,5 @@
-import { allocTableName, getMetatableName } from "../tables";
-import { Geometry } from "./geometry";
+import { allocTableName, getMetatableName } from "../../tables";
+import { Geometry } from "../geometry";
 import {
   createNodeTaskPrototype,
   createTask,

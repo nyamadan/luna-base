@@ -1,12 +1,12 @@
-import { createF32Mat4, F32Mat4 } from "../buffers/f32array";
-import { logger } from "../logger";
-import mat4, { Mat4 } from "../math/mat4";
-import { createTable, TableName } from "../tables";
-import { uuid } from "../uuid";
-import { createBasicTransform } from "./basic_transform";
-import { Geometry } from "./geometry";
-import { Image } from "./image";
-import { TransformType } from "./transform";
+import { createF32Mat4, F32Mat4 } from "../../buffers/f32array";
+import { logger } from "../../logger";
+import mat4, { Mat4 } from "../../math/mat4";
+import { createTable, TableName } from "../../tables";
+import { uuid } from "../../uuid";
+import { Geometry } from "../geometry";
+import { Image } from "../image";
+import { createBasicTransform } from "../transforms/basic_transform";
+import { TransformType } from "../transforms/transform";
 
 interface CommandInterface {
   name: string;
