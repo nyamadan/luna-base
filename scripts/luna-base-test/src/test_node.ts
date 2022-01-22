@@ -140,6 +140,7 @@ test("Test_Node", {
     const child = createNullTask();
     const trChild = child.transform;
     assertBasicTransform(trChild);
+    vec3.set(trChild.position, 1, 1, 0);
 
     root.addChild(parent);
     parent.addChild(child);
@@ -149,6 +150,6 @@ test("Test_Node", {
     lu.assertNotNil(world);
     const v = vec3.set(vec3.create(), 1, 2, 0);
     vec3.transformMat4(v, v, world);
-    lu.assertEquals([v[0], v[1]], [2, 4]);
+    lu.assertEquals([v[0], v[1]], [4, 6]);
   },
 });

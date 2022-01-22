@@ -64,7 +64,15 @@ export default function createLunaXNode(this: void) {
     <NodeTask
       task={createTask(
         null,
-        { name: "Root", transform: createOrthoCameraTransform() },
+        {
+          name: "Root",
+          transform: createOrthoCameraTransform({
+            left: -1.0,
+            right: 1.0,
+            top: 1.0,
+            bottom: -1.0,
+          }),
+        },
         runner
       )}
     >
