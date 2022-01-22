@@ -2,12 +2,12 @@
   "devDependencies": {
     "@types/emscripten": "^1.39.6",
     "@xmldom/xmldom": "^0.8.0",
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "html-webpack-plugin": "^5.5.0",
     "rimraf": "^3.0.2",
     "ts-loader": "^9.2.6",
-    "typescript": "^4.5.4",
-    "webpack": "^5.66.0",
+    "typescript": "^4.5.5",
+    "webpack": "^5.67.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.7.3",
     "xpath": "^0.0.32"
