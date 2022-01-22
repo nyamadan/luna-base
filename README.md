@@ -21,9 +21,11 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] components多分いらない
  * [x] testのワークスペースを分離
  * [x] OrthoCameraを作成
- * [ ] PerspectiveCameraを作成
+ * [x] PerspectiveCameraを作成
  * [ ] Render IMGUIのタスクを作成
+ * [ ] ルートにアクセスできる何かを考える
  * [ ] mainのワークスペースをExampleに
+ * [ ] 画像にもっと簡単にアクセスできるようにする
  * [ ] SDLにさしかえ
  * [ ] キーボード入力を実装する
  * [ ] CIでテスト
