@@ -52,7 +52,9 @@ export function assertNotFunction(this: void, actual: unknown): void;
 export function assertAlmostEquals(
   this: void,
   actual: unknown,
-  expected: unknown
+  expected: unknown,
+  margin: number,
+  extra_msg_or_nil?: number
 ): void;
 export function assertNotIsPlusZero(this: void, actual: number): void;
 export function assertNotIsCoroutine(this: void, actual: unknown): void;

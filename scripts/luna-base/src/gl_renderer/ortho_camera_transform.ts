@@ -1,5 +1,5 @@
 import mat4, { Mat4 } from "../math/mat4";
-import { allocTableName, createTable } from "../tables";
+import { allocTableName, createTable, getMetatableName } from "../tables";
 import { TransformFields, TransformPrototype } from "./transform";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_ORTHO_CAMERA_TRANSFORM");
@@ -58,4 +58,22 @@ export function createOrthoCameraTransform(
     far: params.far ?? 1000.0,
   };
   return createTable(TABLE_NAME, fields, prototype);
+}
+
+export function isOrthoCameraTransform(
+  this: void,
+  x: unknown
+): x is OrthoCameraTransformType {
+  return getMetatableName(x) === TABLE_NAME;
+}
+
+export function assertOrthoCameraTransform(
+  this: void,
+  x: unknown,
+  message?: string
+): asserts x is OrthoCameraTransformType {
+  assert(
+    isOrthoCameraTransform(x),
+    message ?? "value must be OrthoCameraTransformType"
+  );
 }

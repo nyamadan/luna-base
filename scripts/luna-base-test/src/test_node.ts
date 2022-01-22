@@ -6,22 +6,27 @@ import {
   initCommandState,
 } from "luna-base/dist/gl_renderer/node_task";
 import { createNullTask } from "luna-base/dist/gl_renderer/null_task";
+import {
+  assertOrthoCameraTransform,
+  createOrthoCameraTransform,
+} from "luna-base/dist/gl_renderer/ortho_camera_transform";
+import mat3 from "luna-base/dist/math/mat3";
 import mat4 from "luna-base/dist/math/mat4";
 import vec3 from "luna-base/dist/math/vec3";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
-let origPrint: (this: void, ...args: any[]) => void;
+let origPrint: typeof print;
 
 test("Test_Node", {
-  setUp: function () {
+  setUp() {
     origPrint = _G["print"];
     _G["print"] = () => {};
   },
-  tearDown: function () {
+  tearDown() {
     _G["print"] = origPrint;
   },
-  test_task_enabled: function () {
+  test_task_enabled() {
     let called = 0;
     const root = createNullTask({ enabled: false });
     const task = createTask(
@@ -38,11 +43,11 @@ test("Test_Node", {
     root.update(initCommandState(null));
     lu.assertIs(called, 0);
   },
-  test_name: function () {
+  test_name() {
     const root = createNullTask({ name: "MyName" });
     lu.assertIs(root.name, "MyName");
   },
-  test_task_name: function () {
+  test_task_name() {
     const task = createTask(
       null,
       { name: "MyTaskName" },
@@ -54,16 +59,15 @@ test("Test_Node", {
     );
     lu.assertIs(task.name, "MyTaskName");
   },
-  test_error: function () {
+  test_error() {
     const root = createNullTask();
     root.addChild(
       createTask(
         null,
         {},
         createNodeTaskPrototype({
-          run: function (command, state) {
+          run() {
             error("error");
-            return state;
           },
         })
       )
@@ -71,7 +75,7 @@ test("Test_Node", {
     root.update(initCommandState(null));
     lu.success();
   },
-  test_transform: function () {
+  test_transform() {
     const root = createNullTask();
 
     const parent = createNullTask();
@@ -119,22 +123,32 @@ test("Test_Node", {
       [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 1, 1, 1, 1]
     );
 
-    // lu.assertEquals(
-    //   // prettier-ignore
-    //   trChild.world,
-    //   [
-    //     4.0, 0.0, 0.0, 0.0,
-    //     0.0, 4.0, 0.0, 0.0,
-    //     0.0, 0.0, 4.0, 0.0,
-    //     3.0, 3.0, 3.0, 1.0
-    //   ],
-    // );
-
     const world = state.worlds[child.guid];
     lu.assertNotNil(world);
     const x = vec3.set(vec3.create(), 1, 2, 3);
     vec3.transformMat4(x, x, world);
     lu.assertEquals(x, [7, 11, 15]);
     lu.assertEquals(command?.name, "update-world");
+  },
+  test_ortho_camera_transform1() {
+    const root = createNullTask();
+
+    const parent = createNullTask({ transform: createOrthoCameraTransform() });
+    const trParent = parent.transform;
+    assertOrthoCameraTransform(trParent);
+
+    const child = createNullTask();
+    const trChild = child.transform;
+    assertBasicTransform(trChild);
+
+    root.addChild(parent);
+    parent.addChild(child);
+
+    const state = root.updateWorld(initCommandState(null), mat4.create());
+    const world = state.worlds[child.guid];
+    lu.assertNotNil(world);
+    const v = vec3.set(vec3.create(), 1, 2, 0);
+    vec3.transformMat4(v, v, world);
+    lu.assertEquals([v[0], v[1]], [2, 4]);
   },
 });
