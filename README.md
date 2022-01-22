@@ -20,9 +20,10 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] NodeのUserdata Generics削除
  * [x] components多分いらない
  * [x] testのワークスペースを分離
- * [ ] CameraTaskを作成
- * [ ] transform
+ * [x] OrthoCameraを作成
+ * [ ] PerspectiveCameraを作成
  * [ ] Render IMGUIのタスクを作成
+ * [ ] mainのワークスペースをExampleに
  * [ ] SDLにさしかえ
  * [ ] キーボード入力を実装する
  * [ ] CIでテスト
@@ -33,7 +34,6 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [ ] MessagePackをいったん消す
  * [ ] glslangを使う
  * [ ] generate_gl_bindingsを整理する
- * [ ] mainのワークスペースをExampleに
  * [ ] 起動時引数で任意のExampleを起動できるようにする
  * [ ] add/removeのイベントを足す
 

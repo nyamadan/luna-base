@@ -12,7 +12,10 @@ import NodeTask, {
   createTask,
   NodeTaskPrototype,
 } from "luna-base/dist/gl_renderer/node_task";
-import { createOrthoCameraTransform } from "luna-base/dist/gl_renderer/ortho_camera_transform";
+import {
+  assertOrthoCameraTransform,
+  createOrthoCameraTransform,
+} from "luna-base/dist/gl_renderer/ortho_camera_transform";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import ShaderProgramTask from "luna-base/dist/gl_renderer/shader_program_task";
 import ShaderTask from "luna-base/dist/gl_renderer/shader_task";
@@ -35,6 +38,10 @@ export default function createLunaXNode(this: void) {
             return state;
           }
 
+          assertOrthoCameraTransform(this.transform);
+
+          this.transform.lookAt([0, 0, 1], [0, 0, 0], [0, 1, 0]);
+
           const subMeshTask = this.findTask(
             (x): x is SubMeshTaskType =>
               isSubMeshTask(x) && x.name === "x-sub-mesh"
@@ -46,7 +53,6 @@ export default function createLunaXNode(this: void) {
 
           const tr = subMeshTask.transform;
           assertBasicTransform(tr);
-          vec3.set(tr.position, 0, 0, -1);
           return state;
         }
         case "render": {
