@@ -284,8 +284,8 @@ if(NOT EMSCRIPTEN)
   endif()
   ExternalProject_Add(
     GLFW3
-    URL https://github.com/glfw/glfw/releases/download/3.3.4/glfw-3.3.4.zip
-    URL_MD5 7cd3b5db36dc8c644871de51f478882f
+    URL https://github.com/glfw/glfw/releases/download/3.3.6/glfw-3.3.6.zip
+    URL_MD5 ac9c16031b85c4f7f6d33b96082fb5ae
     PREFIX ${EXTERNALS_ROOT}
     BUILD_BYPRODUCTS ${GLFW3_LIB}
     CMAKE_ARGS
