@@ -1,6 +1,7 @@
 import "luna-base";
 import { createF32Vec4 } from "luna-base/dist/buffers/f32array";
 import { isApplicationTask } from "luna-base/dist/gl_renderer/application_task";
+import { assertBasicTransform } from "luna-base/dist/gl_renderer/basic_transform";
 import GeometryTask from "luna-base/dist/gl_renderer/geometry_task";
 import ImageTask from "luna-base/dist/gl_renderer/image_task";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
@@ -11,7 +12,7 @@ import NodeTask, {
   createTask,
   NodeTaskPrototype,
 } from "luna-base/dist/gl_renderer/node_task";
-import OrthoCameraTask from "luna-base/dist/gl_renderer/ortho_camera_task";
+import { createOrthoCameraTransform } from "luna-base/dist/gl_renderer/ortho_camera_transform";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import ShaderProgramTask from "luna-base/dist/gl_renderer/shader_program_task";
 import ShaderTask from "luna-base/dist/gl_renderer/shader_task";
@@ -44,6 +45,7 @@ export default function createLunaXNode(this: void) {
           }
 
           const tr = subMeshTask.transform;
+          assertBasicTransform(tr);
           vec3.set(tr.position, 0, 0, -1);
           return state;
         }
@@ -59,14 +61,19 @@ export default function createLunaXNode(this: void) {
   });
 
   return (
-    <NodeTask task={createTask(null, { name: "Root" }, runner)}>
-      <OrthoCameraTask>
-        <SubMeshTask name="x-sub-mesh">
-          <GeometryTask generator={createPlaneGeometryXY} />
-          <MaterialTask>
-            <ShaderProgramTask>
-              <ShaderTask type="VERTEX_SHADER">
-                {`#version 300 es
+    <NodeTask
+      task={createTask(
+        null,
+        { name: "Root", transform: createOrthoCameraTransform() },
+        runner
+      )}
+    >
+      <SubMeshTask name="x-sub-mesh">
+        <GeometryTask generator={createPlaneGeometryXY} />
+        <MaterialTask>
+          <ShaderProgramTask>
+            <ShaderTask type="VERTEX_SHADER">
+              {`#version 300 es
               in vec3 aPosition;
               in vec2 aUv;
               in vec4 aColor;
@@ -83,9 +90,9 @@ export default function createLunaXNode(this: void) {
                 gl_Position = uWorld * vec4(aPosition, 1.0);
               }
             `}
-              </ShaderTask>
-              <ShaderTask type="FRAGMENT_SHADER">
-                {`#version 300 es
+            </ShaderTask>
+            <ShaderTask type="FRAGMENT_SHADER">
+              {`#version 300 es
               precision highp float;
 
               uniform sampler2D uTexColor;
@@ -99,16 +106,15 @@ export default function createLunaXNode(this: void) {
                 outColor = texture(uTexColor, vUv) * vColor;
               }
           `}
-              </ShaderTask>
-            </ShaderProgramTask>
-            <TextureTask name="uTexColor">
-              <ImageTask path="./scripts/luna-base-test/assets/waterfall-512x512.png" />
-            </TextureTask>
+            </ShaderTask>
+          </ShaderProgramTask>
+          <TextureTask name="uTexColor">
+            <ImageTask path="./scripts/luna-base-test/assets/waterfall-512x512.png" />
+          </TextureTask>
 
-            <Vec4Task name="uColor" value={createF32Vec4([1, 1, 1, 1])} />
-          </MaterialTask>
-        </SubMeshTask>
-      </OrthoCameraTask>
+          <Vec4Task name="uColor" value={createF32Vec4([1, 1, 1, 1])} />
+        </MaterialTask>
+      </SubMeshTask>
     </NodeTask>
   );
 }

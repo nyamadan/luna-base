@@ -1,3 +1,4 @@
+import { assertBasicTransform } from "luna-base/dist/gl_renderer/basic_transform";
 import {
   Command,
   createNodeTaskPrototype,
@@ -75,7 +76,7 @@ test("Test_Node", {
 
     const parent = createNullTask();
     const trParent = parent.transform;
-    lu.assertNotNil(trParent);
+    assertBasicTransform(trParent);
     vec3.set(trParent.position, 1, 1, 1);
     vec3.set(trParent.scale, 2, 2, 2);
 
@@ -103,7 +104,7 @@ test("Test_Node", {
     );
 
     const trChild = child.transform;
-    lu.assertNotNil(trChild);
+    assertBasicTransform(trChild);
     vec3.set(trChild.position, 1, 1, 1);
     vec3.set(trChild.scale, 2, 2, 2);
 
@@ -114,7 +115,7 @@ test("Test_Node", {
 
     lu.assertEquals(
       // prettier-ignore
-      trChild.local,
+      trChild.matrix,
       [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 1, 1, 1, 1]
     );
 

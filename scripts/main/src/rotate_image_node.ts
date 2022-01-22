@@ -1,5 +1,6 @@
 import "luna-base";
 import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
+import { assertBasicTransform } from "luna-base/dist/gl_renderer/basic_transform";
 import { createGeometryTask } from "luna-base/dist/gl_renderer/geometry_task";
 import { createImageTask } from "luna-base/dist/gl_renderer/image_task";
 import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
@@ -69,7 +70,7 @@ export default function createRotateImageNode(this: void) {
     while (running) {
       const rotation = frame * 0.02;
       const task1Transform = task1.transform;
-      assertIsNotNull(task1Transform);
+      assertBasicTransform(task1Transform);
       quat.rotateZ(task1Transform.rotation, quat.create(), rotation);
       const scale = 0.25 * math.sin(rotation) + 0.75;
       vec3.set(task1Transform.scale, scale, scale, scale);

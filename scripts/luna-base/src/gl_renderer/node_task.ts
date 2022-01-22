@@ -3,9 +3,10 @@ import { logger } from "../logger";
 import mat4, { Mat4 } from "../math/mat4";
 import { createTable, TableName } from "../tables";
 import { uuid } from "../uuid";
+import { createBasicTransform } from "./basic_transform";
 import { Geometry } from "./geometry";
 import { Image } from "./image";
-import { createTransform, Transform } from "./transform";
+import { TransformType } from "./transform";
 
 interface CommandInterface {
   name: string;
@@ -105,9 +106,13 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
     return state;
   },
   updateWorld(state, parent) {
-    this.traverse((node) => {
+    const updateWorldRecursive = (
+      state: CommandState,
+      parent: Mat4,
+      node: NodeTaskType
+    ): CommandState => {
       if (!node.enabled) {
-        return false;
+        return state;
       }
 
       const [ok, err] = xpcall(() => {
@@ -115,23 +120,26 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
           { name: "update-world", source: this, node, parent },
           state
         );
-
-        const worlds = { ...state.worlds };
-        const world = (worlds[node.guid] ??= createF32Mat4());
-
-        node.transform.update();
-        mat4.mul(world, parent, node.transform.local);
-
-        parent = world;
-        state = { ...state, worlds };
       }, debug.traceback);
 
       if (!ok) {
         logger.error("%s", err);
       }
-    });
 
-    return state;
+      const worlds = { ...state.worlds };
+      const world = (worlds[node.guid] ??= createF32Mat4());
+      node.transform.update();
+      mat4.mul(world, parent, node.transform.matrix);
+      state = { ...state, worlds };
+
+      for (const child of node.children) {
+        state = updateWorldRecursive(state, world, child);
+      }
+
+      return state;
+    };
+
+    return updateWorldRecursive(state, parent, this);
   },
   render(state) {
     this.traverse(
@@ -311,7 +319,7 @@ export interface NodeTaskField<
   name: string;
   enabled: boolean;
   tags: string[];
-  transform: Transform;
+  transform: TransformType;
   children: NodeTaskType[];
   tasks: NodeTaskType[];
   ref: TaskRef<T> | null;
@@ -380,7 +388,7 @@ export interface NodeTaskPrototype<T extends NodeTaskType = NodeTaskType>
   flat(this: NodeTaskType): NodeTaskType[];
 }
 
-export type NodeTaskType = NodeTaskField & NodeTaskPrototype;
+export interface NodeTaskType extends NodeTaskField, NodeTaskPrototype {}
 
 type NodeTaskTypeOptionalField =
   | "children"
@@ -435,7 +443,7 @@ export function createTask<
   > = {
     guid: uuid.v4() as NodeTaskId,
     name: tableName ?? "TASK",
-    transform: fields?.transform ?? createTransform(),
+    transform: fields?.transform ?? createBasicTransform(),
     enabled: true,
     isTask: true,
     tags: [],

@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tstl",
     "watch": "tstl --watch",
+    "ts:check": "tsc --noEmit",
     "test": "../../build/main ./dist/index.lua"
   }
 }

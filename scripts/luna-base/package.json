@@ -25,6 +25,7 @@
     "watch": "tstl -p ./tsconfig.json --watch",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
+    "ts:check": "tsc --noEmit",
     "format": "prettier --write ./src"
   }
 }
