@@ -33,6 +33,10 @@ if(WIN32)
   endif()
 endif()
 
+if(USE_GLFW3)
+  add_definitions(-DUSE_GLFW3)
+endif()
+
 set(LIB_SOURCES
   src/lua_utils.cpp
   src/lua_msgpack.cpp
