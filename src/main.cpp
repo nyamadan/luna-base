@@ -1,5 +1,9 @@
 #include "lua_gl_bindings.hpp"
+#ifdef USE_GLFW3
 #include "lua_glfw.hpp"
+#else
+#include "lua_sdl.hpp"
+#endif
 #include "lua_imgui.hpp"
 #include "lua_msgpack.hpp"
 #include "lua_native_buffer.hpp"
@@ -24,7 +28,11 @@ int main(int argc, char **argv) {
   lua_open_buffer_libs(L);
   lua_open_util_libs(L);
   lua_open_msgpack_libs(L);
+#ifdef USE_GLFW3
   lua_open_glfw_libs(L);
+#else
+  lua_open_sdl_libs(L);
+#endif
   lua_open_imgui_libs(L);
   lua_open_gl_libs(L);
 
@@ -38,5 +46,9 @@ int main(int argc, char **argv) {
   status = lua_docall(L, 0, 0);
   lua_report(L, status);
 
+#ifdef USE_GLFW3
   start_glfw_main(L);
+#else
+  start_sdl_main(L);
+#endif
 }
