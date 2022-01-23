@@ -1,4 +1,5 @@
 #include "lua_sdl.hpp"
+#include "lua_sdl_impl.hpp"
 #include "gl_common.hpp"
 #include "lua_utils.hpp"
 

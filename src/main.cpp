@@ -2,6 +2,7 @@
 #ifdef USE_GLFW3
 #include "lua_glfw.hpp"
 #else
+#include <SDL.h>
 #include "lua_sdl.hpp"
 #endif
 #include "lua_imgui.hpp"
@@ -11,8 +12,6 @@
 #include "lua_utils.hpp"
 
 #include <cstdint>
-#include <cstdio>
-#include <msgpack.h>
 
 int main(int argc, char **argv) {
   if (argc <= 1) {
