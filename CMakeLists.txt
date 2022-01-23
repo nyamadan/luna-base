@@ -43,13 +43,9 @@ set(LIB_SOURCES
   src/lua_imgui.cpp
   src/lua_png.cpp
   src/lua_native_buffer.cpp
+  src/lua_glfw.cpp
+  src/lua_sdl.cpp
 )
-
-if(USE_GLFW3)
-  list(APPEND LIB_SOURCES src/lua_glfw.cpp)
-else()
-  list(APPEND LIB_SOURCES src/lua_sdl.cpp)
-endif()
 
 add_library(luna-base STATIC ${LIB_SOURCES})
 set_property(TARGET luna-base PROPERTY CXX_STANDARD 17)

@@ -1,11 +1,10 @@
 #include "lua_glfw.hpp"
-#include "gl_common.hpp"
 #include "lua_utils.hpp"
 
+#ifdef USE_GLFW3
+#include "gl_common.hpp"
 #include "lua_glfw_impl.hpp"
-
 #include <cstdint>
-
 namespace {
 GLFWwindow *g_main_window = nullptr;
 lua_Integer g_glfw_update_ref = LUA_REFNIL;
@@ -183,3 +182,15 @@ void start_glfw_main(lua_State *L) {
   emscripten_set_main_loop_arg(update, L, 0, true);
 #endif
 }
+#else
+namespace {
+int L_require(lua_State *L) {
+  lua_newtable(L);
+
+  return 1;
+}
+} // namespace
+void lua_open_glfw_libs(lua_State *L) {
+  luaL_requiref(L, "glfw", L_require, false);
+}
+#endif
