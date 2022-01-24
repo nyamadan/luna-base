@@ -280,10 +280,21 @@ add_custom_command(
   COMMAND node ${CMAKE_SOURCE_DIR}/generate_gl_bindings.js
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   DEPENDS ${CMAKE_SOURCE_DIR}/generate_gl_bindings.js)
-add_library(lua_gl_bindings ${CMAKE_SOURCE_DIR}/src/lua_gl_bindings.cpp)
-add_dependencies(lua_gl_bindings lua54)
+
+set(GL3W_SRC ${EXTERNALS_ROOT}/share/gl3w/gl3w.c)
+if(NOT EMSCRIPTEN)
+  add_library(lua_gl_bindings 
+    ${GL3W_SRC}
+    ${CMAKE_SOURCE_DIR}/src/lua_gl_bindings.cpp
+  )
+else()
+  add_library(lua_gl_bindings 
+    ${CMAKE_SOURCE_DIR}/src/lua_gl_bindings.cpp
+  )
+endif()
+
+add_dependencies(lua_gl_bindings lua54 GL3W)
 target_include_directories(lua_gl_bindings PRIVATE ${EXTERNALS_INCLUDE_DIR})
-add_dependencies(luna-base lua_gl_bindings)
 
 list(APPEND LUNA_BASE_LIBS lua_gl_bindings)
 list(APPEND LUNA_BASE_LIBS ${LUA_LIB})
@@ -321,7 +332,7 @@ if(NOT EMSCRIPTEN)
       endif()
     else()
       set(SDL2_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libSDL2.a)
-      set(SDL2MAIN_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libSDL2main)
+      set(SDL2MAIN_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libSDL2main.a)
     endif()
     ExternalProject_Add(
       SDL2
@@ -340,10 +351,11 @@ if(NOT EMSCRIPTEN)
     list(APPEND LUNA_BASE_LIBS ${SDL2_LIB})
     if(MSVC)
       list(APPEND LUNA_BASE_LIBS winmm.lib imm32.lib setupapi.lib version.lib)
+    elseif(MINGW)
+      list(APPEND LUNA_BASE_LIBS -lwinmm -limm32 -lsetupapi -lversion)
     endif()
   endif()
 
-  set(GL3W_SRC ${EXTERNALS_ROOT}/share/gl3w/gl3w.c)
   ExternalProject_Add(
     GL3W
     URL https://github.com/skaslev/gl3w/archive/refs/heads/master.zip

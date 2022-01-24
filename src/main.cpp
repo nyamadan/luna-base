@@ -1,4 +1,5 @@
 #ifndef USE_GLFW3
+#define SDL_MAIN_HANDLED
 #include <SDL.h>
 #endif
 
@@ -43,8 +44,8 @@ int main(int argc, char **argv) {
   lua_report(L, status);
 
 #ifdef USE_GLFW3
-  start_glfw_main(L);
+  return start_glfw_main(L);
 #else
-  start_sdl_main(L);
+  return start_sdl_main(L);
 #endif
 }

@@ -165,9 +165,9 @@ void lua_open_glfw_libs(lua_State *L) {
   luaL_requiref(L, "glfw", L_require, false);
 }
 
-void start_glfw_main(lua_State *L) {
+int start_glfw_main(lua_State *L) {
   if (g_glfw_update_ref == LUA_REFNIL) {
-    return;
+    return -1;
   }
 
 #ifndef __EMSCRIPTEN__
@@ -181,6 +181,8 @@ void start_glfw_main(lua_State *L) {
 #else
   emscripten_set_main_loop_arg(update, L, 0, true);
 #endif
+
+  return 0;
 }
 #else
 namespace {

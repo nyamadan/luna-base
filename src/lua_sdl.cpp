@@ -168,10 +168,12 @@ void lua_open_sdl_libs(lua_State *L) {
   luaL_requiref(L, "SDL", L_require, false);
 }
 
-void start_sdl_main(lua_State *L) {
+int start_sdl_main(lua_State *L) {
   if (g_sdl_update_ref == LUA_REFNIL) {
-    return;
+    return -1;
   }
+
+  SDL_SetMainReady();
 
 #ifndef __EMSCRIPTEN__
   while (g_running) {
@@ -184,4 +186,5 @@ void start_sdl_main(lua_State *L) {
 #else
   emscripten_set_main_loop_arg(update, L, 0, true);
 #endif
+  return 0;
 }
