@@ -237,6 +237,14 @@ int L_require(lua_State *L) {
   lua_pushcfunction(L, L_implGlfw_Shutdown);
   lua_setfield(L, -2, "implGlfw_Shutdown");
 #else
+  lua_pushcfunction(L, L_implSDL2_InitForOpenGL);
+  lua_setfield(L, -2, "implSDL2_InitForOpenGL");
+
+  lua_pushcfunction(L, L_implSDL2_NewFrame);
+  lua_setfield(L, -2, "implSDL2_NewFrame");
+
+  lua_pushcfunction(L, L_implSDL2_Shutdown);
+  lua_setfield(L, -2, "implSDL2_Shutdown");
 #endif
 
   lua_pushcfunction(L, L_implOpenGL3_Init);

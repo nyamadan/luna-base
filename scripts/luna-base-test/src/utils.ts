@@ -1,5 +1,6 @@
 import * as _gl from "gl";
 import * as glfw from "glfw";
+import * as sdl from "sdl";
 import { isEmscripten } from "luna-base-utils";
 import { OS_NAME } from "luna-base/dist/platform";
 import { assertIsNull } from "luna-base/dist/type_utils";
@@ -9,13 +10,16 @@ export const test = function <
     setUp: () => void;
     tearDown: () => void;
   }
->(name: string, t: T) {
+>(this: void, name: string, t: T) {
   const global = _G as Record<string, any>;
   assertIsNull(global[name], `already registered: ${name}`);
   global[name] = t;
 };
 
-export function initGlfw() {
+export function initGlfw(this: void): boolean {
+  if(glfw.init == null) {
+    return false;
+  }
   const width = 1;
   const height = 1;
 
@@ -42,4 +46,46 @@ export function initGlfw() {
     update: function () {},
   });
   glfw.setShouldWindowClose(glfw.TRUE);
+
+  return true;
+}
+
+export function initSDL2(this: void): boolean {
+  const width = 1;
+  const height = 1;
+  if(sdl.init == null) {
+    return false;
+  }
+
+  sdl.init(sdl.SDL_INIT_VIDEO | sdl.SDL_INIT_EVENTS);
+
+  if (isEmscripten()) {
+    sdl.GL_Set_Attribute(
+      sdl.SDL_GL_CONTEXT_PROFILE_MASK,
+      sdl.SDL_GL_CONTEXT_PROFILE_ES
+    );
+    sdl.GL_Set_Attribute(sdl.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    sdl.GL_Set_Attribute(sdl.SDL_GL_CONTEXT_MINOR_VERSION, 0);
+  } else if (OS_NAME === "MacOS") {
+    sdl.GL_Set_Attribute(sdl.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    sdl.GL_Set_Attribute(sdl.SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    sdl.GL_Set_Attribute(
+      sdl.SDL_GL_CONTEXT_FLAGS,
+      sdl.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
+    );
+    sdl.GL_Set_Attribute(
+      sdl.SDL_GL_CONTEXT_PROFILE_MASK,
+      sdl.SDL_GL_CONTEXT_PROFILE_CORE
+    );
+  }
+  sdl.start({
+    width,
+    height,
+    flags: sdl.SDL_WINDOW_OPENGL,
+    start: function () {},
+    update: function () {},
+  });
+  sdl.setShouldWindowClose(true);
+
+  return true;
 }

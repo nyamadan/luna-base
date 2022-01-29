@@ -1,5 +1,9 @@
 #ifndef USE_GLFW3
+#ifdef __GNUC__
+#ifdef __MINGW32__
 #define SDL_MAIN_HANDLED
+#endif
+#endif
 #include <SDL.h>
 #endif
 

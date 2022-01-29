@@ -19,9 +19,9 @@ import "./test_u16array";
 import "./test_u8array";
 import "./test_uuid";
 import "./test_vec4_task";
-import { initGlfw } from "./utils";
+import { initGlfw, initSDL2 } from "./utils";
 
-initGlfw();
+initGlfw() || initSDL2();
 
 logger.setLevel("ERROR");
 

@@ -1,6 +1,6 @@
 #include "lua_sdl.hpp"
-#include "lua_sdl_impl.hpp"
 #include "gl_common.hpp"
+#include "lua_sdl_impl.hpp"
 #include "lua_utils.hpp"
 
 #include <cstdint>
@@ -15,19 +15,12 @@ bool g_running = false;
 void update(void *pData) {
   auto L = reinterpret_cast<lua_State *>(pData);
 
-  SDL_Event event;
-  g_running = true;
-  while (SDL_PollEvent(&event)) {
-    if (event.type == SDL_WINDOWEVENT &&
-        event.window.event == SDL_WINDOWEVENT_CLOSE) {
-      g_running = false;
-    }
-  }
-
   if (g_sdl_update_ref != LUA_REFNIL) {
     lua_rawgeti(L, LUA_REGISTRYINDEX, g_sdl_update_ref);
     lua_report(L, lua_docall(L, 0, 0));
     lua_settop(L, 0);
+  } else {
+    g_running = false;
   }
 
   SDL_GL_SwapWindow(g_current_window);
@@ -41,7 +34,7 @@ int L_init(lua_State *L) {
 }
 
 int L_pollEvent(lua_State *L) {
-  SDL_Event event;
+  SDL_Event event = {0};
   auto result = SDL_PollEvent(&event);
   lua_pushinteger(L, result);
   lua_newtable(L);
@@ -65,13 +58,58 @@ int L_GL_SetAttribute(lua_State *L) {
 }
 
 int L_setShouldWindowClose(lua_State *L) {
-  const lua_Integer value = luaL_checkinteger(L, 1);
+  const bool value = lua_toboolean(L, 1);
   if (g_current_window == nullptr) {
     luaL_error(L, "window already destroyed?");
     return 0;
   }
 
-  g_running = false;
+  g_running = !value;
+
+  return 0;
+}
+
+int L_start(lua_State *L) {
+  lua_getfield(L, 1, "width");
+  lua_Integer width = luaL_checkinteger(L, -1);
+  lua_getfield(L, 1, "height");
+  lua_Integer height = luaL_checkinteger(L, -1);
+  lua_getfield(L, 1, "flags");
+  lua_Integer flags = luaL_checkinteger(L, -1);
+
+  if ((g_current_window = SDL_CreateWindow(
+           "SDL2", 0, 0, static_cast<int>(width), static_cast<int>(height),
+           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)) == 0) {
+    SDL_Quit();
+    luaL_error(L, "Failed: SDL_CreateWindow");
+    return 0;
+  }
+  g_current_context = SDL_GL_CreateContext(g_current_window);
+
+#ifndef __EMSCRIPTEN__
+  if (gl3wInit()) {
+    SDL_GL_DeleteContext(g_current_context);
+    SDL_DestroyWindow(g_current_window);
+    SDL_Quit();
+    luaL_error(L, "Failed: gl3wInit");
+    return 0;
+  }
+#endif
+
+#ifndef __EMSCRIPTEN__
+  if (gl3wInit() != 0) {
+    luaL_error(L, "Failed: gl3wInit");
+    return 0;
+  }
+#endif
+
+  lua_getfield(L, 1, "update");
+  g_sdl_update_ref = luaL_ref(L, LUA_REGISTRYINDEX);
+  lua_getfield(L, 1, "start");
+  lua_report(L, lua_docall(L, 0, 0));
+  lua_settop(L, 0);
+
+  g_running = true;
 
   return 0;
 }
@@ -82,11 +120,17 @@ int L_require(lua_State *L) {
   lua_pushcfunction(L, L_init);
   lua_setfield(L, -2, "init");
 
+  lua_pushcfunction(L, L_start);
+  lua_setfield(L, -2, "start");
+
+  lua_pushcfunction(L, L_pollEvent);
+  lua_setfield(L, -2, "pollEvent");
+
   lua_pushcfunction(L, L_setShouldWindowClose);
   lua_setfield(L, -2, "setShouldWindowClose");
 
   lua_pushcfunction(L, L_GL_SetAttribute);
-  lua_setfield(L, -2, "gl_SetAttribute");
+  lua_setfield(L, -2, "GL_Set_Attribute");
 
   lua_pushinteger(L, SDL_INIT_VIDEO);
   lua_setfield(L, -2, "SDL_INIT_VIDEO");
@@ -106,8 +150,20 @@ int L_require(lua_State *L) {
   lua_pushinteger(L, SDL_GL_CONTEXT_PROFILE_CORE);
   lua_setfield(L, -2, "SDL_GL_CONTEXT_PROFILE_CORE");
 
+  lua_pushinteger(L, SDL_GL_CONTEXT_FLAGS);
+  lua_setfield(L, -2, "SDL_GL_CONTEXT_FLAGS");
+
+  lua_pushinteger(L, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+  lua_setfield(L, -2, "SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG");
+
+  lua_pushinteger(L, SDL_GL_CONTEXT_PROFILE_ES);
+  lua_setfield(L, -2, "SDL_GL_CONTEXT_PROFILE_ES");
+
   lua_pushinteger(L, SDL_GL_CONTEXT_MAJOR_VERSION);
   lua_setfield(L, -2, "SDL_GL_CONTEXT_MAJOR_VERSION");
+
+  lua_pushinteger(L, SDL_GL_CONTEXT_MINOR_VERSION);
+  lua_setfield(L, -2, "SDL_GL_CONTEXT_MINOR_VERSION");
 
   lua_pushinteger(L, SDL_WINDOW_OPENGL);
   lua_setfield(L, -2, "SDL_WINDOW_OPENGL");
@@ -117,55 +173,13 @@ int L_require(lua_State *L) {
   return 1;
 }
 
-int L_start(lua_State *L) {
-  lua_getfield(L, 1, "width");
-  lua_Integer width = luaL_checkinteger(L, -1);
-  lua_getfield(L, 1, "height");
-  lua_Integer height = luaL_checkinteger(L, -1);
-  lua_getfield(L, 1, "flags");
-  lua_Integer flags = luaL_checkinteger(L, -1);
-
-#ifndef __EMSCRIPTEN__
-  if (gl3wInit()) {
-    luaL_error(L, "Failed: gl3wInit");
-    SDL_GL_DeleteContext(g_current_context);
-    SDL_DestroyWindow(g_current_window);
-    SDL_Quit();
-    return 0;
-  }
-#endif
-
-  if ((g_current_window = SDL_CreateWindow(
-           "SDL2", 0, 0, static_cast<int>(width), static_cast<int>(height),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)) == 0) {
-    SDL_Quit();
-    luaL_error(L, "Failed: SDL_CreateWindow");
-    return 0;
-  }
-  g_current_context = SDL_GL_CreateContext(g_current_window);
-
-#ifndef __EMSCRIPTEN__
-  if (gl3wInit() != 0) {
-    luaL_error(L, "Failed: gl3wInit");
-    return 0;
-  }
-#endif
-
-  lua_getfield(L, 1, "update");
-  g_sdl_update_ref = luaL_ref(L, LUA_REGISTRYINDEX);
-  lua_getfield(L, 1, "start");
-  lua_report(L, lua_docall(L, 0, 0));
-  lua_settop(L, 0);
-
-  return 0;
-}
 } // namespace
 
 SDL_Window *get_current_sdl_window() { return g_current_window; }
 SDL_GLContext get_current_sdl_context() { return g_current_context; }
 
 void lua_open_sdl_libs(lua_State *L) {
-  luaL_requiref(L, "SDL", L_require, false);
+  luaL_requiref(L, "sdl", L_require, false);
 }
 
 int start_sdl_main(lua_State *L) {
