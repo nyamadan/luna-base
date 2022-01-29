@@ -50,6 +50,13 @@ int main(int argc, char **argv) {
 #ifdef USE_GLFW3
   return start_glfw_main(L);
 #else
+
+#ifdef __GNUC__
+#ifdef __MINGW32__
+  SDL_SetMainReady();
+#endif
+#endif
+
   return start_sdl_main(L);
 #endif
 }

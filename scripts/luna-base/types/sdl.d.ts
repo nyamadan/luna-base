@@ -2,16 +2,19 @@
 /** @noResolution */
 declare module "sdl" {
   export function init(flags: number): number;
-  export function pollEvent(): LuaMultiReturn<[
-    number,
-    {
-      type: number;
-      window: {
-        event: number;
-      };
-    }
-  ]>;
+  export function pollEvent(): LuaMultiReturn<
+    [
+      number,
+      {
+        type: number;
+        window: {
+          event: number;
+        };
+      }
+    ]
+  >;
   export function setShouldWindowClose(x: boolean): void;
+  export function setWindowPosition(x: number, y: number): void;
   export function GL_Set_Attribute(attr: number, value: number): number;
   export const SDL_INIT_VIDEO: number;
   export const SDL_INIT_EVENTS: number;
@@ -26,6 +29,7 @@ declare module "sdl" {
   export const SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG: number;
   export const SDL_WINDOW_OPENGL: number;
   export const SDL_WINDOW_SHOWN: number;
+  export const SDL_WINDOWPOS_CENTERED: number;
 
   export function start(args: {
     width: number;

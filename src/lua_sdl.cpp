@@ -57,6 +57,16 @@ int L_GL_SetAttribute(lua_State *L) {
   return 1;
 }
 
+int L_SetWindowPosition(lua_State *L) {
+  if (g_current_window == nullptr) {
+    luaL_error(L, "window created?");
+  }
+  const auto x = static_cast<int>(luaL_checkinteger(L, 1));
+  const auto y = static_cast<int>(luaL_checkinteger(L, 2));
+  SDL_SetWindowPosition(g_current_window, x, y);
+  return 0;
+}
+
 int L_setShouldWindowClose(lua_State *L) {
   const bool value = lua_toboolean(L, 1);
   if (g_current_window == nullptr) {
@@ -84,6 +94,10 @@ int L_start(lua_State *L) {
     luaL_error(L, "Failed: SDL_CreateWindow");
     return 0;
   }
+
+  SDL_SetWindowPosition(g_current_window, SDL_WINDOWPOS_CENTERED,
+                        SDL_WINDOWPOS_CENTERED);
+
   g_current_context = SDL_GL_CreateContext(g_current_window);
 
 #ifndef __EMSCRIPTEN__
@@ -125,6 +139,9 @@ int L_require(lua_State *L) {
 
   lua_pushcfunction(L, L_pollEvent);
   lua_setfield(L, -2, "pollEvent");
+
+  lua_pushcfunction(L, L_SetWindowPosition);
+  lua_setfield(L, -2, "setWindowPosition");
 
   lua_pushcfunction(L, L_setShouldWindowClose);
   lua_setfield(L, -2, "setShouldWindowClose");
@@ -170,6 +187,9 @@ int L_require(lua_State *L) {
 
   lua_pushinteger(L, SDL_WINDOW_SHOWN);
   lua_setfield(L, -2, "SDL_WINDOW_SHOWN");
+
+  lua_pushinteger(L, SDL_WINDOWPOS_CENTERED);
+  lua_setfield(L, -2, "SDL_WINDOWPOS_CENTERED");
   return 1;
 }
 
@@ -186,8 +206,6 @@ int start_sdl_main(lua_State *L) {
   if (g_sdl_update_ref == LUA_REFNIL) {
     return -1;
   }
-
-  SDL_SetMainReady();
 
 #ifndef __EMSCRIPTEN__
   while (g_running) {
