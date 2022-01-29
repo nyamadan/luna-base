@@ -3,6 +3,12 @@ project(imgui VERSION 0.1.0)
 
 include(GNUInstallDirs)
 
+if(EMSCRIPTEN)
+  if(NOT USE_GLFW3)
+    set(CMAKE_CXX_FLAGS "-s USE_SDL=2")
+  endif()
+endif()
+
 set(SOURCES
   ${CMAKE_SOURCE_DIR}/imgui.cpp
   ${CMAKE_SOURCE_DIR}/imgui_demo.cpp

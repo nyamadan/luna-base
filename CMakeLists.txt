@@ -14,7 +14,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-set(USE_GLFW3 Off)
+set(USE_GLFW3 Off CACHE BOOL "Use GLFW2 without SDL2")
 set(CMAKE_VERBOSE_MAKEFILE On)
 set(EXTERNALS_ROOT ${PROJECT_BINARY_DIR}/externals)
 set(EXTERNALS_INCLUDE_DIR 
@@ -23,7 +23,11 @@ set(EXTERNALS_INCLUDE_DIR
 )
 
 if(NOT USE_GLFW3)
-  list(APPEND EXTERNALS_INCLUDE_DIR ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/SDL2)
+  if(NOT EMSCRIPTEN)
+    list(APPEND EXTERNALS_INCLUDE_DIR ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/SDL2)
+  else()
+    set(CMAKE_CXX_FLAGS "-s USE_SDL=2")
+  endif()
 endif()
 
 if(WIN32)
@@ -293,7 +297,12 @@ else()
   )
 endif()
 
-add_dependencies(lua_gl_bindings lua54 GL3W)
+if(NOT EMSCRIPTEN)
+  add_dependencies(lua_gl_bindings lua54 GL3W)
+else()
+  add_dependencies(lua_gl_bindings lua54)
+endif()
+
 target_include_directories(lua_gl_bindings PRIVATE ${EXTERNALS_INCLUDE_DIR})
 
 list(APPEND LUNA_BASE_LIBS lua_gl_bindings)

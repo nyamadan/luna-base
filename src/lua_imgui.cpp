@@ -194,7 +194,7 @@ int L_treeNode(lua_State *L) {
   if (lua_isstring(L, 2)) {
     const char *str_id = luaL_checkstring(L, 1);
     const char *label = luaL_checkstring(L, 2);
-    bool result = ImGui::TreeNode(str_id, label);
+    bool result = ImGui::TreeNode(str_id, "%s", label);
     lua_pushboolean(L, result);
   } else {
     const char *label = luaL_checkstring(L, 1);

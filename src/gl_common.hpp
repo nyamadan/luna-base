@@ -7,7 +7,7 @@
 #define GLFW_INCLUDE_ES3
 #include <GLFW/glfw3.h>
 #else
-// ???
+#include <GLES3/gl3.h>
 #endif
 #else
 #ifdef USE_GLFW3
