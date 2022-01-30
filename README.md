@@ -23,6 +23,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] OrthoCameraを作成
  * [x] PerspectiveCameraを作成
  * [x] SDLにさしかえ
+ * [x] MessagePackをいったん消す
  * [ ] キーボード入力を実装する
  * [ ] Render IMGUIのタスクを作成
  * [ ] GLBを読めるようにする
@@ -35,7 +36,6 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [ ] guid -> id
  * [ ] Taskを継承してNodeを作る？
  * [ ] Taskの重複登録防止
- * [ ] MessagePackをいったん消す
  * [ ] glslangを使う
  * [ ] generate_gl_bindingsを整理する
  * [ ] 起動時引数で任意のExampleを起動できるようにする
