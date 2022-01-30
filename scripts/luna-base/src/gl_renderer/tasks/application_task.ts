@@ -75,7 +75,10 @@ const prototype: ApplicationTaskPrototype =
               sdl.start({
                 width: this.width,
                 height: this.height,
-                flags: sdl.SDL_WINDOW_SHOWN | sdl.SDL_WINDOW_OPENGL,
+                flags:
+                  sdl.SDL_WINDOW_SHOWN |
+                  sdl.SDL_WINDOW_OPENGL |
+                  sdl.SDL_WINDOW_ALLOW_HIGHDPI,
                 start: () => {
                   _gl.viewport(0, 0, this.width, this.height);
                   _gl.clearColor(1.0, 0.0, 1.0, 1.0);

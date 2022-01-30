@@ -87,18 +87,15 @@ int L_start(lua_State *L) {
   lua_getfield(L, 1, "height");
   lua_Integer height = luaL_checkinteger(L, -1);
   lua_getfield(L, 1, "flags");
-  lua_Integer flags = luaL_checkinteger(L, -1);
+  Uint32 flags = static_cast<Uint32>(luaL_checkinteger(L, -1));
 
   if ((g_current_window = SDL_CreateWindow(
-           "SDL2", 0, 0, static_cast<int>(width), static_cast<int>(height),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN)) == 0) {
+           "", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+           static_cast<int>(width), static_cast<int>(height), flags)) == 0) {
     SDL_Quit();
     luaL_error(L, "Failed: SDL_CreateWindow");
     return 0;
   }
-
-  SDL_SetWindowPosition(g_current_window, SDL_WINDOWPOS_CENTERED,
-                        SDL_WINDOWPOS_CENTERED);
 
   g_current_context = SDL_GL_CreateContext(g_current_window);
 
@@ -189,6 +186,12 @@ int L_require(lua_State *L) {
 
   lua_pushinteger(L, SDL_WINDOW_SHOWN);
   lua_setfield(L, -2, "SDL_WINDOW_SHOWN");
+
+  lua_pushinteger(L, SDL_WINDOW_HIDDEN);
+  lua_setfield(L, -2, "SDL_WINDOW_HIDDEN");
+
+  lua_pushinteger(L, SDL_WINDOW_ALLOW_HIGHDPI);
+  lua_setfield(L, -2, "SDL_WINDOW_ALLOW_HIGHDPI");
 
   lua_pushinteger(L, SDL_WINDOWPOS_CENTERED);
   lua_setfield(L, -2, "SDL_WINDOWPOS_CENTERED");

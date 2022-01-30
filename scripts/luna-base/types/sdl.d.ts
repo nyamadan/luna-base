@@ -29,6 +29,8 @@ declare module "sdl" {
   export const SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG: number;
   export const SDL_WINDOW_OPENGL: number;
   export const SDL_WINDOW_SHOWN: number;
+  export const SDL_WINDOW_HIDDEN: number;
+  export const SDL_WINDOW_ALLOW_HIGHDPI: number;
   export const SDL_WINDOWPOS_CENTERED: number;
 
   export function start(args: {

@@ -17,7 +17,7 @@ export const test = function <
 };
 
 export function initGlfw(this: void): boolean {
-  if(glfw.init == null) {
+  if (glfw.init == null) {
     return false;
   }
   const width = 1;
@@ -53,7 +53,7 @@ export function initGlfw(this: void): boolean {
 export function initSDL2(this: void): boolean {
   const width = 1;
   const height = 1;
-  if(sdl.init == null) {
+  if (sdl.init == null) {
     return false;
   }
 
@@ -81,7 +81,10 @@ export function initSDL2(this: void): boolean {
   sdl.start({
     width,
     height,
-    flags: sdl.SDL_WINDOW_OPENGL,
+    flags:
+      sdl.SDL_WINDOW_OPENGL |
+      sdl.SDL_WINDOW_HIDDEN |
+      sdl.SDL_WINDOW_ALLOW_HIGHDPI,
     start: function () {},
     update: function () {},
   });
