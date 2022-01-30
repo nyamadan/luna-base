@@ -22,16 +22,18 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] testのワークスペースを分離
  * [x] OrthoCameraを作成
  * [x] PerspectiveCameraを作成
- * [ ] SDLにさしかえ
+ * [x] SDLにさしかえ
+ * [ ] キーボード入力を実装する
  * [ ] Render IMGUIのタスクを作成
+ * [ ] GLBを読めるようにする
+ * [ ] Androidでビルド
+ * [ ] Embree
  * [ ] ルートにアクセスできる何かを考える
  * [ ] mainのワークスペースをExampleに
  * [ ] 画像にもっと簡単にアクセスできるようにする
- * [ ] キーボード入力を実装する
  * [ ] CIでテスト
  * [ ] guid -> id
  * [ ] Taskを継承してNodeを作る？
- * [ ] GLBを読めるようにする
  * [ ] Taskの重複登録防止
  * [ ] MessagePackをいったん消す
  * [ ] glslangを使う

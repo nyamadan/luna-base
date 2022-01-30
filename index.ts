@@ -135,7 +135,9 @@ async function main() {
   }
 
   const el = document.getElementById("canvas");
-  el?.parentNode?.removeChild(el);
+  if (el != null) {
+    el.id = "luna-core-tests";
+  }
 
   try {
     console.log("[[runMain]]");
