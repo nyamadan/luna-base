@@ -12,6 +12,7 @@ SDL_GLContext g_current_context = nullptr;
 SDL_Window *g_current_window = nullptr;
 
 lua_Integer g_sdl_update_ref = LUA_REFNIL;
+SDL_Event g_last_event = {0};
 bool g_running = false;
 
 void update(void *pData) {
@@ -36,16 +37,15 @@ int L_init(lua_State *L) {
 }
 
 int L_pollEvent(lua_State *L) {
-  SDL_Event event = {0};
-  auto result = SDL_PollEvent(&event);
+  auto result = SDL_PollEvent(&g_last_event);
   lua_pushinteger(L, result);
   lua_newtable(L);
 
-  lua_pushinteger(L, event.type);
+  lua_pushinteger(L, g_last_event.type);
   lua_setfield(L, -2, "type");
 
   lua_newtable(L);
-  lua_pushinteger(L, event.window.event);
+  lua_pushinteger(L, g_last_event.window.event);
   lua_setfield(L, -2, "event");
   lua_setfield(L, -2, "window");
   return 2;
@@ -202,6 +202,9 @@ int L_require(lua_State *L) {
 
 SDL_Window *get_current_sdl_window() { return g_current_window; }
 SDL_GLContext get_current_sdl_context() { return g_current_context; }
+const SDL_Event *get_last_sdl_event() {
+  return static_cast<const SDL_Event *>(&g_last_event);
+}
 
 void lua_open_sdl_libs(lua_State *L) {
   luaL_requiref(L, "sdl", L_require, false);

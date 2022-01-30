@@ -94,6 +94,7 @@ const prototype: ApplicationTaskPrototype =
                     result !== 0;
                     [result, ev] = sdl.pollEvent()
                   ) {
+                    imgui.implSDL2_ProcessEvent();
                     if (
                       ev.type === sdl.SDL_WINDOWEVENT &&
                       ev.window.event === sdl.SDL_WINDOWEVENT_CLOSE

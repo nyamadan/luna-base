@@ -8,5 +8,6 @@
 #include <SDL.h>
 SDL_Window *get_current_sdl_window();
 SDL_GLContext get_current_sdl_context();
+const SDL_Event *get_last_sdl_event();
 
 #endif

@@ -18,6 +18,7 @@ declare module "imgui" {
   export function implSDL2_InitForOpenGL(install_callbacks: boolean): void;
   export function implSDL2_NewFrame(): void;
   export function implSDL2_Shutdown(): void;
+  export function implSDL2_ProcessEvent(): void;
 
   export function begin(
     name: string,

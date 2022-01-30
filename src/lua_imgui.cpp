@@ -96,6 +96,13 @@ int L_implSDL2_NewFrame(lua_State *L) {
   ImGui_ImplSDL2_NewFrame();
   return 0;
 }
+
+int L_implSDL2_ProcessEvent(lua_State *L) {
+  bool result = ImGui_ImplSDL2_ProcessEvent(get_last_sdl_event());
+  lua_pushboolean(L, result ? 1 : 0);
+  return 1;
+}
+
 #else
 #error "Unknown LunaBaseBackend"
 #endif
@@ -251,6 +258,9 @@ int L_require(lua_State *L) {
 
   lua_pushcfunction(L, L_implSDL2_Shutdown);
   lua_setfield(L, -2, "implSDL2_Shutdown");
+
+  lua_pushcfunction(L, L_implSDL2_ProcessEvent);
+  lua_setfield(L, -2, "implSDL2_ProcessEvent");
 #endif
 
   lua_pushcfunction(L, L_implOpenGL3_Init);
