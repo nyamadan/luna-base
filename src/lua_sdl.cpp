@@ -173,6 +173,12 @@ int L_start(lua_State *L) {
   lua_getfield(L, 1, "flags");
   Uint32 flags = static_cast<Uint32>(luaL_checkinteger(L, -1));
 
+#ifdef _WIN32
+  if (flags & SDL_WINDOW_ALLOW_HIGHDPI) {
+    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+  }
+#endif
+
   if ((g_current_window = SDL_CreateWindow(
            "", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
            static_cast<int>(width), static_cast<int>(height), flags)) == 0) {
