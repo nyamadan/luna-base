@@ -11,7 +11,6 @@
 #include "lua_glfw.hpp"
 #include "lua_sdl.hpp"
 #include "lua_imgui.hpp"
-#include "lua_msgpack.hpp"
 #include "lua_native_buffer.hpp"
 #include "lua_png.hpp"
 #include "lua_utils.hpp"
@@ -31,7 +30,6 @@ int main(int argc, char **argv) {
   lua_open_png_libs(L);
   lua_open_buffer_libs(L);
   lua_open_util_libs(L);
-  lua_open_msgpack_libs(L);
   lua_open_glfw_libs(L);
   lua_open_sdl_libs(L);
   lua_open_imgui_libs(L);

@@ -70,7 +70,6 @@ endif()
 
 set(LIB_SOURCES
   src/lua_utils.cpp
-  src/lua_msgpack.cpp
   src/lua_imgui.cpp
   src/lua_png.cpp
   src/lua_native_buffer.cpp
@@ -159,28 +158,6 @@ ExternalProject_Add(
 )
 add_dependencies(luna-base imgui)
 list(APPEND LUNA_BASE_LIBS ${IMGUI})
-
-if(MSVC)
-  set(MSGPACKC_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/msgpackc.lib)
-else()
-  set(MSGPACKC_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libmsgpackc.a)
-endif()
-ExternalProject_Add(
-  msgpack-c
-  URL https://github.com/msgpack/msgpack-c/releases/download/c-4.0.0/msgpack-c-4.0.0.tar.gz
-  URL_MD5 1b02fb40973d52f2cfa37758db69d156
-  PREFIX ${EXTERNALS_ROOT}
-  BUILD_BYPRODUCTS ${MSGPACKC_LIB}
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE:PATH=${CMAKE_BUILD_TYPE}
-    -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-    -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
-  CMAKE_CACHE_ARGS
-    -DMSGPACK_ENABLE_STATIC:BOOL=On
-    -DMSGPACK_ENABLE_SHARED:BOOL=Off
-)
-add_dependencies(luna-base msgpack-c)
-list(APPEND LUNA_BASE_LIBS ${MSGPACKC_LIB})
 
 if(WIN32)
   if(MSVC)
