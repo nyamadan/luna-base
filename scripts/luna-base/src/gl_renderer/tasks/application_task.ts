@@ -3,6 +3,7 @@ import * as glfw from "glfw";
 import * as imgui from "imgui";
 import { isEmscripten } from "luna-base-utils";
 import * as sdl from "sdl";
+import { dbg } from "../../logger";
 import mat4 from "../../math/mat4";
 import { allocTableName, getMetatableName } from "../../tables";
 import { createGLRendererTask } from "./gl_renderer_task";
@@ -95,6 +96,32 @@ const prototype: ApplicationTaskPrototype =
                     [result, ev] = sdl.pollEvent()
                   ) {
                     imgui.implSDL2_ProcessEvent();
+
+                    if (ev.type === sdl.SDL_KEYDOWN) {
+                      print("DOWN");
+                      dbg(ev.key);
+                    }
+
+                    if (ev.type === sdl.SDL_KEYUP) {
+                      print("UP");
+                      dbg(ev.key);
+                    }
+
+                    if (ev.type === sdl.SDL_MOUSEMOTION) {
+                      print("MOTION");
+                      dbg(ev.motion);
+                    }
+
+                    if (ev.type === sdl.SDL_MOUSEBUTTONDOWN) {
+                      print("BUTTONDOWN");
+                      dbg(ev.button);
+                    }
+
+                    if (ev.type === sdl.SDL_MOUSEBUTTONUP) {
+                      print("BUTTONUP");
+                      dbg(ev.button);
+                    }
+
                     if (
                       ev.type === sdl.SDL_WINDOWEVENT &&
                       ev.window.event === sdl.SDL_WINDOWEVENT_CLOSE

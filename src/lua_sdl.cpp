@@ -39,15 +39,99 @@ int L_init(lua_State *L) {
 int L_pollEvent(lua_State *L) {
   auto result = SDL_PollEvent(&g_last_event);
   lua_pushinteger(L, result);
-  lua_newtable(L);
+  lua_newtable(L); // root
 
   lua_pushinteger(L, g_last_event.type);
   lua_setfield(L, -2, "type");
 
-  lua_newtable(L);
+  lua_newtable(L); // window
   lua_pushinteger(L, g_last_event.window.event);
   lua_setfield(L, -2, "event");
-  lua_setfield(L, -2, "window");
+  lua_setfield(L, -2, "window"); // pop window
+
+  lua_newtable(L); // button
+  lua_pushinteger(L, g_last_event.button.button);
+  lua_setfield(L, -2, "button");
+  lua_pushinteger(L, g_last_event.button.clicks);
+  lua_setfield(L, -2, "clicks");
+  lua_pushinteger(L, g_last_event.button.state);
+  lua_setfield(L, -2, "state");
+  lua_pushinteger(L, g_last_event.button.timestamp);
+  lua_setfield(L, -2, "timestamp");
+  lua_pushinteger(L, g_last_event.button.type);
+  lua_setfield(L, -2, "type");
+  lua_pushinteger(L, g_last_event.button.which);
+  lua_setfield(L, -2, "which");
+  lua_pushinteger(L, g_last_event.button.windowID);
+  lua_setfield(L, -2, "windowID");
+  lua_pushinteger(L, g_last_event.button.x);
+  lua_setfield(L, -2, "x");
+  lua_pushinteger(L, g_last_event.button.y);
+  lua_setfield(L, -2, "y");
+  lua_setfield(L, -2, "button"); // pop button
+
+  lua_newtable(L); // motion
+  lua_pushinteger(L, g_last_event.motion.state);
+  lua_setfield(L, -2, "state");
+  lua_pushinteger(L, g_last_event.motion.timestamp);
+  lua_setfield(L, -2, "timestamp");
+  lua_pushinteger(L, g_last_event.motion.type);
+  lua_setfield(L, -2, "type");
+  lua_pushinteger(L, g_last_event.motion.which);
+  lua_setfield(L, -2, "which");
+  lua_pushinteger(L, g_last_event.motion.windowID);
+  lua_setfield(L, -2, "windowID");
+  lua_pushinteger(L, g_last_event.motion.x);
+  lua_setfield(L, -2, "x");
+  lua_pushinteger(L, g_last_event.motion.xrel);
+  lua_setfield(L, -2, "xrel");
+  lua_pushinteger(L, g_last_event.motion.y);
+  lua_setfield(L, -2, "y");
+  lua_pushinteger(L, g_last_event.motion.yrel);
+  lua_setfield(L, -2, "yrel");
+  lua_setfield(L, -2, "motion"); // pop motion
+
+  lua_newtable(L); // wheel
+  lua_pushinteger(L, g_last_event.wheel.direction);
+  lua_setfield(L, -2, "direction");
+  lua_pushnumber(L, g_last_event.wheel.preciseX);
+  lua_setfield(L, -2, "preciseX");
+  lua_pushnumber(L, g_last_event.wheel.preciseY);
+  lua_setfield(L, -2, "preciseY");
+  lua_pushinteger(L, g_last_event.wheel.timestamp);
+  lua_setfield(L, -2, "timestamp");
+  lua_pushinteger(L, g_last_event.wheel.type);
+  lua_setfield(L, -2, "type");
+  lua_pushinteger(L, g_last_event.wheel.which);
+  lua_setfield(L, -2, "which");
+  lua_pushinteger(L, g_last_event.wheel.windowID);
+  lua_setfield(L, -2, "windowID");
+  lua_pushinteger(L, g_last_event.wheel.x);
+  lua_setfield(L, -2, "x");
+  lua_pushinteger(L, g_last_event.wheel.y);
+  lua_setfield(L, -2, "y");
+  lua_setfield(L, -2, "wheel"); // pop wheel
+
+  lua_newtable(L); // key
+  lua_pushinteger(L, g_last_event.key.repeat);
+  lua_setfield(L, -2, "repeat");
+  lua_pushinteger(L, g_last_event.key.state);
+  lua_setfield(L, -2, "state");
+  lua_pushinteger(L, g_last_event.key.timestamp);
+  lua_setfield(L, -2, "timestamp");
+  lua_pushinteger(L, g_last_event.key.type);
+  lua_setfield(L, -2, "type");
+  lua_pushinteger(L, g_last_event.key.windowID);
+  lua_setfield(L, -2, "windowID");
+  lua_newtable(L); // keysym
+  lua_pushinteger(L, g_last_event.key.keysym.sym);
+  lua_setfield(L, -2, "sym");
+  lua_pushinteger(L, g_last_event.key.keysym.mod);
+  lua_setfield(L, -2, "mod");
+  lua_pushinteger(L, g_last_event.key.keysym.scancode);
+  lua_setfield(L, -2, "scancode");
+  lua_setfield(L, -2, "keysym"); // pop keysym
+  lua_setfield(L, -2, "key");    // pop key
   return 2;
 }
 
@@ -195,9 +279,28 @@ int L_require(lua_State *L) {
 
   lua_pushinteger(L, SDL_WINDOWPOS_CENTERED);
   lua_setfield(L, -2, "SDL_WINDOWPOS_CENTERED");
+
+  lua_pushinteger(L, SDL_KEYDOWN);
+  lua_setfield(L, -2, "SDL_KEYDOWN");
+  lua_pushinteger(L, SDL_KEYUP);
+  lua_setfield(L, -2, "SDL_KEYUP");
+  lua_pushinteger(L, SDL_TEXTEDITING);
+  lua_setfield(L, -2, "SDL_TEXTEDITING");
+  lua_pushinteger(L, SDL_TEXTINPUT);
+  lua_setfield(L, -2, "SDL_TEXTINPUT");
+  lua_pushinteger(L, SDL_KEYMAPCHANGED);
+  lua_setfield(L, -2, "SDL_KEYMAPCHANGED");
+
+  lua_pushinteger(L, SDL_MOUSEMOTION);
+  lua_setfield(L, -2, "SDL_MOUSEMOTION");
+  lua_pushinteger(L, SDL_MOUSEBUTTONDOWN);
+  lua_setfield(L, -2, "SDL_MOUSEBUTTONDOWN");
+  lua_pushinteger(L, SDL_MOUSEBUTTONUP);
+  lua_setfield(L, -2, "SDL_MOUSEBUTTONUP");
+  lua_pushinteger(L, SDL_MOUSEWHEEL);
+  lua_setfield(L, -2, "SDL_MOUSEWHEEL");
   return 1;
 }
-
 } // namespace
 
 SDL_Window *get_current_sdl_window() { return g_current_window; }

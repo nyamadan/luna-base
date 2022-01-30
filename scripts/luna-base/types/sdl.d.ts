@@ -10,6 +10,51 @@ declare module "sdl" {
         window: {
           event: number;
         };
+        button: {
+          button: number;
+          clicks: number;
+          state: number;
+          timestamp: number;
+          type: number;
+          which: number;
+          windowID: number;
+          x: number;
+          y: number;
+        };
+        motion: {
+          state: number;
+          timestamp: number;
+          type: number;
+          which: number;
+          windowID: number;
+          x: number;
+          xrel: number;
+          y: number;
+          yrel: number;
+        };
+        wheel: {
+          direction: number;
+          preciseX: number;
+          preciseY: number;
+          timestamp: number;
+          type: number;
+          which: number;
+          windowID: number;
+          x: number;
+          y: number;
+        };
+        key: {
+          repeat: number;
+          state: number;
+          timestamp: number;
+          type: number;
+          windowID: number;
+          keysym: {
+            sym: number;
+            mod: number;
+            scancode: number;
+          }
+        }
       }
     ]
   >;
@@ -32,7 +77,15 @@ declare module "sdl" {
   export const SDL_WINDOW_HIDDEN: number;
   export const SDL_WINDOW_ALLOW_HIGHDPI: number;
   export const SDL_WINDOWPOS_CENTERED: number;
-
+  export const SDL_KEYDOWN: number;
+  export const SDL_KEYUP: number;
+  export const SDL_TEXTEDITING: number;
+  export const SDL_TEXTINPUT: number;
+  export const SDL_KEYMAPCHANGED: number;
+  export const SDL_MOUSEMOTION: number;
+  export const SDL_MOUSEBUTTONDOWN: number;
+  export const SDL_MOUSEBUTTONUP: number;
+  export const SDL_MOUSEWHEEL: number;
   export function start(args: {
     width: number;
     height: number;

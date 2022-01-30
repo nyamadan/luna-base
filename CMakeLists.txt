@@ -17,10 +17,21 @@ enable_testing()
 set(LUNA_BASE_BACKEND "GLFW3" CACHE STRING "GLFW3 or SDL2")
 set(CMAKE_VERBOSE_MAKEFILE On)
 set(EXTERNALS_ROOT ${PROJECT_BINARY_DIR}/externals)
-set(EXTERNALS_INCLUDE_DIR 
-    ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}
-    ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/gl3w
-)
+
+set(JSON_INCLUDE_DIR "${EXTERNALS_ROOT}/src/json/include")
+
+if(EMSCRIPTEN)
+  set(EXTERNALS_INCLUDE_DIR 
+      ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}
+      ${JSON_INCLUDE_DIR}
+  )
+else()
+  set(EXTERNALS_INCLUDE_DIR 
+      ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}
+      ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/gl3w
+      ${JSON_INCLUDE_DIR}
+  )
+endif()
 
 if(LUNA_BASE_BACKEND STREQUAL "GLFW3")
   set(USE_GLFW3 On)
@@ -107,6 +118,22 @@ ExternalProject_Add(
     && cd <SOURCE_DIR>/src && patch -t < "${CMAKE_CURRENT_SOURCE_DIR}/externals/Lua.patch"
 )
 add_dependencies(luna-base lua54)
+
+set(JSON_HEADER ${JSON_INCLUDE_DIR}/nlohmann/json.hpp)
+ExternalProject_Add(
+  json
+  URL https://github.com/nlohmann/json/archive/refs/tags/v3.10.5.tar.gz
+  URL_MD5 5b946f7d892fa55eabec45e76a20286b
+  PREFIX ${EXTERNALS_ROOT}
+  BUILD_BYPRODUCTS ${JSON_HEADER}
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE:PATH=${CMAKE_BUILD_TYPE}
+    -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ""
+)
+add_dependencies(luna-base json)
 
 if(MSVC)
   set(IMGUI ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/imgui.lib)
