@@ -3,6 +3,7 @@ import tests_module_factory from "./build/tests";
 
 function runMain() {
   const canvas = document.createElement("canvas");
+  canvas.id = "canvas";
   document.body.appendChild(canvas);
 
   const Module = {
@@ -55,11 +56,12 @@ function runMain() {
 
 function runLuaCoreTests() {
   const canvas = document.createElement("canvas");
+  canvas.id = "canvas";
   document.body.appendChild(canvas);
 
   const Module = {
     canvas,
-    arguments: ["/scripts/luna-base-test/index.lua"],
+    arguments: ["/scripts/luna-base-test/dist/index.lua"],
     preRun: [
       function () {
         const { FS } = Module;
@@ -130,6 +132,11 @@ async function main() {
     await runLuaCoreTests();
   } catch (e) {
     console.error(e);
+  }
+
+  const el = document.getElementById("canvas");
+  if (el != null) {
+    el.id = "luna-core-tests";
   }
 
   try {

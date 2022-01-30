@@ -1,5 +1,6 @@
 /// <reference path="./gl_bindings.d.ts" />
 /// <reference path="./glfw.d.ts" />
+/// <reference path="./sdl.d.ts" />
 /// <reference path="./imgui.d.ts" />
 /// <reference path="./msgpack.d.ts" />
 /// <reference path="./native_buffer.d.ts" />

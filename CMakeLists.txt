@@ -14,12 +14,34 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
+set(LUNA_BASE_BACKEND "GLFW3" CACHE STRING "GLFW3 or SDL2")
 set(CMAKE_VERBOSE_MAKEFILE On)
 set(EXTERNALS_ROOT ${PROJECT_BINARY_DIR}/externals)
 set(EXTERNALS_INCLUDE_DIR 
     ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}
     ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/gl3w
 )
+
+if(LUNA_BASE_BACKEND STREQUAL "GLFW3")
+  set(USE_GLFW3 On)
+else()
+  set(USE_GLFW3 Off)
+endif()
+
+if(LUNA_BASE_BACKEND STREQUAL "SDL2")
+  set(USE_SDL2 On)
+else()
+  set(USE_SDL2 Off)
+endif()
+
+if(USE_SDL2)
+  if(NOT EMSCRIPTEN)
+    list(APPEND EXTERNALS_INCLUDE_DIR ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/SDL2)
+  else()
+    set(CMAKE_CXX_FLAGS "-s USE_SDL=2")
+  endif()
+endif()
+
 if(WIN32)
   if(MINGW)
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static")
@@ -27,13 +49,22 @@ if(WIN32)
   endif()
 endif()
 
+if(USE_GLFW3)
+  add_definitions(-DUSE_GLFW3)
+endif()
+
+if(USE_SDL2)
+  add_definitions(-DUSE_SDL2)
+endif()
+
 set(LIB_SOURCES
   src/lua_utils.cpp
   src/lua_msgpack.cpp
-  src/lua_glfw.cpp
   src/lua_imgui.cpp
   src/lua_png.cpp
   src/lua_native_buffer.cpp
+  src/lua_glfw.cpp
+  src/lua_sdl.cpp
 )
 
 add_library(luna-base STATIC ${LIB_SOURCES})
@@ -93,7 +124,9 @@ ExternalProject_Add(
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
   CMAKE_CACHE_ARGS
-    -DGLFW3_INCLUDE_DIR:PATH=${EXTERNALS_INCLUDE_DIR}
+    -DEXTERNALS_INCLUDE_DIR:PATH=${EXTERNALS_INCLUDE_DIR}
+    -DUSE_GLFW3:BOOL=${USE_GLFW3}
+    -DUSE_SDL2:BOOL=${USE_SDL2}
   PATCH_COMMAND
     ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/externals/imgui.cmake" <SOURCE_DIR>/CMakeLists.txt
 )
@@ -268,37 +301,89 @@ add_custom_command(
   COMMAND node ${CMAKE_SOURCE_DIR}/generate_gl_bindings.js
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   DEPENDS ${CMAKE_SOURCE_DIR}/generate_gl_bindings.js)
-add_library(lua_gl_bindings ${CMAKE_SOURCE_DIR}/src/lua_gl_bindings.cpp)
-add_dependencies(lua_gl_bindings lua54)
+
+set(GL3W_SRC ${EXTERNALS_ROOT}/share/gl3w/gl3w.c)
+if(NOT EMSCRIPTEN)
+  add_library(lua_gl_bindings 
+    ${GL3W_SRC}
+    ${CMAKE_SOURCE_DIR}/src/lua_gl_bindings.cpp
+  )
+else()
+  add_library(lua_gl_bindings 
+    ${CMAKE_SOURCE_DIR}/src/lua_gl_bindings.cpp
+  )
+endif()
+
+if(NOT EMSCRIPTEN)
+  add_dependencies(lua_gl_bindings lua54 GL3W)
+else()
+  add_dependencies(lua_gl_bindings lua54)
+endif()
+
 target_include_directories(lua_gl_bindings PRIVATE ${EXTERNALS_INCLUDE_DIR})
-add_dependencies(luna-base lua_gl_bindings)
 
 list(APPEND LUNA_BASE_LIBS lua_gl_bindings)
 list(APPEND LUNA_BASE_LIBS ${LUA_LIB})
 
 if(NOT EMSCRIPTEN)
-  if(MSVC)
-    set(GLFW3_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/glfw3.lib)
+  if(USE_GLFW3)
+    if(MSVC)
+      set(GLFW3_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/glfw3.lib)
+    else()
+      set(GLFW3_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libglfw3.a)
+    endif()
+    ExternalProject_Add(
+      GLFW3
+      URL https://github.com/glfw/glfw/releases/download/3.3.6/glfw-3.3.6.zip
+      URL_MD5 ac9c16031b85c4f7f6d33b96082fb5ae
+      PREFIX ${EXTERNALS_ROOT}
+      BUILD_BYPRODUCTS ${GLFW3_LIB}
+      CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE:PATH=${CMAKE_BUILD_TYPE}
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
+    )
+    add_dependencies(luna-base GLFW3)
+    add_dependencies(lua_gl_bindings GLFW3)
+    add_dependencies(imgui GLFW3)
+    list(APPEND LUNA_BASE_LIBS ${GLFW3_LIB})
+  elseif(USE_SDL2)
+    if(MSVC)
+      if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        set(SDL2_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/SDL2-staticd.lib)
+        set(SDL2MAIN_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/SDL2maind.lib)
+      else()
+        set(SDL2_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/SDL2-static.lib)
+        set(SDL2MAIN_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/SDL2main.lib)
+      endif()
+    else()
+      set(SDL2_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libSDL2.a)
+      set(SDL2MAIN_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libSDL2main.a)
+    endif()
+    ExternalProject_Add(
+      SDL2
+      URL https://www.libsdl.org/release/SDL2-2.0.20.tar.gz
+      URL_MD5 a53acc02e1cca98c4123229069b67c9e
+      PREFIX ${EXTERNALS_ROOT}
+      BUILD_BYPRODUCTS ${SDL2_LIB} ${SDL2MAIN_LIB}
+      CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE:PATH=${CMAKE_BUILD_TYPE}
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
+    )
+    add_dependencies(luna-base SDL2)
+    add_dependencies(lua_gl_bindings SDL2)
+    add_dependencies(imgui SDL2)
+    list(APPEND LUNA_BASE_LIBS ${SDL2_LIB})
+    if(MSVC)
+      list(APPEND LUNA_BASE_LIBS winmm.lib imm32.lib setupapi.lib version.lib)
+    elseif(MINGW)
+      list(APPEND LUNA_BASE_LIBS -lwinmm -limm32 -lsetupapi -lversion)
+    endif()
   else()
-    set(GLFW3_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/libglfw3.a)
+    message(FATAL "Unknown LunaBaseBackend")
   endif()
-  ExternalProject_Add(
-    GLFW3
-    URL https://github.com/glfw/glfw/releases/download/3.3.6/glfw-3.3.6.zip
-    URL_MD5 ac9c16031b85c4f7f6d33b96082fb5ae
-    PREFIX ${EXTERNALS_ROOT}
-    BUILD_BYPRODUCTS ${GLFW3_LIB}
-    CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:PATH=${CMAKE_BUILD_TYPE}
-      -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-      -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
-  )
-  add_dependencies(luna-base GLFW3)
-  add_dependencies(lua_gl_bindings GLFW3)
-  add_dependencies(imgui GLFW3)
-  list(APPEND LUNA_BASE_LIBS ${GLFW3_LIB})
 
-  set(GL3W_SRC ${EXTERNALS_ROOT}/share/gl3w/gl3w.c)
   ExternalProject_Add(
     GL3W
     URL https://github.com/skaslev/gl3w/archive/refs/heads/master.zip
@@ -323,20 +408,42 @@ if (MSVC)
   set_target_properties(main PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BINARY_DIR} )
 endif()
 target_include_directories(main PRIVATE ${EXTERNALS_INCLUDE_DIR})
-target_link_libraries(main ${LUNA_BASE_LIBS})
-set(EMSCRIPTEN_LINK_FLAGS "\
-  --use-preload-plugins \
-  -s WASM=1 \
-  -s MAX_WEBGL_VERSION=2 \
-  -s MIN_WEBGL_VERSION=2 \
-  -s USE_GLFW=3 \
-  -s ALLOW_MEMORY_GROWTH=1 \
-  -s MODULARIZE=1 \
-  -s ENVIRONMENT=web \
-  -s NO_EXIT_RUNTIME=1 \
-  -s FORCE_FILESYSTEM=1 \
-  -s \"EXPORTED_RUNTIME_METHODS=['FS']\" \
-  ")
+set(MAIN_LIBS ${LUNA_BASE_LIBS})
+if(USE_SDL2)
+  list(APPEND MAIN_LIBS ${SDL2MAIN_LIB})
+endif()
+target_link_libraries(main ${MAIN_LIBS})
+if(USE_GLFW3)
+  set(EMSCRIPTEN_LINK_FLAGS "\
+    --use-preload-plugins \
+    -s WASM=1 \
+    -s MAX_WEBGL_VERSION=2 \
+    -s MIN_WEBGL_VERSION=2 \
+    -s USE_GLFW=3 \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s MODULARIZE=1 \
+    -s ENVIRONMENT=web \
+    -s NO_EXIT_RUNTIME=1 \
+    -s FORCE_FILESYSTEM=1 \
+    -s \"EXPORTED_RUNTIME_METHODS=['FS']\" \
+    ")
+elseif(USE_SDL2)
+  set(EMSCRIPTEN_LINK_FLAGS "\
+    --use-preload-plugins \
+    -s WASM=1 \
+    -s MAX_WEBGL_VERSION=2 \
+    -s MIN_WEBGL_VERSION=2 \
+    -s USE_SDL=2 \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s MODULARIZE=1 \
+    -s ENVIRONMENT=web \
+    -s NO_EXIT_RUNTIME=1 \
+    -s FORCE_FILESYSTEM=1 \
+    -s \"EXPORTED_RUNTIME_METHODS=['FS']\" \
+    ")
+else()
+  message(FATAL "Unknown LunaBase Backend")
+endif()
 
 if(EMSCRIPTEN)
   set_target_properties(main PROPERTIES LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS}")

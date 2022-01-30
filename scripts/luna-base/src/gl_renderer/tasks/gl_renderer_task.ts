@@ -28,7 +28,11 @@ const prototype: GLRendererTaskPrototype = createNodeTaskPrototype({
     switch (name) {
       case "prerender": {
         imgui.implOpenGL3_NewFrame();
-        imgui.implGlfw_NewFrame();
+        if (imgui.implSDL2_NewFrame != null) {
+          imgui.implSDL2_NewFrame();
+        } else if (imgui.implGlfw_NewFrame != null) {
+          imgui.implGlfw_NewFrame();
+        }
         imgui.newFrame();
         return state;
       }

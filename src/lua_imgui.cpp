@@ -1,10 +1,22 @@
 #include "lua_imgui.hpp"
+#if USE_GLFW3
 #include "lua_glfw_impl.hpp"
+#elif USE_SDL2
+#include "lua_sdl_impl.hpp"
+#else
+#error "Unknown LunaBase Backend"
+#endif
 #include "lua_native_buffer_impl.hpp"
 #include "lua_utils.hpp"
 
 #include <imgui.h>
+#if USE_GLFW3
 #include <imgui_impl_glfw.h>
+#elif USE_SDL2
+#include <imgui_impl_sdl.h>
+#else
+#error "Unknown LunaBase Backend"
+#endif
 #include <imgui_impl_opengl3.h>
 
 namespace {
@@ -51,14 +63,15 @@ int L_implOpenGL3_Init(lua_State *L) {
   return 0;
 }
 
+#ifdef USE_GLFW3
 int L_implGlfw_InitForOpenGL(lua_State *L) {
   bool b = lua_toboolean(L, 1);
   ImGui_ImplGlfw_InitForOpenGL(get_current_glfw_window(), b);
   return 0;
 }
 
-int L_implOpenGL3_NewFrame(lua_State *L) {
-  ImGui_ImplOpenGL3_NewFrame();
+int L_implGlfw_Shutdown(lua_State *L) {
+  ImGui_ImplGlfw_Shutdown();
   return 0;
 }
 
@@ -66,14 +79,34 @@ int L_implGlfw_NewFrame(lua_State *L) {
   ImGui_ImplGlfw_NewFrame();
   return 0;
 }
+#elif USE_GLFW3
+int L_implSDL2_InitForOpenGL(lua_State *L) {
+  const auto result = ImGui_ImplSDL2_InitForOpenGL(get_current_sdl_window(),
+                                                   get_current_sdl_context());
+  lua_pushboolean(L, result);
+  return 1;
+}
 
-int L_implOpenGL3_Shutdown(lua_State *L) {
-  ImGui_ImplOpenGL3_Shutdown();
+int L_implSDL2_Shutdown(lua_State *L) {
+  ImGui_ImplSDL2_Shutdown();
   return 0;
 }
 
-int L_implGlfw_Shutdown(lua_State *L) {
-  ImGui_ImplGlfw_Shutdown();
+int L_implSDL2_NewFrame(lua_State *L) {
+  ImGui_ImplSDL2_NewFrame();
+  return 0;
+}
+#else
+#error "Unknown LunaBaseBackend"
+#endif
+
+int L_implOpenGL3_NewFrame(lua_State *L) {
+  ImGui_ImplOpenGL3_NewFrame();
+  return 0;
+}
+
+int L_implOpenGL3_Shutdown(lua_State *L) {
+  ImGui_ImplOpenGL3_Shutdown();
   return 0;
 }
 
@@ -104,7 +137,7 @@ int L_begin(lua_State *L) {
 
   bool result = ImGui::Begin(
       name, reinterpret_cast<bool *>(p_open != nullptr ? p_open->p : nullptr),
-      isnum ? flags : 0);
+      static_cast<ImGuiWindowFlags>(isnum ? flags : 0));
 
   lua_pushboolean(L, result);
 
@@ -167,7 +200,7 @@ int L_treeNode(lua_State *L) {
   if (lua_isstring(L, 2)) {
     const char *str_id = luaL_checkstring(L, 1);
     const char *label = luaL_checkstring(L, 2);
-    bool result = ImGui::TreeNode(str_id, label);
+    bool result = ImGui::TreeNode(str_id, "%s", label);
     lua_pushboolean(L, result);
   } else {
     const char *label = luaL_checkstring(L, 1);
@@ -200,21 +233,31 @@ int L_require(lua_State *L) {
 
   lua_pushcfunction(L, L_showDemoWindow);
   lua_setfield(L, -2, "showDemoWindow");
-
+#ifdef USE_GLFW3
   lua_pushcfunction(L, L_implGlfw_InitForOpenGL);
   lua_setfield(L, -2, "implGlfw_InitForOpenGL");
-
-  lua_pushcfunction(L, L_implOpenGL3_Init);
-  lua_setfield(L, -2, "implOpenGL3_Init");
 
   lua_pushcfunction(L, L_implGlfw_NewFrame);
   lua_setfield(L, -2, "implGlfw_NewFrame");
 
-  lua_pushcfunction(L, L_implOpenGL3_NewFrame);
-  lua_setfield(L, -2, "implOpenGL3_NewFrame");
-
   lua_pushcfunction(L, L_implGlfw_Shutdown);
   lua_setfield(L, -2, "implGlfw_Shutdown");
+#else
+  lua_pushcfunction(L, L_implSDL2_InitForOpenGL);
+  lua_setfield(L, -2, "implSDL2_InitForOpenGL");
+
+  lua_pushcfunction(L, L_implSDL2_NewFrame);
+  lua_setfield(L, -2, "implSDL2_NewFrame");
+
+  lua_pushcfunction(L, L_implSDL2_Shutdown);
+  lua_setfield(L, -2, "implSDL2_Shutdown");
+#endif
+
+  lua_pushcfunction(L, L_implOpenGL3_Init);
+  lua_setfield(L, -2, "implOpenGL3_Init");
+
+  lua_pushcfunction(L, L_implOpenGL3_NewFrame);
+  lua_setfield(L, -2, "implOpenGL3_NewFrame");
 
   lua_pushcfunction(L, L_implOpenGL3_Shutdown);
   lua_setfield(L, -2, "implOpenGL3_Shutdown");

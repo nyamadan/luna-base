@@ -3,27 +3,50 @@ project(imgui VERSION 0.1.0)
 
 include(GNUInstallDirs)
 
+if(EMSCRIPTEN)
+  if(USE_SDL2)
+    set(CMAKE_CXX_FLAGS "-s USE_SDL=2")
+  endif()
+endif()
+
 set(SOURCES
   ${CMAKE_SOURCE_DIR}/imgui.cpp
   ${CMAKE_SOURCE_DIR}/imgui_demo.cpp
   ${CMAKE_SOURCE_DIR}/imgui_draw.cpp
   ${CMAKE_SOURCE_DIR}/imgui_tables.cpp
   ${CMAKE_SOURCE_DIR}/imgui_widgets.cpp
-  ${CMAKE_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
   ${CMAKE_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
+if(USE_GLFW3)
+  list(APPEND SOURCES ${CMAKE_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
+elseif(USE_SDL2)
+  list(APPEND SOURCES ${CMAKE_SOURCE_DIR}/backends/imgui_impl_sdl.cpp)
+else()
+  message(FATAL "Unknown LunaBase Platform")
+endif()
+
 add_library(imgui STATIC ${SOURCES})
-target_include_directories(imgui PRIVATE ${CMAKE_SOURCE_DIR} ${GLFW3_INCLUDE_DIR})
+
+target_include_directories(imgui PRIVATE ${CMAKE_SOURCE_DIR} ${EXTERNALS_INCLUDE_DIR})
 
 install(TARGETS imgui EXPORT imgui-config)
 
-set_property(TARGET imgui PROPERTY PUBLIC_HEADER
-  ${CMAKE_SOURCE_DIR}/imgui.h
-  ${CMAKE_SOURCE_DIR}/imconfig.h
-  ${CMAKE_SOURCE_DIR}/backends/imgui_impl_glfw.h
-  ${CMAKE_SOURCE_DIR}/backends/imgui_impl_opengl3.h
-)
+if(USE_GLFW3)
+  set_property(TARGET imgui PROPERTY PUBLIC_HEADER
+    ${CMAKE_SOURCE_DIR}/imgui.h
+    ${CMAKE_SOURCE_DIR}/imconfig.h
+    ${CMAKE_SOURCE_DIR}/backends/imgui_impl_glfw.h
+    ${CMAKE_SOURCE_DIR}/backends/imgui_impl_opengl3.h
+  )
+else()
+  set_property(TARGET imgui PROPERTY PUBLIC_HEADER
+    ${CMAKE_SOURCE_DIR}/imgui.h
+    ${CMAKE_SOURCE_DIR}/imconfig.h
+    ${CMAKE_SOURCE_DIR}/backends/imgui_impl_sdl.h
+    ${CMAKE_SOURCE_DIR}/backends/imgui_impl_opengl3.h
+  )
+endif()
 
 install(TARGETS imgui
     EXPORT imgui-config

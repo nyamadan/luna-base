@@ -1,5 +1,15 @@
+#ifdef USE_SDL2
+#ifdef _WIN32
+#ifndef _MSC_VER
+#define SDL_MAIN_HANDLED
+#endif
+#endif
+#include <SDL.h>
+#endif
+
 #include "lua_gl_bindings.hpp"
 #include "lua_glfw.hpp"
+#include "lua_sdl.hpp"
 #include "lua_imgui.hpp"
 #include "lua_msgpack.hpp"
 #include "lua_native_buffer.hpp"
@@ -7,8 +17,6 @@
 #include "lua_utils.hpp"
 
 #include <cstdint>
-#include <cstdio>
-#include <msgpack.h>
 
 int main(int argc, char **argv) {
   if (argc <= 1) {
@@ -25,6 +33,7 @@ int main(int argc, char **argv) {
   lua_open_util_libs(L);
   lua_open_msgpack_libs(L);
   lua_open_glfw_libs(L);
+  lua_open_sdl_libs(L);
   lua_open_imgui_libs(L);
   lua_open_gl_libs(L);
 
@@ -38,5 +47,16 @@ int main(int argc, char **argv) {
   status = lua_docall(L, 0, 0);
   lua_report(L, status);
 
-  start_glfw_main(L);
+#ifdef USE_GLFW3
+  return start_glfw_main(L);
+#else
+
+#ifdef _WIN32
+#ifndef _MSC_VER
+  SDL_SetMainReady();
+#endif
+#endif
+
+  return start_sdl_main(L);
+#endif
 }

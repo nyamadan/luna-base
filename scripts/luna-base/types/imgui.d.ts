@@ -6,13 +6,19 @@ declare module "imgui" {
   export function styleColorsDark(): void;
   export function render(): void;
   export function showDemoWindow(p_open?: { __native_buffer: never }): void;
-  export function implGlfw_InitForOpenGL(install_callbacks: boolean): void;
   export function implOpenGL3_Init(): void;
-  export function implGlfw_NewFrame(): void;
   export function implOpenGL3_NewFrame(): void;
-  export function implGlfw_Shutdown(): void;
   export function implOpenGL3_Shutdown(): void;
   export function implOpenGL3_RenderDrawData(): void;
+
+  export function implGlfw_InitForOpenGL(install_callbacks: boolean): void;
+  export function implGlfw_NewFrame(): void;
+  export function implGlfw_Shutdown(): void;
+
+  export function implSDL2_InitForOpenGL(install_callbacks: boolean): void;
+  export function implSDL2_NewFrame(): void;
+  export function implSDL2_Shutdown(): void;
+
   export function begin(
     name: string,
     p_open?: { __native_buffer: never },
