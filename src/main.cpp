@@ -1,6 +1,6 @@
-#ifndef USE_GLFW3
-#ifdef __GNUC__
-#ifdef __MINGW32__
+#ifdef USE_SDL2
+#ifdef _WIN32
+#ifndef _MSC_VER
 #define SDL_MAIN_HANDLED
 #endif
 #endif
@@ -51,8 +51,8 @@ int main(int argc, char **argv) {
   return start_glfw_main(L);
 #else
 
-#ifdef __GNUC__
-#ifdef __MINGW32__
+#ifdef _WIN32
+#ifndef _MSC_VER
   SDL_SetMainReady();
 #endif
 #endif

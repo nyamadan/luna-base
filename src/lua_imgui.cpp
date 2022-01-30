@@ -1,8 +1,10 @@
 #include "lua_imgui.hpp"
 #if USE_GLFW3
 #include "lua_glfw_impl.hpp"
-#else
+#elif USE_SDL2
 #include "lua_sdl_impl.hpp"
+#else
+#error "Unknown LunaBase Backend"
 #endif
 #include "lua_native_buffer_impl.hpp"
 #include "lua_utils.hpp"
@@ -10,8 +12,10 @@
 #include <imgui.h>
 #if USE_GLFW3
 #include <imgui_impl_glfw.h>
-#else
+#elif USE_SDL2
 #include <imgui_impl_sdl.h>
+#else
+#error "Unknown LunaBase Backend"
 #endif
 #include <imgui_impl_opengl3.h>
 
@@ -75,7 +79,7 @@ int L_implGlfw_NewFrame(lua_State *L) {
   ImGui_ImplGlfw_NewFrame();
   return 0;
 }
-#else
+#elif USE_GLFW3
 int L_implSDL2_InitForOpenGL(lua_State *L) {
   const auto result = ImGui_ImplSDL2_InitForOpenGL(get_current_sdl_window(),
                                                    get_current_sdl_context());
@@ -92,6 +96,8 @@ int L_implSDL2_NewFrame(lua_State *L) {
   ImGui_ImplSDL2_NewFrame();
   return 0;
 }
+#else
+#error "Unknown LunaBaseBackend"
 #endif
 
 int L_implOpenGL3_NewFrame(lua_State *L) {

@@ -1,8 +1,10 @@
 #include "lua_sdl.hpp"
-#include "gl_common.hpp"
-#include "lua_sdl_impl.hpp"
 #include "lua_utils.hpp"
 
+#if USE_SDL2
+
+#include "gl_common.hpp"
+#include "lua_sdl_impl.hpp"
 #include <cstdint>
 
 namespace {
@@ -220,3 +222,15 @@ int start_sdl_main(lua_State *L) {
 #endif
   return 0;
 }
+#else
+namespace {
+int L_require(lua_State *L) {
+  lua_newtable(L);
+
+  return 1;
+}
+} // namespace
+void lua_open_sdl_libs(lua_State *L) {
+  luaL_requiref(L, "sdl", L_require, false);
+}
+#endif

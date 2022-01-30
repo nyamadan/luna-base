@@ -4,7 +4,7 @@ project(imgui VERSION 0.1.0)
 include(GNUInstallDirs)
 
 if(EMSCRIPTEN)
-  if(NOT USE_GLFW3)
+  if(USE_SDL2)
     set(CMAKE_CXX_FLAGS "-s USE_SDL=2")
   endif()
 endif()
@@ -20,8 +20,10 @@ set(SOURCES
 
 if(USE_GLFW3)
   list(APPEND SOURCES ${CMAKE_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
-else()
+elseif(USE_SDL2)
   list(APPEND SOURCES ${CMAKE_SOURCE_DIR}/backends/imgui_impl_sdl.cpp)
+else()
+  message(FATAL "Unknown LunaBase Platform")
 endif()
 
 add_library(imgui STATIC ${SOURCES})

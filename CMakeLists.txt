@@ -14,7 +14,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-set(USE_GLFW3 Off CACHE BOOL "Use GLFW2 without SDL2")
+set(LUNA_BASE_BACKEND "GLFW3" CACHE STRING "GLFW3 or SDL2")
 set(CMAKE_VERBOSE_MAKEFILE On)
 set(EXTERNALS_ROOT ${PROJECT_BINARY_DIR}/externals)
 set(EXTERNALS_INCLUDE_DIR 
@@ -22,7 +22,19 @@ set(EXTERNALS_INCLUDE_DIR
     ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/gl3w
 )
 
-if(NOT USE_GLFW3)
+if(LUNA_BASE_BACKEND STREQUAL "GLFW3")
+  set(USE_GLFW3 On)
+else()
+  set(USE_GLFW3 Off)
+endif()
+
+if(LUNA_BASE_BACKEND STREQUAL "SDL2")
+  set(USE_SDL2 On)
+else()
+  set(USE_SDL2 Off)
+endif()
+
+if(USE_SDL2)
   if(NOT EMSCRIPTEN)
     list(APPEND EXTERNALS_INCLUDE_DIR ${EXTERNALS_ROOT}/${CMAKE_INSTALL_INCLUDEDIR}/SDL2)
   else()
@@ -39,6 +51,10 @@ endif()
 
 if(USE_GLFW3)
   add_definitions(-DUSE_GLFW3)
+endif()
+
+if(USE_SDL2)
+  add_definitions(-DUSE_SDL2)
 endif()
 
 set(LIB_SOURCES
@@ -110,6 +126,7 @@ ExternalProject_Add(
   CMAKE_CACHE_ARGS
     -DEXTERNALS_INCLUDE_DIR:PATH=${EXTERNALS_INCLUDE_DIR}
     -DUSE_GLFW3:BOOL=${USE_GLFW3}
+    -DUSE_SDL2:BOOL=${USE_SDL2}
   PATCH_COMMAND
     ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/externals/imgui.cmake" <SOURCE_DIR>/CMakeLists.txt
 )
@@ -330,7 +347,7 @@ if(NOT EMSCRIPTEN)
     add_dependencies(lua_gl_bindings GLFW3)
     add_dependencies(imgui GLFW3)
     list(APPEND LUNA_BASE_LIBS ${GLFW3_LIB})
-  else()
+  elseif(USE_SDL2)
     if(MSVC)
       if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
         set(SDL2_LIB ${EXTERNALS_ROOT}/${CMAKE_INSTALL_LIBDIR}/SDL2-staticd.lib)
@@ -363,6 +380,8 @@ if(NOT EMSCRIPTEN)
     elseif(MINGW)
       list(APPEND LUNA_BASE_LIBS -lwinmm -limm32 -lsetupapi -lversion)
     endif()
+  else()
+    message(FATAL "Unknown LunaBaseBackend")
   endif()
 
   ExternalProject_Add(
@@ -390,7 +409,7 @@ if (MSVC)
 endif()
 target_include_directories(main PRIVATE ${EXTERNALS_INCLUDE_DIR})
 set(MAIN_LIBS ${LUNA_BASE_LIBS})
-if(NOT USE_GLFW3)
+if(USE_SDL2)
   list(APPEND MAIN_LIBS ${SDL2MAIN_LIB})
 endif()
 target_link_libraries(main ${MAIN_LIBS})
@@ -408,7 +427,7 @@ if(USE_GLFW3)
     -s FORCE_FILESYSTEM=1 \
     -s \"EXPORTED_RUNTIME_METHODS=['FS']\" \
     ")
-else()
+elseif(USE_SDL2)
   set(EMSCRIPTEN_LINK_FLAGS "\
     --use-preload-plugins \
     -s WASM=1 \
@@ -422,6 +441,8 @@ else()
     -s FORCE_FILESYSTEM=1 \
     -s \"EXPORTED_RUNTIME_METHODS=['FS']\" \
     ")
+else()
+  message(FATAL "Unknown LunaBase Backend")
 endif()
 
 if(EMSCRIPTEN)
