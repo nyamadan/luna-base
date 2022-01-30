@@ -79,7 +79,7 @@ int L_implGlfw_NewFrame(lua_State *L) {
   ImGui_ImplGlfw_NewFrame();
   return 0;
 }
-#elif USE_GLFW3
+#elif USE_SDL2
 int L_implSDL2_InitForOpenGL(lua_State *L) {
   const auto result = ImGui_ImplSDL2_InitForOpenGL(get_current_sdl_window(),
                                                    get_current_sdl_context());
