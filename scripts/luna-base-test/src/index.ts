@@ -9,7 +9,6 @@ import "./test_i8array";
 import "./test_image";
 import "./test_logger";
 import "./test_lunax";
-import "./test_msgpack";
 import "./test_native_buffer";
 import "./test_node";
 import "./test_pointer_array";
