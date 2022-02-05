@@ -3,7 +3,7 @@ import * as glfw from "glfw";
 import * as imgui from "imgui";
 import { isEmscripten } from "luna-base-utils";
 import * as sdl from "sdl";
-import { dbg } from "../../logger";
+import { dbg, logger } from "../../logger";
 import mat4 from "../../math/mat4";
 import { allocTableName, getMetatableName } from "../../tables";
 import { createGLRendererTask } from "./gl_renderer_task";
@@ -170,6 +170,23 @@ const prototype: ApplicationTaskPrototype =
                 update: () => {
                   glfw.pollEvents();
                   this.updateRefs();
+
+                  for(const key of glfw.getKeyEvents()) {
+                    if(key.action === glfw.PRESS) {
+                      logger.debug("PRESS");
+                      dbg(key);
+                    }
+                    if(key.action === glfw.RELEASE) {
+                      logger.debug("RELEASE");
+                      dbg(key);
+                    }
+                    if(key.action === glfw.REPEAT) {
+                      logger.debug("REPEAT");
+                      dbg(key);
+                    }
+                  }
+                  glfw.clearKeyEvents();
+
                   state = this.setup(state);
                   state = this.update(state);
                   state = this.updateWorld(state, mat4.create());

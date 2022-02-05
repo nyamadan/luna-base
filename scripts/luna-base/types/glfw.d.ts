@@ -12,9 +12,27 @@ declare module "glfw" {
   export const OPENGL_FORWARD_COMPAT: number;
   export const OPENGL_PROFILE: number;
   export const OPENGL_CORE_PROFILE: number;
-  export const OPENGL_DEBUG_CONTEXT: number; 
+  export const OPENGL_DEBUG_CONTEXT: number;
+  export const PRESS: number;
+  export const RELEASE: number;
+  export const REPEAT: number;
+  export const MOD_SHIFT: number;
+  export const MOD_CONTROL: number;
+  export const MOD_ALT: number;
+  export const MOD_SUPER: number;
+  export const MOD_CAPS_LOCK: number;
+  export const MOD_NUM_LOCK: number;
 
   export function windowHint(hint: number, value: number): void;
+
+  export function getKeyEvents(): Array<{
+    key: number;
+    scancode: number;
+    action: number;
+    mods: number;
+  }>;
+  export function clearKeyEvents(): void;
+
   export function init(): void;
   export function start(args: {
     width: number;

@@ -5,9 +5,53 @@
 #include "gl_common.hpp"
 #include "lua_glfw_impl.hpp"
 #include <cstdint>
+#include <vector>
 namespace {
+struct KeyEvent {
+  int key;
+  int scancode;
+  int action;
+  int mods;
+};
+
 GLFWwindow *g_main_window = nullptr;
 lua_Integer g_glfw_update_ref = LUA_REFNIL;
+std::vector<KeyEvent> g_key_events;
+
+void keyCallback(GLFWwindow *window, int key, int scancode, int action,
+                 int mods) {
+  g_key_events.push_back(KeyEvent{key, scancode, action, mods});
+}
+
+int L_getKeyEvents(lua_State *L) {
+  lua_newtable(L);
+
+  for (auto iter = g_key_events.cbegin(); iter != g_key_events.cend(); ++iter) {
+    lua_newtable(L);
+
+    lua_pushinteger(L, iter->key);
+    lua_setfield(L, -2, "key");
+
+    lua_pushinteger(L, iter->scancode);
+    lua_setfield(L, -2, "scancode");
+
+    lua_pushinteger(L, iter->action);
+    lua_setfield(L, -2, "action");
+
+    lua_pushinteger(L, iter->mods);
+    lua_setfield(L, -2, "mods");
+
+    auto idx = iter - g_key_events.cbegin() + 1;
+    lua_rawseti(L, -2, idx);
+  }
+
+  return 1;
+}
+
+int L_clearKeyEvents(lua_State *L) {
+  g_key_events.clear();
+  return 0;
+}
 
 int L_init(lua_State *L) {
   if (!glfwInit()) {
@@ -23,6 +67,11 @@ int L_start(lua_State *L) {
   lua_getfield(L, 1, "height");
   lua_Integer h = luaL_checkinteger(L, -1);
 
+  if (g_main_window != nullptr) {
+    luaL_error(L, "g_main_windows is not null.");
+    return 0;
+  }
+
   g_main_window = glfwCreateWindow(static_cast<int>(w), static_cast<int>(h), "",
                                    NULL, NULL);
   if (!g_main_window) {
@@ -30,6 +79,8 @@ int L_start(lua_State *L) {
     luaL_error(L, "Failed: glfwCreateWindow");
     return 0;
   }
+
+  glfwSetKeyCallback(g_main_window, keyCallback);
 
   glfwMakeContextCurrent(g_main_window);
 
@@ -39,6 +90,7 @@ int L_start(lua_State *L) {
     return 0;
   }
 #endif
+
   lua_getfield(L, 1, "update");
   g_glfw_update_ref = luaL_ref(L, LUA_REGISTRYINDEX);
   lua_getfield(L, 1, "start");
@@ -136,8 +188,34 @@ int L_require(lua_State *L) {
   lua_pushinteger(L, GLFW_OPENGL_DEBUG_CONTEXT);
   lua_setfield(L, -2, "OPENGL_DEBUG_CONTEXT");
 
+  lua_pushinteger(L, GLFW_RELEASE);
+  lua_setfield(L, -2, "RELEASE");
+  lua_pushinteger(L, GLFW_PRESS);
+  lua_setfield(L, -2, "PRESS");
+  lua_pushinteger(L, GLFW_REPEAT);
+  lua_setfield(L, -2, "REPEAT");
+
+  lua_pushinteger(L, GLFW_MOD_SHIFT);
+  lua_setfield(L, -2, "MOD_SHIFT");
+  lua_pushinteger(L, GLFW_MOD_CONTROL);
+  lua_setfield(L, -2, "MOD_CONTROL");
+  lua_pushinteger(L, GLFW_MOD_ALT);
+  lua_setfield(L, -2, "MOD_ALT");
+  lua_pushinteger(L, GLFW_MOD_SUPER);
+  lua_setfield(L, -2, "MOD_SUPER");
+  lua_pushinteger(L, GLFW_MOD_CAPS_LOCK);
+  lua_setfield(L, -2, "CAPS_LOCK");
+  lua_pushinteger(L, GLFW_MOD_NUM_LOCK);
+  lua_setfield(L, -2, "NUM_LOCK");
+
   lua_pushcfunction(L, L_windowHint);
   lua_setfield(L, -2, "windowHint");
+
+  lua_pushcfunction(L, L_getKeyEvents);
+  lua_setfield(L, -2, "getKeyEvents");
+
+  lua_pushcfunction(L, L_clearKeyEvents);
+  lua_setfield(L, -2, "clearKeyEvents");
 
   lua_pushcfunction(L, L_init);
   lua_setfield(L, -2, "init");

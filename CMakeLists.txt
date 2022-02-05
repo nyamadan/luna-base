@@ -14,7 +14,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-set(LUNA_BASE_BACKEND "GLFW3" CACHE STRING "GLFW3 or SDL2")
+set(LUNA_BASE_BACKEND "SDL2" CACHE STRING "GLFW3 or SDL2")
 set(CMAKE_VERBOSE_MAKEFILE On)
 set(EXTERNALS_ROOT ${PROJECT_BINARY_DIR}/externals)
 
