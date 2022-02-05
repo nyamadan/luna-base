@@ -20,7 +20,6 @@ import {
 
 const TABLE_NAME = allocTableName("LUA_TYPE_APPLICATION_TASK");
 
-
 interface ApplicationTaskField extends NodeTaskField {
   readonly width: number;
   readonly height: number;
@@ -127,17 +126,45 @@ const prototype: ApplicationTaskPrototype =
                         });
                         break;
                       }
+                      case sdl.SDL_MOUSEBUTTONUP:
                       case sdl.SDL_MOUSEBUTTONDOWN: {
+                        let type: "MOUSE_BUTTON_DOWN" | "MOUSE_BUTTON_UP";
+                        switch (ev.type) {
+                          case sdl.SDL_MOUSEBUTTONUP: {
+                            type = "MOUSE_BUTTON_UP";
+                            break;
+                          }
+                          case sdl.SDL_MOUSEBUTTONDOWN: {
+                            type = "MOUSE_BUTTON_DOWN";
+                            break;
+                          }
+                          default: {
+                            error(`Unknown type: ${ev.type}`);
+                          }
+                        }
+
+                        let button: number;
+                        switch (ev.button.button) {
+                          case 1: {
+                            button = 1;
+                            break;
+                          }
+                          case 3: {
+                            button = 2;
+                            break;
+                          }
+                          case 2: {
+                            button = 3;
+                            break;
+                          }
+                          default: {
+                            button = ev.button.button;
+                            break;
+                          }
+                        }
                         inputEvents.push({
-                          type: "MOUSE_BUTTON_DOWN",
-                          button: ev.button.button,
-                        });
-                        break;
-                      }
-                      case sdl.SDL_MOUSEBUTTONUP: {
-                        inputEvents.push({
-                          type: "MOUSE_BUTTON_UP",
-                          button: ev.button.button,
+                          type,
+                          button,
                         });
                         break;
                       }
@@ -216,14 +243,14 @@ const prototype: ApplicationTaskPrototype =
                           case glfw.PRESS: {
                             inputEvents.push({
                               type: "MOUSE_BUTTON_DOWN",
-                              button: ev.button,
+                              button: ev.button + 1,
                             });
                             break;
                           }
                           case glfw.RELEASE: {
                             inputEvents.push({
                               type: "MOUSE_BUTTON_UP",
-                              button: ev.button,
+                              button: ev.button + 1,
                             });
                             break;
                           }

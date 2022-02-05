@@ -299,7 +299,6 @@ int L_require(lua_State *L) {
   lua_setfield(L, -2, "SDL_TEXTINPUT");
   lua_pushinteger(L, SDL_KEYMAPCHANGED);
   lua_setfield(L, -2, "SDL_KEYMAPCHANGED");
-
   lua_pushinteger(L, SDL_MOUSEMOTION);
   lua_setfield(L, -2, "SDL_MOUSEMOTION");
   lua_pushinteger(L, SDL_MOUSEBUTTONDOWN);
