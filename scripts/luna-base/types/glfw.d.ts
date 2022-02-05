@@ -33,6 +33,18 @@ declare module "glfw" {
   }>;
   export function clearKeyEvents(): void;
 
+  export function getMouseEvents(): Array<
+    | {
+        event: "button";
+      }
+    | {
+        event: "position";
+        xpos: number;
+        ypos: number;
+      }
+  >;
+  export function clearMouseEvents(): void;
+
   export function init(): void;
   export function start(args: {
     width: number;

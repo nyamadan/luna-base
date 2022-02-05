@@ -7,20 +7,37 @@
 #include <cstdint>
 #include <vector>
 namespace {
+GLFWwindow *g_main_window = nullptr;
+lua_Integer g_glfw_update_ref = LUA_REFNIL;
+
 struct KeyEvent {
   int key;
   int scancode;
   int action;
   int mods;
 };
-
-GLFWwindow *g_main_window = nullptr;
-lua_Integer g_glfw_update_ref = LUA_REFNIL;
 std::vector<KeyEvent> g_key_events;
+
+enum MouseEventType {
+  POSITION,
+  BUTTON,
+};
+struct MouseEvent {
+  MouseEventType event;
+  double xpos;
+  double ypos;
+};
+
+std::vector<MouseEvent> g_mouse_events;
 
 void keyCallback(GLFWwindow *window, int key, int scancode, int action,
                  int mods) {
   g_key_events.push_back(KeyEvent{key, scancode, action, mods});
+}
+
+static void cursorPositionCallback(GLFWwindow *window, double xpos,
+                                   double ypos) {
+  g_mouse_events.push_back(MouseEvent{POSITION, xpos, ypos});
 }
 
 int L_getKeyEvents(lua_State *L) {
@@ -53,6 +70,48 @@ int L_clearKeyEvents(lua_State *L) {
   return 0;
 }
 
+int L_getMouseEvents(lua_State *L) {
+  lua_newtable(L);
+
+  for (auto iter = g_mouse_events.cbegin(); iter != g_mouse_events.cend();
+       ++iter) {
+    lua_newtable(L);
+
+    switch (iter->event) {
+    case POSITION: {
+      lua_pushstring(L, "position");
+      lua_setfield(L, -2, "event");
+
+      lua_pushnumber(L, static_cast<lua_Number>(iter->xpos));
+      lua_setfield(L, -2, "xpos");
+
+      lua_pushnumber(L, static_cast<lua_Number>(iter->ypos));
+      lua_setfield(L, -2, "ypos");
+      break;
+    }
+
+    case BUTTON: {
+      lua_pushstring(L, "button");
+      lua_setfield(L, -2, "event");
+      break;
+    }
+
+    default: {
+      luaL_error(L, "unknown event type: %d", iter->event);
+    }
+    }
+    auto idx = iter - g_mouse_events.cbegin() + 1;
+    lua_rawseti(L, -2, idx);
+  }
+
+  return 1;
+}
+
+int L_clearMouseEvents(lua_State *L) {
+  g_mouse_events.clear();
+  return 0;
+}
+
 int L_init(lua_State *L) {
   if (!glfwInit()) {
     luaL_error(L, "Failed: glfwInit");
@@ -81,6 +140,7 @@ int L_start(lua_State *L) {
   }
 
   glfwSetKeyCallback(g_main_window, keyCallback);
+  glfwSetCursorPosCallback(g_main_window, cursorPositionCallback);
 
   glfwMakeContextCurrent(g_main_window);
 
@@ -210,6 +270,12 @@ int L_require(lua_State *L) {
 
   lua_pushcfunction(L, L_windowHint);
   lua_setfield(L, -2, "windowHint");
+
+  lua_pushcfunction(L, L_getMouseEvents);
+  lua_setfield(L, -2, "getMouseEvents");
+
+  lua_pushcfunction(L, L_clearMouseEvents);
+  lua_setfield(L, -2, "clearMouseEvents");
 
   lua_pushcfunction(L, L_getKeyEvents);
   lua_setfield(L, -2, "getKeyEvents");

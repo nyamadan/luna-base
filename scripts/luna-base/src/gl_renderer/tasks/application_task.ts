@@ -171,16 +171,21 @@ const prototype: ApplicationTaskPrototype =
                   glfw.pollEvents();
                   this.updateRefs();
 
-                  for(const key of glfw.getKeyEvents()) {
-                    if(key.action === glfw.PRESS) {
+                  for (const mouse of glfw.getMouseEvents()) {
+                    dbg(mouse);
+                  }
+                  glfw.clearMouseEvents();
+
+                  for (const key of glfw.getKeyEvents()) {
+                    if (key.action === glfw.PRESS) {
                       logger.debug("PRESS");
                       dbg(key);
                     }
-                    if(key.action === glfw.RELEASE) {
+                    if (key.action === glfw.RELEASE) {
                       logger.debug("RELEASE");
                       dbg(key);
                     }
-                    if(key.action === glfw.REPEAT) {
+                    if (key.action === glfw.REPEAT) {
                       logger.debug("REPEAT");
                       dbg(key);
                     }
