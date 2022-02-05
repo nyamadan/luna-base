@@ -201,6 +201,9 @@ int L_start(lua_State *L) {
 
 #ifndef __EMSCRIPTEN__
   if (gl3wInit() != 0) {
+    SDL_GL_DeleteContext(g_current_context);
+    SDL_DestroyWindow(g_current_window);
+    SDL_Quit();
     luaL_error(L, "Failed: gl3wInit");
     return 0;
   }
@@ -329,8 +332,14 @@ int start_sdl_main(lua_State *L) {
     update(L);
   }
 
-  SDL_GL_DeleteContext(g_current_context);
-  SDL_DestroyWindow(g_current_window);
+  if (g_current_context != nullptr) {
+    SDL_GL_DeleteContext(g_current_context);
+  }
+
+  if (g_current_window != nullptr) {
+    SDL_DestroyWindow(g_current_window);
+  }
+
   SDL_Quit();
 #else
   emscripten_set_main_loop_arg(update, L, 0, true);
