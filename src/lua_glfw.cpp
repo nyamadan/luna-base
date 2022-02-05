@@ -259,6 +259,13 @@ int L_require(lua_State *L) {
   lua_pushinteger(L, GLFW_OPENGL_DEBUG_CONTEXT);
   lua_setfield(L, -2, "OPENGL_DEBUG_CONTEXT");
 
+  lua_pushinteger(L, GLFW_MOUSE_BUTTON_LEFT);
+  lua_setfield(L, -2, "MOUSE_BUTTON_LEFT");
+  lua_pushinteger(L, GLFW_MOUSE_BUTTON_MIDDLE);
+  lua_setfield(L, -2, "MOUSE_BUTTON_MIDDLE");
+  lua_pushinteger(L, GLFW_MOUSE_BUTTON_RIGHT);
+  lua_setfield(L, -2, "MOUSE_BUTTON_RIGHT");
+
   lua_pushinteger(L, GLFW_RELEASE);
   lua_setfield(L, -2, "RELEASE");
   lua_pushinteger(L, GLFW_PRESS);

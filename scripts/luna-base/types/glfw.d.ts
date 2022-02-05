@@ -16,6 +16,9 @@ declare module "glfw" {
   export const PRESS: number;
   export const RELEASE: number;
   export const REPEAT: number;
+  export const MOUSE_BUTTON_LEFT: number;
+  export const MOUSE_BUTTON_RIGHT: number;
+  export const MOUSE_BUTTON_MIDDLE: number;
   export const MOD_SHIFT: number;
   export const MOD_CONTROL: number;
   export const MOD_ALT: number;

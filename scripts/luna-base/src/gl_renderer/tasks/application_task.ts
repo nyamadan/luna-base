@@ -3,10 +3,11 @@ import * as glfw from "glfw";
 import * as imgui from "imgui";
 import { isEmscripten } from "luna-base-utils";
 import * as sdl from "sdl";
-import { dbg, logger } from "../../logger";
 import mat4 from "../../math/mat4";
 import { allocTableName, getMetatableName } from "../../tables";
+import { InputEvent } from "./application_event";
 import { createGLRendererTask } from "./gl_renderer_task";
+import { createInputTask } from "./input_task";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -18,6 +19,7 @@ import {
 } from "./node_task";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_APPLICATION_TASK");
+
 
 interface ApplicationTaskField extends NodeTaskField {
   readonly width: number;
@@ -47,6 +49,7 @@ const prototype: ApplicationTaskPrototype =
             math.randomseed(math.floor(os.clock() * 1e11));
 
             this.tasks.push(createGLRendererTask());
+            this.tasks.push(createInputTask());
 
             let state = initCommandState(null);
 
@@ -90,48 +93,68 @@ const prototype: ApplicationTaskPrototype =
                   imgui.implOpenGL3_Init();
                 },
                 update: () => {
+                  const inputEvents: InputEvent[] = [];
+
                   for (
                     let [result, ev] = sdl.pollEvent();
                     result !== 0;
                     [result, ev] = sdl.pollEvent()
                   ) {
                     imgui.implSDL2_ProcessEvent();
-
-                    if (ev.type === sdl.SDL_KEYDOWN) {
-                      print("DOWN");
-                      dbg(ev.key);
-                    }
-
-                    if (ev.type === sdl.SDL_KEYUP) {
-                      print("UP");
-                      dbg(ev.key);
-                    }
-
-                    if (ev.type === sdl.SDL_MOUSEMOTION) {
-                      print("MOTION");
-                      dbg(ev.motion);
-                    }
-
-                    if (ev.type === sdl.SDL_MOUSEBUTTONDOWN) {
-                      print("BUTTONDOWN");
-                      dbg(ev.button);
-                    }
-
-                    if (ev.type === sdl.SDL_MOUSEBUTTONUP) {
-                      print("BUTTONUP");
-                      dbg(ev.button);
-                    }
-
                     if (
                       ev.type === sdl.SDL_WINDOWEVENT &&
                       ev.window.event === sdl.SDL_WINDOWEVENT_CLOSE
                     ) {
                       sdl.setShouldWindowClose(true);
                     }
+
+                    switch (ev.type) {
+                      case sdl.SDL_KEYDOWN: {
+                        if (ev.key.repeat != 0) {
+                          break;
+                        }
+
+                        inputEvents.push({
+                          type: "KEY_DOWN",
+                          code: ev.key.keysym.sym,
+                        });
+                        break;
+                      }
+                      case sdl.SDL_KEYUP: {
+                        inputEvents.push({
+                          type: "KEY_UP",
+                          code: ev.key.keysym.sym,
+                        });
+                        break;
+                      }
+                      case sdl.SDL_MOUSEBUTTONDOWN: {
+                        inputEvents.push({
+                          type: "MOUSE_BUTTON_DOWN",
+                          button: ev.button.button,
+                        });
+                        break;
+                      }
+                      case sdl.SDL_MOUSEBUTTONUP: {
+                        inputEvents.push({
+                          type: "MOUSE_BUTTON_UP",
+                          button: ev.button.button,
+                        });
+                        break;
+                      }
+                      case sdl.SDL_MOUSEMOTION: {
+                        inputEvents.push({
+                          type: "MOUSE_MOVE",
+                          posx: ev.motion.x,
+                          posy: ev.motion.y,
+                        });
+                        break;
+                      }
+                    }
                   }
 
                   this.updateRefs();
                   state = this.setup(state);
+                  state = this.input(state, inputEvents);
                   state = this.update(state);
                   state = this.updateWorld(state, mat4.create());
                   state = this.render(state);
@@ -168,31 +191,61 @@ const prototype: ApplicationTaskPrototype =
                   imgui.implOpenGL3_Init();
                 },
                 update: () => {
+                  const inputEvents: InputEvent[] = [];
+
                   glfw.pollEvents();
                   this.updateRefs();
 
-                  for (const mouse of glfw.getMouseEvents()) {
-                    dbg(mouse);
+                  for (const ev of glfw.getKeyEvents()) {
+                    switch (ev.action) {
+                      case glfw.PRESS: {
+                        inputEvents.push({ type: "KEY_DOWN", code: ev.key });
+                        break;
+                      }
+                      case glfw.RELEASE: {
+                        inputEvents.push({ type: "KEY_UP", code: ev.key });
+                        break;
+                      }
+                    }
                   }
-                  glfw.clearMouseEvents();
 
-                  for (const key of glfw.getKeyEvents()) {
-                    if (key.action === glfw.PRESS) {
-                      logger.debug("PRESS");
-                      dbg(key);
-                    }
-                    if (key.action === glfw.RELEASE) {
-                      logger.debug("RELEASE");
-                      dbg(key);
-                    }
-                    if (key.action === glfw.REPEAT) {
-                      logger.debug("REPEAT");
-                      dbg(key);
+                  for (const ev of glfw.getMouseEvents()) {
+                    switch (ev.event) {
+                      case "button": {
+                        switch (ev.action) {
+                          case glfw.PRESS: {
+                            inputEvents.push({
+                              type: "MOUSE_BUTTON_DOWN",
+                              button: ev.button,
+                            });
+                            break;
+                          }
+                          case glfw.RELEASE: {
+                            inputEvents.push({
+                              type: "MOUSE_BUTTON_UP",
+                              button: ev.button,
+                            });
+                            break;
+                          }
+                        }
+                        break;
+                      }
+                      case "position": {
+                        inputEvents.push({
+                          type: "MOUSE_MOVE",
+                          posx: ev.xpos,
+                          posy: ev.ypos,
+                        });
+                        break;
+                      }
                     }
                   }
+
+                  glfw.clearMouseEvents();
                   glfw.clearKeyEvents();
 
                   state = this.setup(state);
+                  state = this.input(state, inputEvents);
                   state = this.update(state);
                   state = this.updateWorld(state, mat4.create());
                   state = this.render(state);

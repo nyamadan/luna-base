@@ -7,6 +7,7 @@ import { Geometry } from "../geometry";
 import { Image } from "../image";
 import { createBasicTransform } from "../transforms/basic_transform";
 import { TransformType } from "../transforms/transform";
+import { InputEvent } from "./application_event";
 
 interface CommandInterface {
   name: string;
@@ -16,6 +17,11 @@ interface CommandInterface {
 
 interface SetupCommand extends CommandInterface {
   name: "setup";
+}
+
+interface InputCommand extends CommandInterface {
+  name: "input";
+  inputEvents: ReadonlyArray<InputEvent>;
 }
 
 interface UpdateCommand extends CommandInterface {
@@ -36,6 +42,7 @@ interface RenderCommand extends CommandInterface {
 }
 
 export type Command =
+  | InputCommand
   | PreRenderCommand
   | RenderCommand
   | SetupCommand
@@ -87,6 +94,25 @@ const nodeTaskPrototype: Readonly<Omit<NodeTaskPrototype, "run">> = {
         }
       }
     );
+    return state;
+  },
+  input(state, inputEvents) {
+    this.traverse((node) => {
+      if (!node.enabled) {
+        return false;
+      }
+
+      const [ok, err] = xpcall(() => {
+        state = node.runCommand(
+          { name: "input", source: this, node, inputEvents },
+          state
+        );
+      }, debug.traceback);
+
+      if (!ok) {
+        logger.error("%s", err);
+      }
+    });
     return state;
   },
   update(state) {
@@ -338,6 +364,11 @@ export interface NodeTaskPrototype<T extends NodeTaskType = NodeTaskType>
   ): CommandState;
   updateRefs(this: NodeTaskType): void;
   setup(this: NodeTaskType, state: CommandState): RunTaskResult;
+  input(
+    this: NodeTaskType,
+    state: CommandState,
+    inputEvents: ReadonlyArray<InputEvent>
+  ): RunTaskResult;
   update(this: NodeTaskType, state: CommandState): RunTaskResult;
   updateWorld(
     this: NodeTaskType,
