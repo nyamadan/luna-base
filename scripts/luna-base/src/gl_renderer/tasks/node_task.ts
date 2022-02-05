@@ -49,15 +49,33 @@ export type Command =
   | UpdateCommand
   | UpdateWorldCommand;
 
+interface KeyState {
+  state: Record<string, "DOWN" | "UP" | undefined>;
+}
+
+interface MouseState {
+  state: Record<string, "DOWN" | "UP" | undefined>;
+  x: number;
+  y: number;
+}
 export interface CommandState {
   worlds: Record<NodeTaskId, F32Mat4 | undefined>;
   images: Record<NodeTaskId, Image | undefined>;
   geometries: Record<NodeTaskId, Geometry | undefined>;
+  keys: KeyState;
+  mouse: MouseState;
   userdata: any;
 }
 
 export function initCommandState(this: void, userdata: any): CommandState {
-  return { images: {}, worlds: {}, geometries: {}, userdata };
+  return {
+    images: {},
+    worlds: {},
+    geometries: {},
+    keys: { state: {} },
+    mouse: { state: {}, x: 0, y: 0 },
+    userdata,
+  };
 }
 
 type RunTaskResult = CommandState;

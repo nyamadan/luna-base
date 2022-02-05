@@ -179,9 +179,10 @@ int L_start(lua_State *L) {
   }
 #endif
 
-  if ((g_current_window = SDL_CreateWindow(
-           "", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-           static_cast<int>(width), static_cast<int>(height), flags)) == 0) {
+  if ((g_current_window =
+           SDL_CreateWindow("LunaBase Engine (SDL2)", SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED, static_cast<int>(width),
+                            static_cast<int>(height), flags)) == 0) {
     SDL_Quit();
     luaL_error(L, "Failed: SDL_CreateWindow");
     return 0;

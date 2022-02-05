@@ -7,6 +7,7 @@ import "./test_i16array";
 import "./test_i32array";
 import "./test_i8array";
 import "./test_image";
+import "./test_input_task";
 import "./test_logger";
 import "./test_lunax";
 import "./test_native_buffer";

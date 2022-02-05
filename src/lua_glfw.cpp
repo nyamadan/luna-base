@@ -141,8 +141,8 @@ int L_start(lua_State *L) {
     return 0;
   }
 
-  g_main_window = glfwCreateWindow(static_cast<int>(w), static_cast<int>(h), "",
-                                   NULL, NULL);
+  g_main_window = glfwCreateWindow(static_cast<int>(w), static_cast<int>(h),
+                                   "LunaBase Engine (GLFW3)", NULL, NULL);
   if (!g_main_window) {
     glfwTerminate();
     luaL_error(L, "Failed: glfwCreateWindow");

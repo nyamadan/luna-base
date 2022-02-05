@@ -1,5 +1,5 @@
-import { dbg } from "../../logger";
 import { allocTableName, getMetatableName } from "../../tables";
+import { safeUnreachable } from "../../unreachable";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -25,10 +25,45 @@ const prototype: InputTaskPrototype = createNodeTaskPrototype({
   run: function (command, state) {
     switch (command.name) {
       case "input": {
+        let keys = { ...state.keys };
+        let mouse = { ...state.mouse };
         for (const ev of command.inputEvents) {
-          dbg(ev);
+          switch (ev.type) {
+            case "KEY_DOWN": {
+              const state = { ...keys.state };
+              state[ev.code] = "DOWN";
+              keys = { ...keys, state };
+              break;
+            }
+            case "KEY_UP": {
+              const state = { ...keys.state };
+              state[ev.code] = "UP";
+              keys = { ...keys, state };
+              break;
+            }
+            case "MOUSE_BUTTON_DOWN": {
+              const state = { ...mouse.state };
+              state[ev.button] = "DOWN";
+              mouse = { ...mouse, state };
+              break;
+            }
+            case "MOUSE_BUTTON_UP": {
+              const state = { ...mouse.state };
+              state[ev.button] = "UP";
+              mouse = { ...mouse, state };
+              break;
+            }
+            case "MOUSE_MOVE": {
+              mouse = { ...mouse, ...{ x: ev.posx, y: ev.posy } };
+              break;
+            }
+            default: {
+              safeUnreachable(ev);
+            }
+          }
         }
-        return state;
+
+        return { ...state, keys, mouse };
       }
       default: {
         return state;
