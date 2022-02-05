@@ -36,6 +36,9 @@ declare module "glfw" {
   export function getMouseEvents(): Array<
     | {
         event: "button";
+        button: number;
+        action: number;
+        mods: number;
       }
     | {
         event: "position";

@@ -26,6 +26,9 @@ struct MouseEvent {
   MouseEventType event;
   double xpos;
   double ypos;
+  int button;
+  int action;
+  int mods;
 };
 
 std::vector<MouseEvent> g_mouse_events;
@@ -35,9 +38,12 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action,
   g_key_events.push_back(KeyEvent{key, scancode, action, mods});
 }
 
-static void cursorPositionCallback(GLFWwindow *window, double xpos,
-                                   double ypos) {
-  g_mouse_events.push_back(MouseEvent{POSITION, xpos, ypos});
+void cursorPositionCallback(GLFWwindow *window, double xpos, double ypos) {
+  g_mouse_events.push_back(MouseEvent{POSITION, xpos, ypos, 0, 0, 0});
+}
+
+void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+  g_mouse_events.push_back(MouseEvent{BUTTON, 0, 0, button, action, mods});
 }
 
 int L_getKeyEvents(lua_State *L) {
@@ -81,10 +87,8 @@ int L_getMouseEvents(lua_State *L) {
     case POSITION: {
       lua_pushstring(L, "position");
       lua_setfield(L, -2, "event");
-
       lua_pushnumber(L, static_cast<lua_Number>(iter->xpos));
       lua_setfield(L, -2, "xpos");
-
       lua_pushnumber(L, static_cast<lua_Number>(iter->ypos));
       lua_setfield(L, -2, "ypos");
       break;
@@ -93,6 +97,12 @@ int L_getMouseEvents(lua_State *L) {
     case BUTTON: {
       lua_pushstring(L, "button");
       lua_setfield(L, -2, "event");
+      lua_pushinteger(L, iter->button);
+      lua_setfield(L, -2, "button");
+      lua_pushinteger(L, iter->action);
+      lua_setfield(L, -2, "action");
+      lua_pushinteger(L, iter->mods);
+      lua_setfield(L, -2, "mods");
       break;
     }
 
@@ -141,6 +151,7 @@ int L_start(lua_State *L) {
 
   glfwSetKeyCallback(g_main_window, keyCallback);
   glfwSetCursorPosCallback(g_main_window, cursorPositionCallback);
+  glfwSetMouseButtonCallback(g_main_window, mouseButtonCallback);
 
   glfwMakeContextCurrent(g_main_window);
 
