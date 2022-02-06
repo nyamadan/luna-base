@@ -1,11 +1,11 @@
 import "luna-base";
 import { createF32Vec4 } from "luna-base/dist/buffers/f32array";
-import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import LunaX from "luna-base/dist/gl_renderer/lunax";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import { isApplicationTask } from "luna-base/dist/gl_renderer/tasks/application_task";
 import GeometryTask from "luna-base/dist/gl_renderer/tasks/geometry_task";
 import ImageTask from "luna-base/dist/gl_renderer/tasks/image_task";
+import { createImguiRenderNodesTask } from "luna-base/dist/gl_renderer/tasks/imgui_render_nodes_task";
 import MaterialTask from "luna-base/dist/gl_renderer/tasks/material_task";
 import NodeTask, {
   createNodeTaskPrototype,
@@ -54,10 +54,6 @@ export default function createLunaXNode(this: void) {
           assertBasicTransform(tr);
           return state;
         }
-        case "render": {
-          imguiRenderNodes(node);
-          return state;
-        }
         default: {
           return state;
         }
@@ -77,6 +73,7 @@ export default function createLunaXNode(this: void) {
             top: 1.0,
             bottom: -1.0,
           }),
+          tasks: [createImguiRenderNodesTask()],
         },
         runner
       )}

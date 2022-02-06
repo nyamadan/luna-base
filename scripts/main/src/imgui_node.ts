@@ -2,6 +2,7 @@ import * as imgui from "imgui";
 import { showDemoWindow } from "imgui";
 import "luna-base";
 import { createI32Array } from "luna-base/dist/buffers/i32array";
+import { createImguiRenderNodesTask } from "luna-base/dist/gl_renderer/tasks/imgui_render_nodes_task";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -10,7 +11,9 @@ import { createNullTask } from "luna-base/dist/gl_renderer/tasks/null_task";
 import { logger } from "luna-base/dist/logger";
 
 export default function createImguiNode(this: void) {
-  const root = createNullTask();
+  const root = createNullTask({
+    tasks: [createImguiRenderNodesTask()],
+  });
 
   const render = coroutine.create(function (this: void) {
     const e = createI32Array(1);

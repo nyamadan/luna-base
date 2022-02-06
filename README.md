@@ -25,7 +25,7 @@ Lua / TypeScriptで記述可能なグラフィクスエンジン。
  * [x] SDLにさしかえ
  * [x] MessagePackをいったん消す
  * [x] キーボード入力を実装する
- * [ ] Render IMGUIのタスクを作成
+ * [x] Render IMGUIのタスクを作成
  * [ ] スプライトアニメーションを試す
  * [ ] TypescriptTransformを試す
  * [ ] glslangを使う

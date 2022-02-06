@@ -1,10 +1,10 @@
 import "luna-base";
 import { createBasicMaterial } from "luna-base/dist/gl_renderer/basic_shader_program";
-import { imguiRenderNodes } from "luna-base/dist/gl_renderer/imgui_render_nodes";
 import { createPlaneGeometryXY } from "luna-base/dist/gl_renderer/primitives";
 import { createSubMesh } from "luna-base/dist/gl_renderer/sub_mesh";
 import { createGeometryTask } from "luna-base/dist/gl_renderer/tasks/geometry_task";
 import { createImageTask } from "luna-base/dist/gl_renderer/tasks/image_task";
+import { createImguiRenderNodesTask } from "luna-base/dist/gl_renderer/tasks/imgui_render_nodes_task";
 import {
   CommandState,
   createNodeTaskPrototype,
@@ -40,6 +40,7 @@ export default function createRotateImageNode(this: void) {
   ) {
     const task0 = createNullTask({
       name: "SubMesh",
+      tasks: [createImguiRenderNodesTask()],
       children: [
         createSubMeshTask({
           subMesh: createSubMesh({
@@ -88,10 +89,6 @@ export default function createRotateImageNode(this: void) {
             coroutine.resume(update, node, state);
           }
 
-          return state;
-        }
-        case "render": {
-          imguiRenderNodes(root);
           return state;
         }
         default: {
