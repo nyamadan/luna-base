@@ -84,37 +84,37 @@ export default function createLunaXNode(this: void) {
           <ShaderProgramTask>
             <ShaderTask type="VERTEX_SHADER">
               {`#version 300 es
-              in vec3 aPosition;
-              in vec2 aUv;
-              in vec4 aColor;
+in vec3 aPosition;
+in vec2 aUv;
+in vec4 aColor;
 
-              out vec4 vColor;
-              out vec2 vUv;
+out vec4 vColor;
+out vec2 vUv;
 
-              uniform mat4 uWorld;
-              uniform vec4 uColor;
+uniform mat4 uWorld;
+uniform vec4 uColor;
 
-              void main() {
-                vColor = aColor * uColor;
-                vUv = aUv;
-                gl_Position = uWorld * vec4(aPosition, 1.0);
-              }
-            `}
+void main() {
+  vColor = aColor * uColor;
+  vUv = aUv;
+  gl_Position = uWorld * vec4(aPosition, 1.0);
+}
+`}
             </ShaderTask>
             <ShaderTask type="FRAGMENT_SHADER">
               {`#version 300 es
-              precision highp float;
+precision highp float;
 
-              uniform sampler2D uTexColor;
-              
-              in vec4 vColor;
-              in vec2 vUv;
+uniform sampler2D uTexColor;
 
-              out vec4 outColor;
-              
-              void main() {
-                outColor = texture(uTexColor, vUv) * vColor;
-              }
+in vec4 vColor;
+in vec2 vUv;
+
+out vec4 outColor;
+
+void main() {
+  outColor = texture(uTexColor, vUv) * vColor;
+}
           `}
             </ShaderTask>
           </ShaderProgramTask>
