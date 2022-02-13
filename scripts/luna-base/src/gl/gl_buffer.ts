@@ -37,8 +37,9 @@ interface GLBufferMethods {
   free: (this: GLBuffer) => void;
 }
 
-export type GLBuffer<T extends NativeArray = NativeArray> = GLBufferFields<T> &
-  GLBufferMethods;
+export interface GLBuffer<T extends NativeArray = NativeArray>
+  extends GLBufferFields<T>,
+    GLBufferMethods {}
 
 const glBufferMethods: GLBufferMethods = {
   apply: function () {

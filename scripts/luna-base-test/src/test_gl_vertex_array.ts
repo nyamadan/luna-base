@@ -1,6 +1,7 @@
 import { createGLGeometryBuffer } from "luna-base/dist/gl/gl_geometry_buffer";
 import { createGLProgram, isGLProgram } from "luna-base/dist/gl/gl_program";
 import { createGLVertexArray } from "luna-base/dist/gl/gl_vertex_array";
+import { createGeometryBuffer } from "luna-base/dist/gl_renderer/geometry_buffer";
 import * as lu from "./lib/luaunit/luaunit";
 import { test } from "./utils";
 
@@ -42,14 +43,18 @@ void main() {
     const vao = createGLVertexArray(
       program,
       createGLGeometryBuffer({
-        aPosition: [
-          -1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0,
-        ],
-        aColor: [
-          1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0,
-          0.0, 1.0,
-        ],
-        indices: [0, 2, 1, 1, 2, 3],
+        aPosition: createGeometryBuffer({
+          buffer: [
+            -1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0,
+          ],
+        }),
+        aColor: createGeometryBuffer({
+          buffer: [
+            1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0,
+            0.0, 0.0, 1.0,
+          ],
+        }),
+        indices: createGeometryBuffer({ buffer: [0, 2, 1, 1, 2, 3] }),
       })
     );
     lu.assertNotNil(vao.vao);

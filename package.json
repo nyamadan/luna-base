@@ -4,7 +4,6 @@
     "@xmldom/xmldom": "^0.8.0",
     "axios": "^0.25.0",
     "html-webpack-plugin": "^5.5.0",
-    "rimraf": "^3.0.2",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.5",
     "webpack": "^5.68.0",
@@ -20,10 +19,6 @@
   "license": "MIT",
   "description": "My webpack project",
   "scripts": {
-    "build": "rimraf -f build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . && cd ../ && webpack --mode=production --node-env=production",
-    "build:dev": "rimraf -f build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . && cd ../ && webpack --mode=production --node-env=development",
-    "build:prod": "rimraf -f build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . && cd ../ && webpack --mode=production --node-env=production",
-    "build:bin": "rimraf -f build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .",
     "watch": "webpack --watch",
     "serve": "webpack serve"
   },

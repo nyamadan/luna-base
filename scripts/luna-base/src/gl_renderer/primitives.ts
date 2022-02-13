@@ -3,6 +3,7 @@ import quat from "../math/quat";
 import vec3, { ReadonlyVec3, Vec3 } from "../math/vec3";
 import { assertIsNotNull } from "../type_utils";
 import { createGeometry, GeometryFields } from "./geometry";
+import { createGeometryBuffer } from "./geometry_buffer";
 
 // copied from https://github.com/greggman/twgl.js/blob/master/src/primitives.js
 
@@ -155,15 +156,20 @@ export function createPlaneGeometry(
   subdivisionsDepth?: number,
   matrix?: ReadonlyMat4
 ) {
-  return createGeometry(
-    createPlaneVertices(
-      width,
-      depth,
-      subdivisionsWidth,
-      subdivisionsDepth,
-      matrix
-    )
+  const vertices = createPlaneVertices(
+    width,
+    depth,
+    subdivisionsWidth,
+    subdivisionsDepth,
+    matrix
   );
+  return createGeometry({
+    colors: createGeometryBuffer({ buffer: vertices.colors }),
+    indices: createGeometryBuffer({ buffer: vertices.indices }),
+    normals: createGeometryBuffer({ buffer: vertices.normals }),
+    positions: createGeometryBuffer({ buffer: vertices.positions }),
+    uv0s: createGeometryBuffer({ buffer: vertices.uv0s }),
+  });
 }
 
 export function createPlaneGeometryXY(

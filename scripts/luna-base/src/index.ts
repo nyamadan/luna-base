@@ -17,6 +17,7 @@ import "./gl/gl_texture";
 import "./gl/gl_vertex_array";
 import "./gl_renderer/basic_shader_program";
 import "./gl_renderer/geometry";
+import "./gl_renderer/geometry_buffer";
 import "./gl_renderer/gl_renderer";
 import "./gl_renderer/image";
 import "./gl_renderer/material";

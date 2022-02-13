@@ -65,12 +65,11 @@ function renderSubMesh(
       program,
       createGLGeometryBuffer(
         {
-          aPosition: geometry.positions ?? [],
-          aUv: geometry.uv0s ?? [],
-          aColor: geometry.colors ?? [],
-          indices: geometry.indices ?? [],
-        },
-        { usage: _gl.STATIC_DRAW }
+          aPosition: geometry.positions,
+          aUv: geometry.uv0s,
+          aColor: geometry.colors,
+          indices: geometry.indices,
+        }
       )
     );
   }

@@ -3,6 +3,7 @@ import { assertIsFalsy } from "./type_utils";
 export type TableName =
   | "LUA_TYPE_APPLICATION_TASK"
   | "LUA_TYPE_BASIC_TRANSFORM"
+  | "LUA_TYPE_GEOMETRY_BUFFER"
   | "LUA_TYPE_GEOMETRY_TASK"
   | "LUA_TYPE_GEOMETRY"
   | "LUA_TYPE_GL_PROGRAM"

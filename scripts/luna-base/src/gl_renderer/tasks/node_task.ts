@@ -3,7 +3,7 @@ import { logger } from "../../logger";
 import mat4, { Mat4 } from "../../math/mat4";
 import { createTable, TableName } from "../../tables";
 import { uuid } from "../../uuid";
-import { Geometry } from "../geometry";
+import { GeometryType } from "../geometry";
 import { Image } from "../image";
 import { createBasicTransform } from "../transforms/basic_transform";
 import { TransformType } from "../transforms/transform";
@@ -61,7 +61,7 @@ interface MouseState {
 export interface CommandState {
   worlds: Record<NodeTaskId, F32Mat4 | undefined>;
   images: Record<NodeTaskId, Image | undefined>;
-  geometries: Record<NodeTaskId, Geometry | undefined>;
+  geometries: Record<NodeTaskId, GeometryType | undefined>;
   keys: KeyState;
   mouse: MouseState;
   userdata: any;

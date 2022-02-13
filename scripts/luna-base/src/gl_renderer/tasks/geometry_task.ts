@@ -1,5 +1,5 @@
 import { allocTableName, getMetatableName } from "../../tables";
-import { Geometry } from "../geometry";
+import { GeometryType } from "../geometry";
 import {
   createNodeTaskPrototype,
   createTask,
@@ -16,7 +16,7 @@ export type GeometryTaskId = NodeTaskId & { __geometry_task: never };
 
 export interface GeometryTaskField
   extends NodeTaskField<GeometryTaskId, GeometryTaskType> {
-  generator: ((this: void) => Geometry) | null;
+  generator: ((this: void) => GeometryType) | null;
 }
 
 export interface GeometryTaskPrototype
