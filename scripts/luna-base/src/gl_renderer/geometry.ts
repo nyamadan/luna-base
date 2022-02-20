@@ -6,8 +6,13 @@ import { createGeometryBuffer, GeometryBufferType } from "./geometry_buffer";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY");
 
+type GeometryId = string & { __geometry: never };
+
+type GeometryMode = "lines" | "triangles";
+
 export interface GeometryFields {
-  guid: string;
+  guid: GeometryId;
+  mode: GeometryMode;
   positions: GeometryBufferType<F32Array>;
   colors: GeometryBufferType<F32Array>;
   uv0s: GeometryBufferType<F32Array>;
@@ -26,7 +31,8 @@ export function createGeometry(
   params: Partial<Omit<GeometryFields, "guid">> = {}
 ) {
   const fields: GeometryFields = {
-    guid: uuid.v4(),
+    guid: uuid.v4() as GeometryId,
+    mode: params.mode ?? "triangles",
     colors: params.colors ?? createGeometryBuffer<F32Array>(),
     indices: params.indices ?? createGeometryBuffer<U16Array>(),
     positions: params.positions ?? createGeometryBuffer<F32Array>(),
@@ -37,6 +43,6 @@ export function createGeometry(
   return createTable(TABLE_NAME, fields, prototype);
 }
 
-export function isGeometryType(this: void, x: unknown): x is GeometryType {
+export function isGeometry(this: void, x: unknown): x is GeometryType {
   return getMetatableName(x) === TABLE_NAME;
 }

@@ -1,6 +1,9 @@
 import * as _gl from "gl";
 import { NULL } from "native_buffer";
-import { createGLGeometryBuffer } from "../gl/gl_geometry_buffer";
+import {
+  createGLGeometryBuffer,
+  GLGeometryBuffer,
+} from "../gl/gl_geometry_buffer";
 import { createGLProgram, GLProgram, isGLProgram } from "../gl/gl_program";
 import { createGLTexture, GLTexture } from "../gl/gl_texture";
 import { createGLVertexArray, GLVertexArray } from "../gl/gl_vertex_array";
@@ -60,6 +63,22 @@ function renderSubMesh(
 
   assertIsNotNull(geometry);
 
+  let geometryMode: GLGeometryBuffer["mode"];
+
+  switch (geometry.mode) {
+    case "triangles": {
+      geometryMode = _gl.TRIANGLES;
+      break;
+    }
+    case "lines": {
+      geometryMode = _gl.LINES;
+      break;
+    }
+    default: {
+      safeUnreachable(geometry.mode);
+    }
+  }
+
   if (renderer.vaos[geometry.guid] == null) {
     renderer.vaos[geometry.guid] = createGLVertexArray(
       program,
@@ -69,7 +88,8 @@ function renderSubMesh(
           aUv: geometry.uv0s,
           aColor: geometry.colors,
           indices: geometry.indices,
-        }
+        },
+        { mode: geometryMode }
       )
     );
   }

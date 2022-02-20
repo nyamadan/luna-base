@@ -137,7 +137,10 @@ function createPlaneVertices(
     }
   }
 
-  const arrays: Record<Exclude<keyof GeometryFields, "guid">, number[]> = {
+  const arrays: Record<
+    Exclude<keyof GeometryFields, "guid" | "mode">,
+    number[]
+  > = {
     colors: colors,
     indices: indices,
     positions: positions,
@@ -164,6 +167,7 @@ export function createPlaneGeometry(
     matrix
   );
   return createGeometry({
+    mode: "triangles",
     colors: createGeometryBuffer({ buffer: vertices.colors }),
     indices: createGeometryBuffer({ buffer: vertices.indices }),
     normals: createGeometryBuffer({ buffer: vertices.normals }),

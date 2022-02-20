@@ -4,10 +4,14 @@ import { uuid } from "../uuid";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GEOMETRY_BUFFER");
 
+type GeometryBufferUsage = "dynamic" | "static";
+
+type GeometryBufferId = string & { __geometry_buffer: never };
+
 export interface GeometryBufferFields<T extends NativeArray> {
-  guid: string;
+  guid: GeometryBufferId;
   buffer: number[] | T;
-  usage: "dynamic" | "static";
+  usage: GeometryBufferUsage;
 }
 
 export interface GeometryBufferPrototype {}
@@ -23,7 +27,7 @@ export function createGeometryBuffer<T extends NativeArray>(
   params: Partial<Omit<GeometryBufferFields<T>, "guid">> = {}
 ) {
   const fields: GeometryBufferFields<T> = {
-    guid: uuid.v4(),
+    guid: uuid.v4() as GeometryBufferId,
     buffer: [],
     usage: "static",
     ...params,
@@ -32,7 +36,7 @@ export function createGeometryBuffer<T extends NativeArray>(
   return createTable(TABLE_NAME, fields, prototype);
 }
 
-export function isGeometryBufferType(
+export function isGeometryBuffer(
   this: void,
   x: unknown
 ): x is GeometryBufferType<NativeArray> {

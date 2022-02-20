@@ -13,7 +13,7 @@ import {
 } from "./gl_buffer";
 
 interface GLGeometryBufferFields {
-  mode: typeof _gl.TRIANGLES;
+  mode: typeof _gl.LINES | typeof _gl.TRIANGLES;
   buffers: Record<string, GLBuffer>;
 }
 
