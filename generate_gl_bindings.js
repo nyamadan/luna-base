@@ -502,7 +502,7 @@ ${lua_function_body}
               return `${name}: number`;
             }
             case "GLintptr": {
-              return `${name}: ArrayBuffer`;
+              return `${name}: {__native_buffer: never}`;
             }
             default: {
               return `${name}: never`;

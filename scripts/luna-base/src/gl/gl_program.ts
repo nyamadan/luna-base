@@ -46,7 +46,7 @@ function loadShader(
 
   return { error: null, shader };
 }
-interface ProgramAttributeOrUniform {
+export interface ProgramAttributeOrUniform {
   type: number;
   name: string;
   location: number;
@@ -73,6 +73,10 @@ interface ProgramFields {
 interface ProgramMethods {
   use(this: GLProgram): void;
   free(this: GLProgram): void;
+  findAttributeByName(
+    this: GLProgram,
+    name: string
+  ): ProgramAttributeOrUniform | null;
   getWorld(this: GLProgram): ProgramUniform | null;
 }
 
@@ -91,6 +95,9 @@ const prototype: ProgramMethods = {
   },
   getWorld() {
     return this.uniforms.find((x) => x.name === this.worldUniformName) ?? null;
+  },
+  findAttributeByName(name) {
+    return this.attributes.find((x) => x.name === name) ?? null;
   },
 };
 

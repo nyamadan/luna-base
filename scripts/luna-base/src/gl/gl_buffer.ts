@@ -9,8 +9,7 @@ import { assertIsNotNull } from "../type_utils";
 
 const TABLE_NAME = allocTableName("LUA_USERDATA_GL_BUFFER");
 
-interface GLBufferFields<T extends NativeArray> {
-  array: T | null;
+interface GLBufferFields {
   buffer: number | null;
   size: 1 | 2 | 3 | 4;
   numComponents: number;
@@ -33,31 +32,29 @@ interface GLBufferFields<T extends NativeArray> {
 }
 
 interface GLBufferMethods {
-  apply: (this: GLBuffer) => void;
+  bind: (this: GLBuffer) => void;
+  unbind: (this: GLBuffer) => void;
+  apply: (this: GLBuffer, array: NativeArray) => void;
   free: (this: GLBuffer) => void;
 }
 
-export interface GLBuffer<T extends NativeArray = NativeArray>
-  extends GLBufferFields<T>,
-    GLBufferMethods {}
+export interface GLBuffer extends GLBufferFields, GLBufferMethods {}
 
 const glBufferMethods: GLBufferMethods = {
-  apply: function () {
+  bind: function () {
     assertIsNotNull(this.buffer);
-    assertIsNotNull(this.array);
     _gl.bindBuffer(this.target, this.buffer);
-    _gl.bufferData(
-      this.target,
-      this.array.buffer.length,
-      this.array.buffer,
-      this.usage
-    );
+  },
+  unbind: function () {
+    assertIsNotNull(this.buffer);
     _gl.bindBuffer(this.target, 0);
   },
+  apply: function (array) {
+    assertIsNotNull(this.buffer);
+    _gl.bufferData(this.target, array.buffer.length, array.buffer, this.usage);
+    // _gl.bufferSubData(this.target, NULL, array.buffer.length, array.buffer);
+  },
   free: function () {
-    if (this.array != null) {
-      this.array = null;
-    }
     if (this.buffer != null) {
       const p = new_buffer(4);
       p.set_int32(0, this.buffer);
@@ -78,10 +75,9 @@ const glArrayBufferMetatable = {
 function createGLArrayBuffer<T extends NativeArray>(
   this: void,
   array: T,
-  options: Partial<Omit<GLBufferFields<T>, "array" | "buffer">>
-): GLBuffer<T> {
-  const init: GLBufferFields<T> = {
-    array,
+  options: Partial<Omit<GLBufferFields, "array" | "buffer">>
+): GLBuffer {
+  const init: GLBufferFields = {
     buffer: null,
     target: _gl.ARRAY_BUFFER,
     normalized: false,
@@ -92,13 +88,17 @@ function createGLArrayBuffer<T extends NativeArray>(
     usage: _gl.STATIC_DRAW,
     ...options,
   };
-  const o = setmetatable(init, glArrayBufferMetatable as any) as GLBuffer<T>;
+  const o = setmetatable(init, glArrayBufferMetatable as any) as GLBuffer;
 
   const pBuffer = new_buffer(4);
   _gl.genBuffers(1, pBuffer);
   const buffer = pBuffer.get_int32(0);
   o.buffer = buffer;
-  o.apply();
+
+  assertIsNotNull(o.buffer);
+  _gl.bindBuffer(o.target, o.buffer);
+  _gl.bufferData(o.target, array.buffer.length, array.buffer, o.usage);
+  _gl.bindBuffer(o.target, 0);
   return o;
 }
 

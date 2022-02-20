@@ -8,6 +8,7 @@ import {
   initCommandState,
   NodeTaskType,
 } from "luna-base/dist/gl_renderer/tasks/node_task";
+import createDynamicVerticesNode from "./dynamic_vertices";
 import createImguiNode from "./imgui_node";
 import createLunaXNode from "./lunax_node";
 import createRotateImageNode from "./rotate_image_node";
@@ -24,7 +25,14 @@ root.addChild(imguiNode);
 const lunaxNode = createLunaXNode();
 root.addChild(lunaxNode);
 
+const dynamicVerticesNode = createDynamicVerticesNode();
+root.addChild(dynamicVerticesNode);
+
 const tasks: { name: string; task: NodeTaskType }[] = [
+  {
+    name: "DynamicVertices",
+    task: dynamicVerticesNode,
+  },
   {
     name: "LunaX",
     task: lunaxNode,

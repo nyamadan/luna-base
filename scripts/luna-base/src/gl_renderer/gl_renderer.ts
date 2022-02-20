@@ -1,5 +1,7 @@
 import * as _gl from "gl";
 import { NULL } from "native_buffer";
+import { F32Array } from "../buffers/f32array";
+import { isNativeArray } from "../buffers/native_array";
 import {
   createGLGeometryBuffer,
   GLGeometryBuffer,
@@ -12,6 +14,7 @@ import { logger } from "../logger";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull } from "../type_utils";
 import { safeUnreachable } from "../unreachable";
+import { GeometryBufferType } from "./geometry_buffer";
 import { ShaderProgramId } from "./shader_program";
 import { CommandState, NodeTaskType } from "./tasks/node_task";
 import { isSubMeshTask, SubMeshTaskType } from "./tasks/sub_mesh_task";
@@ -29,6 +32,38 @@ interface GLRendererPrototype {
 }
 
 export type GLRenderer = GLRendererFields & GLRendererPrototype;
+
+function updateVertexBuffer(
+  this: void,
+  program: GLProgram,
+  vao: GLVertexArray,
+  attributeName: string,
+  geomBuffer: GeometryBufferType<F32Array>
+) {
+  if (geomBuffer.usage !== "dynamic") {
+    return;
+  }
+
+  const buffer = vao.geometry.buffers[attributeName];
+  if (buffer == null) {
+    return;
+  }
+
+  const attribute = program.findAttributeByName(attributeName);
+  if (attribute == null) {
+    return;
+  }
+
+  // TODO: copy GeomBuffer to vao buffer
+
+  if (!isNativeArray(geomBuffer.buffer)) {
+    return;
+  }
+
+  vao.bindBuffer(buffer, attribute);
+  buffer.apply(geomBuffer.buffer);
+  vao.unbindBuffer(buffer);
+}
 
 function renderSubMesh(
   this: void,
@@ -92,6 +127,16 @@ function renderSubMesh(
         { mode: geometryMode }
       )
     );
+  } else {
+    const vao = renderer.vaos[geometry.guid];
+    assertIsNotNull(vao);
+
+    vao.bind();
+    updateVertexBuffer(program, vao, "aPosition", geometry.positions);
+    updateVertexBuffer(program, vao, "aNormal", geometry.normals);
+    updateVertexBuffer(program, vao, "aUv", geometry.uv0s);
+    updateVertexBuffer(program, vao, "aColor", geometry.colors);
+    vao.unbind();
   }
 
   const vao = renderer.vaos[geometry.guid];

@@ -2,8 +2,9 @@ import * as _gl from "gl";
 import { new_buffer, NULL } from "native_buffer";
 import { allocTableName, createTable, getMetatableName } from "../tables";
 import { assertIsNotNull, assertIsNumber } from "../type_utils";
+import { GLBuffer } from "./gl_buffer";
 import { GLGeometryBuffer } from "./gl_geometry_buffer";
-import { GLProgram } from "./gl_program";
+import { GLProgram, ProgramAttributeOrUniform } from "./gl_program";
 
 const TABLE_NAME = allocTableName("LUA_TYPE_GL_VERTEX_ARRAY");
 
@@ -16,6 +17,12 @@ interface GLVertexArrayMethods {
   getGeometryMode: (this: GLVertexArray) => number;
   getIndicesType: (this: GLVertexArray) => number | null;
   getNumComponents: (this: GLVertexArray) => number | null;
+  bindBuffer: (
+    this: GLVertexArray,
+    buffer: GLBuffer,
+    attribute: ProgramAttributeOrUniform
+  ) => void;
+  unbindBuffer: (this: GLVertexArray, buffer: GLBuffer) => void;
   bind: (this: GLVertexArray) => void;
   unbind: (this: GLVertexArray) => void;
   free: (this: GLVertexArray) => void;
@@ -39,6 +46,23 @@ const prototype: GLVertexArrayMethods = {
   bind: function () {
     assertIsNotNull(this.vao);
     _gl.bindVertexArray(this.vao);
+  },
+  bindBuffer: function (buffer, attribute) {
+    assertIsNumber(buffer.buffer);
+
+    _gl.bindBuffer(buffer.target, buffer.buffer);
+    _gl.enableVertexAttribArray(attribute.location);
+    _gl.vertexAttribPointer(
+      attribute.location,
+      buffer.size,
+      buffer.type,
+      buffer.normalized || false,
+      buffer.stride || 0,
+      NULL
+    );
+  },
+  unbindBuffer: function (buffer: GLBuffer) {
+    buffer.unbind();
   },
   free: function () {
     if (this.vao == null) {

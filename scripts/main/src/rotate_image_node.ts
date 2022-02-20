@@ -25,7 +25,13 @@ export default function createRotateImageNode(this: void) {
   });
 
   const geometryTask = createGeometryTask({
-    generator: () => createPlaneGeometryXY(2, 2, 1, 1),
+    generator: () =>
+      createPlaneGeometryXY({
+        width: 2,
+        height: 2,
+        subdivisionsWidth: 1,
+        subdivisionsHeight: 1,
+      }),
   });
 
   const root = createNullTask({

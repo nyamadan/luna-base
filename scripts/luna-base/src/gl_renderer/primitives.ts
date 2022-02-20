@@ -86,17 +86,19 @@ function reorientVertices<T extends Record<string, number[]>>(
 
 function createPlaneVertices(
   this: void,
-  width?: number,
-  depth?: number,
-  subdivisionsWidth?: number,
-  subdivisionsDepth?: number,
-  matrix?: ReadonlyMat4
+  option: Partial<{
+    width: number;
+    depth: number;
+    subdivisionsWidth: number;
+    subdivisionsDepth: number;
+    matrix: ReadonlyMat4;
+  }> = {}
 ) {
-  width = width ?? 1;
-  depth = depth ?? 1;
-  subdivisionsWidth = subdivisionsWidth ?? 1;
-  subdivisionsDepth = subdivisionsDepth ?? 1;
-  matrix = matrix ?? mat4.identity(mat4.create());
+  const width = option.width ?? 1;
+  const depth = option.depth ?? 1;
+  const subdivisionsWidth = option.subdivisionsWidth ?? 1;
+  const subdivisionsDepth = option.subdivisionsDepth ?? 1;
+  const matrix = option.matrix ?? mat4.identity(mat4.create());
 
   const positions: number[] = [];
   const normals: number[] = [];
@@ -153,19 +155,15 @@ function createPlaneVertices(
 
 export function createPlaneGeometry(
   this: void,
-  width?: number,
-  depth?: number,
-  subdivisionsWidth?: number,
-  subdivisionsDepth?: number,
-  matrix?: ReadonlyMat4
+  option: Partial<{
+    width: number;
+    depth: number;
+    subdivisionsWidth: number;
+    subdivisionsDepth: number;
+    matrix: ReadonlyMat4;
+  }> = {}
 ) {
-  const vertices = createPlaneVertices(
-    width,
-    depth,
-    subdivisionsWidth,
-    subdivisionsDepth,
-    matrix
-  );
+  const vertices = createPlaneVertices(option);
   return createGeometry({
     mode: "triangles",
     colors: createGeometryBuffer({ buffer: vertices.colors }),
@@ -178,22 +176,24 @@ export function createPlaneGeometry(
 
 export function createPlaneGeometryXY(
   this: void,
-  width?: number,
-  depth?: number,
-  subdivisionsWidth?: number,
-  subdivisionsDepth?: number,
-  matrix?: ReadonlyMat4
+  option: Partial<{
+    width: number;
+    height: number;
+    subdivisionsWidth: number;
+    subdivisionsHeight: number;
+    matrix: ReadonlyMat4;
+  }> = {}
 ) {
   const m = mat4.create();
   mat4.rotateX(m, m, -0.5 * Math.PI);
-  if (matrix != null) {
-    mat4.multiply(m, m, matrix);
+  if (option.matrix != null) {
+    mat4.multiply(m, m, option.matrix);
   }
-  return createPlaneGeometry(
-    width,
-    depth,
-    subdivisionsWidth,
-    subdivisionsDepth,
-    m
-  );
+  return createPlaneGeometry({
+    width: option.width,
+    depth: option.height,
+    subdivisionsWidth: option.width,
+    subdivisionsDepth: option.height,
+    matrix: m,
+  });
 }
