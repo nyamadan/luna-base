@@ -141,8 +141,8 @@ else()
 endif()
 ExternalProject_Add(
   imgui
-  URL https://github.com/ocornut/imgui/archive/refs/tags/v1.86.zip
-  URL_MD5 bccb1c173296979e6a61b4f9da572429
+  URL https://github.com/ocornut/imgui/archive/refs/tags/v1.87.zip
+  URL_MD5 1495b0d25a64b703cbd6c2976b21cb38
   PREFIX ${EXTERNALS_ROOT}
   BUILD_BYPRODUCTS ${IMGUI}
   CMAKE_ARGS
@@ -174,8 +174,8 @@ else()
 endif()
 ExternalProject_Add(
   zlib
-  URL https://www.zlib.net/zlib-1.2.11.tar.gz
-  URL_MD5 1c9f62f0778697a09d36121ead88e08e
+  URL https://www.zlib.net/zlib-1.2.12.tar.gz
+  URL_MD5 5fc414a9726be31427b440b434d05f78
   PREFIX ${EXTERNALS_ROOT}
   BUILD_BYPRODUCTS ${ZLIB_LIB}
   CMAKE_GENERATOR "Unix Makefiles"
@@ -366,8 +366,8 @@ if(NOT EMSCRIPTEN)
     endif()
     ExternalProject_Add(
       SDL2
-      URL https://www.libsdl.org/release/SDL2-2.0.20.tar.gz
-      URL_MD5 a53acc02e1cca98c4123229069b67c9e
+      URL https://www.libsdl.org/release/SDL2-2.0.22.tar.gz
+      URL_MD5 40aedb499cb2b6f106d909d9d97f869a
       PREFIX ${EXTERNALS_ROOT}
       BUILD_BYPRODUCTS ${SDL2_LIB} ${SDL2MAIN_LIB}
       CMAKE_ARGS
@@ -391,7 +391,7 @@ if(NOT EMSCRIPTEN)
   ExternalProject_Add(
     GL3W
     URL https://github.com/skaslev/gl3w/archive/refs/heads/master.zip
-    URL_MD5 4196b40c76e0f8ce0bc59905c3f828e9
+    URL_MD5 69df496657fa41b8f92e623e771c062e
     PREFIX ${EXTERNALS_ROOT}
     BUILD_BYPRODUCTS ${GL3W_SRC}
     CMAKE_ARGS
